@@ -1,10 +1,7 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=619988491)
 
-<!-- TODO: temporary disable doc links until they are actually generated -->
 [![Chat](https://img.shields.io/discord/1001179329411166267?label=Chat)](https://discord.gg/jubxF84yGw)
-<!--
 [![License](https://img.shields.io/badge/License-BSD--3-blue)](https://github.com/intel/rohd-website/blob/main/LICENSE)
--->
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/intel/rohd-website/blob/main/CODE_OF_CONDUCT.md)
 
 # The ROHD Website
