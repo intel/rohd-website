@@ -1,0 +1,52 @@
+# theme
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+
+# Site Settings
+locale: "en-US"
+title: ROHD
+title_separator: "-"
+# subtitle: "Framework"
+email: "yao.jing.quek@intel.com"
+description: "The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. ROHD enables you to build and traverse a graph of connectivity between module objects using unrestricted software."
+url: "https://intel.github.io/rohd/" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/" # the subpath of your site, e.g. /blog
+repository: "intel/rohd"
+logo: "/assets/images/88x88.svg"
+# masthead_title: "ROHD"
+breadcrumbs: true
+minimal_mistakes_skin: "air"
+search: true
+search_full_content      : true # true, false (default)
+search_provider          : # lunr (default), algolia, google
+lunr:
+  search_within_pages    : true # true, false (default)
+
+plugins:
+  - jekyll-include-cache
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+  get-started:
+    output: true
+    permalink: /:collection/path/
+
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: docs
+    values:
+      layout: single
+      sidebar:
+        nav: "docs"
+  - scope:
+      path: ""
+      type: get-started
+    values:
+      layout: single
+      sidebar:
+        nav: "get-started"
