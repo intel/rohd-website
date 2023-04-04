@@ -45,19 +45,19 @@ Because it is designed with asynchronous requests in mind (i.e. sending a reques
 
 Dart can compile to native machine code, but also includes its own high-performance VM and a JIT compiler.  During development, you can use a feature called "hot reload" to change code while the program is actively executing.
 
-Dart has an excellent package manager called "pub" (https://pub.dev).  It is possible to host a private Dart Pub server for packages that shouldn't be shared broadly (e.g. Top-Secret IP).
+Dart has an excellent package manager called "pub" [https://pub.dev](https://pub.dev).  It is possible to host a private Dart Pub server for packages that shouldn't be shared broadly (e.g. Top-Secret IP).
 
 ### The Challenge of Justifying Trying a New Language
 
-<a href="https://stackoverflow.com/questions/53007782/what-benefits-does-chisel-offer-over-classic-hardware-description-languages">This StackOverflow answer</a> about why it's worth trying Chisel (an alternative to ROHD) contains valuable insight into why it is difficult in general to justify a new language to someone who hasn't used it before:
+[This StackOverflow answer](https://stackoverflow.com/questions/53007782/what-benefits-does-chisel-offer-over-classic-hardware-description-languages) about why it's worth trying Chisel (an alternative to ROHD) contains valuable insight into why it is difficult in general to justify a new language to someone who hasn't used it before:
 
-> Language *power* is notoriously difficult to objectively evaluate. Paul Graham describes this as the "Blub Paradox" in his <a href="http://www.paulgraham.com/avg.html">"Beating the Averages" essay</a>. Graham's thesis is that an engineer proficient in a less powerful language cannot evaluate the utility of a more powerful language.
+> Language *power* is notoriously difficult to objectively evaluate. Paul Graham describes this as the "Blub Paradox" in his ["Beating the Averages"](http://www.paulgraham.com/avg.html) essay. Graham's thesis is that an engineer proficient in a less powerful language cannot evaluate the utility of a more powerful language.
 
 If you're thinking "SystemVerilog is just fine, I don't need something new", it is worth reading either or both of the StackOverflow answer and the Paul Graham essay.
 
 ### More Information on Dart
 
-Try out Dart instantly from your browser here (it supports ROHD too!): https://dartpad.dev/?null_safety=true
+Try out Dart instantly from your browser here (it supports ROHD too!): [https://dartpad.dev/?null_safety=true](https://dartpad.dev/?null_safety=true)
 
 See some Dart language samples here: [https://dart.dev/samples](https://dart.dev/samples)
 
