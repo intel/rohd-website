@@ -7,6 +7,7 @@ toc: true
 ---
 
 ## Getting started
+
 Follow the instruction at [https://dart.dev/get-dart](https://dart.dev/get-dart) to install `dart` in your environment.
 
 Once you have Dart installed, if you don't already have a project, you can create one using `dart create`: [https://dart.dev/tools/dart-tool](https://dart.dev/tools/dart-tool)
@@ -28,6 +29,7 @@ You also may be interested to join the [ROHD Forum](https://github.com/intel/roh
 Be sure to note the minimum Dart version required for ROHD specified in pubspec.yaml (at least 2.18.0).  If you're using the version of Dart that came with Flutter, it might be older than that.
 
 ## Package Managers for Hardware
+
 In the Dart ecosystem, you can use a package manager to define all package dependencies.  A package manager allows you to define constrainted subsets of versions of all your *direct* dependencies, and then the tool will solve for a coherent set of all (direct and indirect) dependencies required to build your project.  There's no need to manually figure out tool versions, build flags and options, environment setup, etc. because it is all guaranteed to work.  Integration of other packages (whether a tool or a hardware IP) become as simple as an `import` statment.  Compare that to SystemVerilog IP integration!
 
 Read more about package managers here: [https://en.wikipedia.org/wiki/Package_manager](https://en.wikipedia.org/wiki/Package_manager)  
