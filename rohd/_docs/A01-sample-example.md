@@ -99,9 +99,12 @@ class TreeOfTwoInputModules extends Module {
 ```
 
 Some interesting things to note:
+
 - The constructor for `TreeOfTwoInputModules` accepts two arguments:
-    - `seq` is a Dart `List` of arbitrary length of input elements.  The module dynamically assigns the input and output widths of the module to match the width of the input elements.  Additionally, the total number of inputs to the module is dynamically determined at run time.
-    - `_op` is a Dart `Function` (in Dart, `Function`s are first-class and can be stored in variables).  It expects a function which takes two `Logic` inputs and provides one `Logic` output.
+
+  - `seq` is a Dart `List` of arbitrary length of input elements.  The module dynamically assigns the input and output widths of the module to match the width of the input elements.  Additionally, the total number of inputs to the module is dynamically determined at run time.
+  - `_op` is a Dart `Function` (in Dart, `Function`s are first-class and can be stored in variables).  It expects a function which takes two `Logic` inputs and provides one `Logic` output.
+
 - This module recursively instantiates itself, but with different numbers of inputs each time.  The same module implementation can have a variable number of inputs and different logic without any explicit parameterization.
 
 You could instantiate this module with some code such as:
