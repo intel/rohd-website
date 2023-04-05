@@ -8,8 +8,7 @@ toc: true
 
 #### Constants
 
-<!-- markdown-link-check-disable-next-line -->
-Constants can often be inferred by ROHD automatically, but can also be explicitly defined using [`Const`](https://intel.github.io/rohd-website/api/rohd/Const-class.html), which extends `Logic`.
+Constants can often be inferred by ROHD automatically, but can also be explicitly defined using [`Const`]({{ site.baseurl }}api/rohd/Const-class.html), which extends `Logic`.
 
 ```dart
 // a 16 bit constant with value 5
