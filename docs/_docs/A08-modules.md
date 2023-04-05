@@ -8,7 +8,7 @@ toc: true
 
 ### Modules
 
-[`Module`]({{ site.baseurl }}api-rohd/rohd/Module-class.html)s are similar to modules in SystemVerilog.  They have inputs and outputs and logic that connects them.  There are a handful of rules that *must* be followed when implementing a module.
+[`Module`]({{ site.baseurl }}api/rohd/Module-class.html)s are similar to modules in SystemVerilog.  They have inputs and outputs and logic that connects them.  There are a handful of rules that *must* be followed when implementing a module.
 
 1. All logic within a `Module` must consume only inputs (from the `input` or `addInput` methods) to the Module either directly or indirectly.
 2. Any logic outside of a `Module` must consume the signals only via outputs (from the `output` or `addOutput` methods) of the Module.
