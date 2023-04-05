@@ -7,6 +7,7 @@ toc: true
 ---
 
 ### Logical signals
+
 The fundamental signal building block in ROHD is called [`Logic`](https://intel.github.io/rohd/api/rohd/Logic-class.html).
 
 ```dart
@@ -18,6 +19,7 @@ var bus = Logic(name: 'b', width: 8)
 ```
 
 #### The value of a signal
+
 You can access the current value of a signal using `value`.  You cannot access this as part of synthesizable ROHD code.  ROHD supports X and Z values and propogation.  If the signal is valid (no X or Z in it), you can also convert it to an int with `valueInt` (ROHD will throw an exception otherwise).  If the signal has more bits than a dart `int` (64 bits, usually), you need to use `valueBigInt` to get a `BigInt` (again, ROHD will throw an exception otherwise).
 
 The value of a `Logic` is of type [`LogicValue`](https://intel.github.io/rohd/api/rohd/LogicValue-class.html), with pre-defined constant bit values `x`, `z`, `one`, and `zero`.  `LogicValue` has a number of built-in logical operations `(like &, |, ^, +, -, etc.)`.
@@ -44,6 +46,7 @@ LogicValue.ofInt(15, 4);                              // 0xf
 You can create `LogicValue`s using a variety of constructors including `ofInt`, `ofBigInt`, `filled` (like '0, '1, 'x, etc. in SystemVerilog), and `of` (which takes any `Iterable<LogicValue>`).
 
 #### Listening to and waiting for changes
+
 You can trigger on changes of `Logic`s with some built in events.  ROHD uses dart synchronous [streams](https://dart.dev/tutorials/language/streams) for events.
 
 There are three testbench-consumable streams built-in to ROHD `Logic`s: `changed`, `posedge`, and `negedge`.  You can use `listen` to trigger something every time the edge transitions.  Note that this is *not* synthesizable by ROHD and should not be confused with a synthesizable `always(@)` type of statement.  Event arguments passed to listeners are of type `LogicValueChanged`, which has information about the `previousValue` and `newValue`.
