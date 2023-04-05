@@ -1,4 +1,0 @@
-[submodule "rohd/api"]
-	path = rohd/api
-	url = https://github.com/intel/rohd.git
-	branch = docs
