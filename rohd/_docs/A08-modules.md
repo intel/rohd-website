@@ -7,6 +7,7 @@ toc: true
 ---
 
 ### Modules
+
 [`Module`](https://intel.github.io/rohd/api/rohd/Module-class.html)s are similar to modules in SystemVerilog.  They have inputs and outputs and logic that connects them.  There are a handful of rules that *must* be followed when implementing a module.
 
 1. All logic within a `Module` must consume only inputs (from the `input` or `addInput` methods) to the Module either directly or indirectly.
@@ -23,10 +24,10 @@ Note that the `build()` method returns a `Future<void>`, not just `void`.  This 
 
 It is not necessary to put all logic directly within a class that extends Module.  You can put synthesizable logic in other functions and classes, as long as the logic eventually connects to an input or output of a module if you hope to convert it to SystemVerilog.  Except where there is a desire for the waveforms and SystemVerilog generated to have module hierarchy, it is not necessary to use submodules within modules instead of plain classes or functions.
 
-
 The `Module` base class has an optional String argument 'name' which is an instance name.
 
 `Module`s have the below basic structure:
+
 ```dart
 // class must extend Module to be a Module
 class MyModule extends Module {
@@ -51,13 +52,14 @@ class MyModule extends Module {
 
 All gates or functionality apart from assign statements in ROHD are implemented using Modules.
 
-
 #### Inputs, outputs, widths, and getters
+
 The default width of an input and output is 1.  You can control the width of ports using the `width` argument of `addInput()` and `addOutput()`.  You may choose to set them to a static number, based on some other variable, or even dynamically based on the width of input parameters.  These functions also return the input/output signal.
 
 It can be convenient to use dart getters for signal names so that accessing inputs and outputs of a module doesn't require calling `input()` and `output()` every time.  It also makes it easier to consume your module.
 
 Below are some examples of inputs and outputs in a Module.
+
 ```dart
 class MyModule extends Module {
 

@@ -7,7 +7,9 @@ toc: true
 ---
 
 ### Simple logical, mathematical, and comparison operations
+
 Logical operations on signals are very similar to those in SystemVerilog.
+
 ```dart
 a_bar     <=  ~a;      // not
 a_and_b   <=  a & b;   // and

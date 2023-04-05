@@ -7,7 +7,9 @@ toc: true
 ---
 
 ### Bus ranges and swizzling
+
 Multi-bit busses can be accessed by single bits and ranges or composed from multiple other signals.  Slicing, swizzling, etc. are also accessible on `LogicValue`s.
+
 ```dart
 var a = Logic(width:8),
     b = Logic(width:3),
@@ -34,6 +36,7 @@ e <= [b, c, d].rswizzle();
 ```
 
 ROHD does not support assignment to a subset of a bus.  That is, you *cannot* do something like `e[3] <= d`.  Instead, you can use the `withSet` function to get a copy with that subset of the bus assigned to something else.  This applies for both `Logic` and `LogicValue`.  For example:
+
 ```dart
 // reassign the variable `e` to a new `Logic` where bit 3 is set to `d`
 e = e.withSet(3, d);

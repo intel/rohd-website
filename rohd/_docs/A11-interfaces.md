@@ -7,6 +7,7 @@ toc: true
 ---
 
 ### Interfaces
+
 Interfaces make it easier to define port connections of a module in a reusable way.  An example of the counter re-implemented using interfaces is shown below.
 
 [`Interface`](https://intel.github.io/rohd/api/rohd/Interface-class.html) takes a generic parameter for direction type.  This enables you to group signals so make adding them as inputs/outputs easier for different modules sharing this interface.

@@ -7,6 +7,7 @@ toc: true
 ---
 
 ### Finite State Machines
+
 ROHD has a built-in syntax for handling FSMs in a simple & refactorable way.  The below example shows a 2 way Traffic light FSM.  Note that `StateMachine` consumes the `clk` and `reset` signals. Also accepts the reset state to transition to `resetState` along with the `List` of `states` of the FSM.
 
 ```dart
