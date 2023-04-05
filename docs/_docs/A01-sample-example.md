@@ -6,7 +6,7 @@ last_modified_at: 2022-12-21
 toc: true
 ---
 
-Please make sure you had setup your ROHD Framework before running the test. Information of installation can be found at [setup page](/get-started/setup/).
+Please make sure you had setup your ROHD Framework before running the test. Information of installation can be found at [setup page]({{ site.baseurl }}{% link _get-started/02-installation.md %}).
 
 ## A full example of a counter module
 
