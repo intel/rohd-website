@@ -8,6 +8,7 @@ toc: true
 
 ### Modules
 
+<!-- markdown-link-check-disable-next-line -->
 [`Module`](https://intel.github.io/rohd-website/api/rohd/Module-class.html)s are similar to modules in SystemVerilog.  They have inputs and outputs and logic that connects them.  There are a handful of rules that *must* be followed when implementing a module.
 
 1. All logic within a `Module` must consume only inputs (from the `input` or `addInput` methods) to the Module either directly or indirectly.

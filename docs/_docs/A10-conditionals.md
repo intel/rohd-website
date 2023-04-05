@@ -8,14 +8,18 @@ toc: true
 
 ### Conditionals
 
-ROHD supports a variety of [`Conditional`](./../api/index.html) type statements that always must fall within a type of `_Always` block, similar to SystemVerilog.  There are two types of `_Always` blocks: [`Sequential`](https://intel.github.io/rohd-website/api/rohd/Sequential-class.html) and [`Combinational`](https://intel.github.io/rohd-website/api/rohd/Combinational-class.html), which map to SystemVerilog's `always_ff` and `always_comb`, respectively.  `Combinational` takes a list of `Conditional` statements.  Different kinds of `Conditional` statement, such as `If`, may be composed of more `Conditional` statements.  You can create `Conditional` composition chains as deep as you like.
+ROHD supports a variety of [`Conditional`](./../api/index.html) type statements that always must fall within a type of `_Always` block, similar to SystemVerilog.  There are two 
+<!-- markdown-link-check-disable-next-line -->
+types of `_Always` blocks: [`Sequential`](https://intel.github.io/rohd-website/api/rohd/Sequential-class.html) and [`Combinational`](https://intel.github.io/rohd-website/api/rohd/Combinational-class.html), which map to SystemVerilog's `always_ff` and `always_comb`, respectively.  `Combinational` takes a list of `Conditional` statements.  Different kinds of `Conditional` statement, such as `If`, may be composed of more `Conditional` statements.  You can create `Conditional` composition chains as deep as you like.
 
 Conditional statements are executed imperatively and in order, just like the contents of `always` blocks in SystemVerilog.  `_Always` blocks in ROHD map 1-to-1 with SystemVerilog `always` statements when converted.
 
+<!-- markdown-link-check-disable-next-line -->
 Assignments within an `_Always` should be executed conditionally, so use the `<` operator which creates a [`ConditionalAssign`](https://intel.github.io/rohd-website/api/rohd/ConditionalAssign-class.html) object instead of `<=`.  The right hand side a `ConditionalAssign` can be anything that can be `put` onto a `Logic`, which includes `int`s.  If you're looking to fill the width of something, use `Const` with the `fill = true`.
 
 #### `If`
 
+<!-- markdown-link-check-disable-next-line -->
 Below is an example of an [`If`](https://intel.github.io/rohd-website/api/rohd/If-class.html) statement in ROHD:
 
 ```dart
@@ -38,6 +42,7 @@ Combinational([
 
 #### `IfBlock`
 
+<!-- markdown-link-check-disable-next-line -->
 The [`IfBlock`](https://intel.github.io/rohd-website/api/rohd/IfBlock-class.html) makes syntax for long chains of if / else if / else chains nicer.  For example:
 
 ```dart
@@ -63,6 +68,7 @@ Sequential(clk, [
 
 #### `Case` and `CaseZ`
 
+<!-- markdown-link-check-disable-next-line -->
 ROHD supports [`Case`](https://intel.github.io/rohd-website/api/rohd/Case-class.html) and [`CaseZ`](https://intel.github.io/rohd-website/api/rohd/CaseZ-class.html) statements, including priority and unique flavors, which are implemented in the same way as SystemVerilog.  For example:
 
 ```dart
