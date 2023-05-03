@@ -31,6 +31,9 @@ jobs:
           config-file: .github/configs/mlc_config.json
     
   deploy-website:
+    timeout-minutes: 30
+    permissions: {}
+    runs-on: ubuntu-22.04
     steps:
       - name: Sync ROHD docs
         run: tool/gh_actions/update_directory.sh
