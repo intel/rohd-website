@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   run-checks:
@@ -27,4 +29,7 @@ jobs:
         with:
           use-quiet-mode: yes # output is too noisy, see https://github.com/gaurav-nelson/github-action-markdown-link-check/issues/121
           config-file: .github/configs/mlc_config.json
+
+      - name: Sync with ROHD docs
+        
 
