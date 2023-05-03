@@ -4,3 +4,8 @@
 
 # Exceptions
 !.vscode/extensions.json
+
+_*/
+!_data
+!_includes
+!_config.yml
