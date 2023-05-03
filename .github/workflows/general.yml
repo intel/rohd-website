@@ -31,8 +31,9 @@ jobs:
           config-file: .github/configs/mlc_config.json
     
   deploy-website:
-    name: Sync ROHD docs
-    run: tool/gh_actions/update_directory.sh
+    steps:
+      - name: Sync ROHD docs
+        run: tool/gh_actions/update_directory.sh
 
 
 
