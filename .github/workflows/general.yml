@@ -2,10 +2,10 @@ name: General
 on:
   push:
     branches:
-      - main
+      - rohd-website
   pull_request:
     branches:
-      - main
+      - rohd-website
   schedule:
     - cron: "*/5 * * * *"
 
