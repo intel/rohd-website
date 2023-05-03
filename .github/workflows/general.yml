@@ -30,9 +30,9 @@ jobs:
           use-quiet-mode: yes # output is too noisy, see https://github.com/gaurav-nelson/github-action-markdown-link-check/issues/121
           config-file: .github/configs/mlc_config.json
     
-    deploy-website:
-      name: Sync ROHD docs
-      run: tool/gh_actions/update_directory.sh
+  deploy-website:
+    name: Sync ROHD docs
+    run: tool/gh_actions/update_directory.sh
 
 
 
