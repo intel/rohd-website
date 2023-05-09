@@ -3,7 +3,7 @@
 # Copyright (C) 2023 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 #
-# set_up.sh
+# update_directory.sh
 # GitHub Actions step: Set up the files directory
 #
 # 2023 May 3
