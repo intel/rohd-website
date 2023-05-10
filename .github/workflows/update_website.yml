@@ -42,5 +42,5 @@ jobs:
             title: "Update Website"
             branch: final-website
             commit-message: "Update website"
-            delete-branch: true
+            delete-branch: false
 
