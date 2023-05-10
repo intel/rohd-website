@@ -43,7 +43,7 @@ jobs:
         with:
             title: "Update Website"
             branch: staging
-            base: rohd-website
+            base: deploy-website
             commit-message: "Update website"
             delete-branch: true
 
