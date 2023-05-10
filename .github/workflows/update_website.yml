@@ -42,8 +42,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             title: "Update Website"
-            branch: deploy-website
-            base: staging
+            branch: staging
+            base: rohd-website
             commit-message: "Update website"
             delete-branch: true
 
