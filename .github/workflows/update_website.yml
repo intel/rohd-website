@@ -16,13 +16,6 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3
 
-      - name: Create staging branch
-        uses: peterjgrainger/action-create-branch@v2.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: 'staging'
-
       - name: update submodule
         run: |
             git submodule update --init --recursive
@@ -57,16 +50,17 @@ jobs:
           ls src
 
       - name: Commit changes and push to staging branch
-        run: |
-          git config --global user.email "bot@rohd.com"
-          git config --global user.name "ROHD Bot"
-          git status
+        uses: EndBug/add-and-commit@v9
+        with:
+          new_branch: staging
+
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
         with:
             title: "Update Website"
             branch: final-website
+            base: staging
             commit-message: "Update website"
             delete-branch: false
 
