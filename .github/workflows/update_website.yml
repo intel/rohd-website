@@ -32,9 +32,8 @@ jobs:
 
       - name: update src content
         run: |
-          root_directory=$(git rev-parse --show-toplevel)
-          src_path="$root_directory/src"
-          rohd_submodule_path="$root_directory/rohd"
+          src_path="src"
+          rohd_submodule_path="rohd"
           for directory in "$rohd_submodule_path/doc/website"/*; do
               directory_name=$(basename "$directory")
 
