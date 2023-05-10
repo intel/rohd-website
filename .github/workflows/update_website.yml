@@ -49,6 +49,16 @@ jobs:
           done
           ls src
 
+      - name: Create staging branch
+        run: |
+          git checkout -b staging
+
+      - name: Commit changes and push to staging branch
+        run: |
+          git add .
+          git commit -m "copy files from submodule to src folder"
+          git push --set-upstream origin staging
+
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
         with:
