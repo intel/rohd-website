@@ -29,17 +29,9 @@ jobs:
         with:
           use-quiet-mode: yes # output is too noisy, see https://github.com/gaurav-nelson/github-action-markdown-link-check/issues/121
           config-file: .github/configs/mlc_config.json
-    
-  deploy-website:
-    timeout-minutes: 30
-    permissions: {}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Sync ROHD docs
-        run: tool/gh_actions/update_directory.sh
+      # - name: Sync ROHD docs
+      #   run: tool/gh_actions/update_directory.sh
 
 
 

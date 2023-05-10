@@ -1,0 +1,59 @@
+name: Update Website
+on:
+  schedule:
+    - cron: "*/1 * * * *"
+
+jobs:
+  update_submodule:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: update submodule
+        run: |
+            git submodule update --init --recursive
+            git submodule update --remote rohd
+
+      - name: check for changes
+        run: |
+            cd rohd/doc/website
+            if git diff --quiet HEAD @{u}; then
+                echo "No changes in submodule."
+                exit 0
+            fi
+            cd ../../..
+      - name: clean destination directory
+        run: rm -rf src/*
+
+      - name: copy files from submodule
+        run: cp -R rohd/doc/website/. src/
+
+      - name: create pull request
+        uses: peter-evans/create-pull-request@v3.11.0
+        with:
+            title: "Update Website"
+            branch: update-website
+            commit-message: "Update website"
+            delete-branch: true
+
+      - name: approve pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v4
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                github.pulls.createReview({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: context.payload.pull_request.number,
+                    event: "APPROVE"
+                })
+
+      - name: Merge Pull Request
+        if: github.event_name == 'pull_request_review'
+        uses: peter-evans/merge-pull-request-action@v1.2.2
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            merge_method: squash 
+
