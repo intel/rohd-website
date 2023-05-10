@@ -38,7 +38,6 @@ jobs:
         with:
           new_branch: staging
 
-
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -46,5 +45,5 @@ jobs:
             branch: deploy-website
             base: staging
             commit-message: "Update website"
-            delete-branch: false
+            delete-branch: true
 
