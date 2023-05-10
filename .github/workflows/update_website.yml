@@ -23,7 +23,7 @@ jobs:
 
       - name: check for changes
         run: |
-            cd rohd/doc/website
+            cd rohd/doc/user_guide
             if git diff --quiet HEAD @{u}; then
                 echo "No changes in submodule."
                 exit 0
