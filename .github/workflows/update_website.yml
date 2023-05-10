@@ -55,6 +55,8 @@ jobs:
 
       - name: Commit changes and push to staging branch
         run: |
+          git config --global user.email "bot@rohd.com"
+          git config --global user.name "ROHD Bot"
           git add .
           git commit -m "copy files from submodule to src folder"
           git push --set-upstream origin staging
