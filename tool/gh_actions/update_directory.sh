@@ -16,8 +16,8 @@ root_directory=$(git rev-parse --show-toplevel)
 src_path="$root_directory/src"
 rohd_submodule_path="$root_directory/rohd"
 
-git submodule update --init --recursive
-git submodule update --remote rohd
+# git submodule update --init --recursive
+# git submodule update --remote rohd
 
 for directory in "$rohd_submodule_path/doc/website"/*; do
     directory_name=$(basename "$directory")
@@ -26,10 +26,11 @@ for directory in "$rohd_submodule_path/doc/website"/*; do
         echo "directory exist, removing the old directory before copy."
         rm -r "$src_path/$directory_name"
     else
-        # Create a symlink in the src directory
         echo "directory not exist, proceed to copy."
     fi
 
     cp -r "$directory" "$src_path/$directory_name"
 done
+
+git status
 

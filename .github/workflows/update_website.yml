@@ -31,24 +31,7 @@ jobs:
             cd ../../..
 
       - name: update src content
-        run: |
-          src_path="src"
-          rohd_submodule_path="rohd"
-          for directory in "$rohd_submodule_path/doc/website"/*; do
-              directory_name=$(basename "$directory")
-              echo "In "$directory_name
-
-              if [ -d "$src_path/$directory_name" ]; then
-                  echo "directory exist, removing the old directory before copy."
-                  rm -r "$src_path/$directory_name"
-              else
-                  echo "directory not exist, proceed to copy."
-              fi
-
-              cp -r "$directory" "$src_path/$directory_name"
-          done
-          ls src
-          git status
+        run: tool/gh_actions/update_directory.sh
 
       - name: Commit changes and push to staging branch
         uses: EndBug/add-and-commit@v9
