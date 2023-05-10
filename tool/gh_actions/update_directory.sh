@@ -13,7 +13,7 @@ set -euo pipefail
 
 root_directory=$(git rev-parse --show-toplevel)
 
-src_path="$root_directory/src"
+src_path="$root_directory/docs"
 rohd_submodule_path="$root_directory/rohd"
 
 # git submodule update --init --recursive

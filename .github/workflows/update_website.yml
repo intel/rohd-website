@@ -40,7 +40,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             title: "Update Website"
-            # branch: staging
             base: deploy-website
             commit-message: "Update website"
             delete-branch: false
