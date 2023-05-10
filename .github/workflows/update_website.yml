@@ -30,6 +30,9 @@ jobs:
             fi
             cd ../../..
 
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        
       - name: update src content
         run: tool/gh_actions/update_directory.sh
 

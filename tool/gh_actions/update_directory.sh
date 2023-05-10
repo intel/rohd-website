@@ -20,7 +20,9 @@ rohd_submodule_path="$root_directory/rohd"
 # git submodule update --remote rohd
 
 # generate documentation
+cd rohd
 dart doc -o doc/user_guide/api
+cd ..
 
 for directory in "$rohd_submodule_path/doc/user_guide"/*; do
     directory_name=$(basename "$directory")
