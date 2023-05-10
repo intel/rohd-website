@@ -1,5 +1,8 @@
 name: Update Website
 on:
+  push:
+    branches:
+      - 'rohd-website'
   schedule:
     - cron: '3 * * * *'
   workflow_dispatch:
