@@ -16,6 +16,10 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3
 
+      - name: Create staging branch
+        run: |
+          git checkout -b staging
+
       - name: update submodule
         run: |
             git submodule update --init --recursive
@@ -48,10 +52,6 @@ jobs:
               cp -r "$directory" "$src_path/$directory_name"
           done
           ls src
-
-      - name: Create staging branch
-        run: |
-          git checkout -b staging
 
       - name: Commit changes and push to staging branch
         run: |
