@@ -37,10 +37,10 @@ jobs:
         run: cp -R rohd/doc/website/. src/
 
       - name: create pull request
-        uses: peter-evans/create-pull-request@v3.11.0
+        uses: peter-evans/create-pull-request@v5
         with:
             title: "Update Website"
-            branch: update-website
+            branch: rohd-website
             commit-message: "Update website"
             delete-branch: true
 
