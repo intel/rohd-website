@@ -1,7 +1,10 @@
 name: Update Website
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/1 * * * *"
+
+
 
 jobs:
   update_submodule:
