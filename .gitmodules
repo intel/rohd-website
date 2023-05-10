@@ -1,4 +1,4 @@
 [submodule "web"]
 	path = rohd
-	url = https://github.com/quekyj/rohd
-	branch = website
+	url = https://github.com/intel/rohd
+	branch = main
