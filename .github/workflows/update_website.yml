@@ -33,10 +33,10 @@ jobs:
       - name: update src content
         run: tool/gh_actions/update_directory.sh
 
-      - name: Commit changes and push to staging branch
-        uses: EndBug/add-and-commit@v9
-        with:
-          new_branch: staging
+      # - name: Commit changes and push to staging branch
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     new_branch: staging
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
@@ -45,5 +45,5 @@ jobs:
             branch: staging
             base: deploy-website
             commit-message: "Update website"
-            delete-branch: true
+            delete-branch: false
 
