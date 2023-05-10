@@ -19,15 +19,6 @@ jobs:
             git submodule update --init --recursive
             git submodule update --remote rohd
 
-      - name: check for changes
-        run: |
-            cd rohd/doc/user_guide
-            if git diff --quiet HEAD @{u}; then
-                echo "No changes in submodule."
-                exit 0
-            fi
-            cd ../../..
-
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
         
