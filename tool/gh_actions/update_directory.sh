@@ -19,7 +19,10 @@ rohd_submodule_path="$root_directory/rohd"
 # git submodule update --init --recursive
 # git submodule update --remote rohd
 
-for directory in "$rohd_submodule_path/doc/website"/*; do
+# generate documentation
+dart doc -o doc/user_guide/api
+
+for directory in "$rohd_submodule_path/doc/user_guide"/*; do
     directory_name=$(basename "$directory")
 
     if [ -d "$src_path/$directory_name" ]; then
@@ -32,5 +35,4 @@ for directory in "$rohd_submodule_path/doc/website"/*; do
     cp -r "$directory" "$src_path/$directory_name"
 done
 
-git status
 
