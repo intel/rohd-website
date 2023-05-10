@@ -1,13 +1,11 @@
-name: Update Website
+name: update website
 on:
   push:
     branches:
-      - 'rohd-website'
+      - 'main'
   schedule:
-    - cron: '3 * * * *'
+    - cron: '5 8 * * 0' # Evry Sunday 8.05
   workflow_dispatch:
-    
-
 
 jobs:
   update_submodule:

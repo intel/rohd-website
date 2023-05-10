@@ -16,10 +16,6 @@ root_directory=$(git rev-parse --show-toplevel)
 src_path="$root_directory/docs"
 rohd_submodule_path="$root_directory/rohd"
 
-# git submodule update --init --recursive
-# git submodule update --remote rohd
-
-# generate documentation
 cd rohd
 dart doc -o doc/user_guide/api
 cd ..
