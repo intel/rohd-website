@@ -26,6 +26,7 @@ jobs:
                 exit 0
             fi
             cd ../../..
+
       - name: clean destination directory
         run: rm -rf src/*
 
@@ -52,10 +53,4 @@ jobs:
                     pull_number: context.payload.pull_request.number,
                     event: "APPROVE"
                 })
-
-      - name: Merge Pull Request
-        if: github.event_name == 'pull_request_review'
-        uses: octokit/action-pull-request-merge@v1
-        with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
 
