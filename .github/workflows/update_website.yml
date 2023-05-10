@@ -55,8 +55,7 @@ jobs:
 
       - name: Merge Pull Request
         if: github.event_name == 'pull_request_review'
-        uses: peter-evans/merge-pull-request-action@v1.2.2
+        uses: octokit/action-pull-request-merge@v1
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
-            merge_method: squash 
 
