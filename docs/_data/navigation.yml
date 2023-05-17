@@ -5,7 +5,7 @@ main:
   - title: "Docs"
     url: /docs/sample-example/
   - title: "API"
-    url: "https://intel.github.io/rohd-website/api"
+    url: "https://intel.github.io/rohd/"
 
 # get started links
 get-started:
