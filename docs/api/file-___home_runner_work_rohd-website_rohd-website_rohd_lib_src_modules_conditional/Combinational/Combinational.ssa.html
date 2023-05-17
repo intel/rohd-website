@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the Combinational.ssa constructor from Class Combinational from the conditional library, for the Dart programming language.">
+  <title>Combinational.ssa constructor - Combinational - conditional library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">rohd</a></li>
+    <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional-library.html">conditional</a></li>
+    <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a></li>
+    <li class="self-crumb">Combinational.ssa factory constructor</li>
+  </ol>
+  <div class="self-name">Combinational.ssa</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-constructor">Combinational.ssa</span> constructor 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+      <span class="name ">Combinational.ssa</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="ssa-param-construct"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.0/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Conditional-class.html">Conditional</a></span>&gt;</span></span> <span class="parameter-name">construct</span>(<ol class="parameter-list"><li><span class="parameter" id="param-s"><span class="type-annotation">dynamic</span> <span class="parameter-name">s</span>(<ol class="parameter-list"><li><span class="parameter" id="param-signal"><span class="type-annotation">dynamic</span> <span class="parameter-name">signal</span></span></li>
+</ol>
+)</span></li>
+</ol>
+), </span></li>
+<li><span class="parameter" id="ssa-param-name">{<span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.0/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span> = <span class="default-value">&#39;combinational_ssa&#39;</span>}</span></li>
+</ol>)
+    </section>
+
+    
+<section class="desc markdown">
+  <p>Constructs a new <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a> where <code>construct</code> generates a list of
+<a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Conditional-class.html">Conditional</a>s which use the provided remapping function to enable
+a "static single-asssignment" (SSA) form for procedural execution. The
+Wikipedia article has a good explanation:
+https://en.wikipedia.org/wiki/Static_single-assignment_form</p>
+<p>In SystemVerilog, an <code>always_comb</code> block can easily produce
+non-synthesizable or ambiguous design blocks which can lead to subtle
+bugs and mismatches between simulation and synthesis.  Since
+<a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a> maps directly to an <code>always_comb</code> block, it is also
+susceptible to these types of issues in the path to synthesis.</p>
+<p>A large class of  these issues can be prevented by avoiding a "write after
+read" scenario, where a signal is assigned a value after that value would
+have had an impact on prior procedural assignment in that same
+<a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a> execution.</p>
+<p><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/Combinational.ssa.html">Combinational.ssa</a> remaps signals such that signals are only "written"
+once.</p>
+<p>The below example shows a simple use case:</p>
+<pre class="language-dart"><code class="language-dart">Combinational.ssa((s) =&gt; [
+  s(y) &lt; 1,
+  s(y) &lt; s(y) + 1,
+]);
+</code></pre>
+<p>Note that every variable in this case must be "initialized" before it
+can be used.</p>
+<p>Note that signals returned by the remapping function (<code>s</code>) are tied to
+this specific instance of <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a> and shouldn't be used elsewhere
+or you may see unexpected behavior.  Also note that each instance of
+signal returned by the remapping function should be used in at most
+one <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Conditional-class.html">Conditional</a> and on either the receiving or driving side, but not
+both.  These restrictions are generally easy to adhere to unless you do
+something strange.</p>
+<p>There is a construction-time performance penalty for usage of this
+roughly proportional to the size of the design feeding into this instance.
+This is because it must search for any remapped signals along the entire
+combinational and sequential path feeding into each <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Conditional-class.html">Conditional</a>.  This
+penalty is purely at generation time, not in simulation or the actual
+generated design.  For very large designs, this penalty can be
+mitigated by constructing the <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/Combinational.ssa.html">Combinational.ssa</a> before connecting
+inputs to the rest of the design, but usually the impact is so small
+that it will not be noticeable.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">factory Combinational.ssa(
+    List&lt;Conditional&gt; Function(Logic Function(Logic signal) s) construct,
+    {String name = &#39;combinational_ssa&#39;}) {
+  final context = _ssaContextCounter++;
+
+  Logic getSsa(Logic ref) =&gt; _SsaLogic(ref, context);
+
+  final conditionals = construct(getSsa);
+
+  _processSsa(conditionals, context: context);
+
+  return Combinational(conditionals, name: name);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">rohd</a></li>
+  <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional-library.html">conditional</a></li>
+  <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html">Combinational</a></li>
+  <li class="self-crumb">Combinational.ssa factory constructor</li>
+</ol>
+
+
+    <h5>Combinational class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html#constructors">Constructors</a></li>
+          <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/Combinational.html">Combinational</a></li>
+          <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/Combinational.ssa.html">ssa</a></li>
+
+
+        <li class="section-title inherited">
+          <a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/conditionals.html">conditionals</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.0/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.0/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+        <li class="section-title"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/alwaysVerilogStatement.html">alwaysVerilogStatement</a></li>
+          <li><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/assignOperator.html">assignOperator</a></li>
+          <li class="inherited"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational/instantiationVerilog.html">instantiationVerilog</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.0/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.0/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../../file-___home_runner_work_rohd-website_rohd-website_rohd_lib_src_modules_conditional/Combinational-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.0/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    rohd
+      0.4.2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
