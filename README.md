@@ -18,6 +18,10 @@ The main ROHD ecosystem includes:
 
 Generally, this website repository does *not* directly contain documentation covering the entire ecosystem.  Rather, it hosts general website infrastructure and references documentation content from the other repositories.  This repo can host some additional documentation that isn't directly related to the APIs of individual projects (e.g. meeting minutes).
 
+# Acknowledgement
+
+ROHD Logo is created by public contributor under name *Ruby Artstyle*.
+
 ----------------
 2023 March 31  
 Author: Max Korbel <<max.korbel@intel.com>>
