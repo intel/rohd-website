@@ -50,3 +50,9 @@ defaults:
       layout: single
       sidebar:
         nav: "get-started"
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-1NDPL009FG"
+    anonymize_ip: false # default

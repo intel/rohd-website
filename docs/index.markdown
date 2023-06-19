@@ -8,7 +8,7 @@ header:
     - label: "<i class='fas fa-download'></i> Install now"
       url: "/get-started/setup/"
 excerpt: >
-  The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. ROHD enables you to build and traverse a graph of connectivity between module objects using unrestricted software. <br />
+  The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. <br />
   <small><a href="https://github.com/intel/rohd/releases">Latest release v0.4.2</a></small>
 feature_row:
   - image_path: /assets/images/mm-customizable-feature.png
