@@ -5,7 +5,7 @@ main:
   - title: "Docs"
     url: /docs/sample-example/
   - title: "API"
-    url: "https://intel.github.io/rohd/"
+    url: "https://intel.github.io/rohd/rohd/rohd-library.html"
 
 # get started links
 get-started:
@@ -15,6 +15,8 @@ get-started:
         url: /get-started/overview/
       - title: "Setup"
         url: /get-started/setup/
+      - title: "Development Recommendations"
+        url: /get-started/development-recommendations/
 
 # documentation links
 docs:
@@ -56,7 +58,13 @@ docs:
         url: /docs/external-modules/
       - title: "Unit Testing"
         url: /docs/unit-test/
-  - title: "Contributing"
+      - title: "Logic Structures"
+        url: /docs/logic-structures/
+      - title: "Logic Arrays"
+        url: /docs/logic-arrays/
+  - title: "Additional Information"
     children:
       - title: "Contributing"
         url: /docs/contributing/
+      - title: "Comparison with Alternatives"
+        url: /docs/comparison-with-alternatives/
