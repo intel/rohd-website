@@ -55,17 +55,3 @@ defaults:
       layout: single
       sidebar:
         nav: "get-started"
-  - scope:
-      path: ""
-      type: blogs
-    values:
-      layout: single
-      sidebar:
-        nav: "blogs"
-  - scope:
-      path: ""
-      type: tutorials
-    values:
-      layout: single
-      sidebar:
-        nav: "tutorials"
