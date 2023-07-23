@@ -32,12 +32,6 @@ collections:
   get-started:
     output: true
     permalink: /:collection/path/
-  blogs:
-    output: true
-    permalink: /:collection/path/
-  tutorials:
-    output: true
-    permalink: /:collection/path/
 
 # Defaults
 defaults:
