@@ -35,6 +35,9 @@ collections:
   blogs:
     output: true
     permalink: /:collection/path/
+  tutorials:
+    output: true
+    permalink: /:collection/path/
 
 # Defaults
 defaults:
@@ -59,3 +62,10 @@ defaults:
       layout: single
       sidebar:
         nav: "blogs"
+  - scope:
+      path: ""
+      type: tutorials
+    values:
+      layout: single
+      sidebar:
+        nav: "tutorials"

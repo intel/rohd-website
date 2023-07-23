@@ -6,6 +6,8 @@ main:
     url: /docs/sample-example/
   - title: "Blog"
     url: /blogs/carry-save-multiplier/
+  - title: "Tutorials"
+    url: /tutorials/chapter-1/
   - title: "API"
     url: "https://intel.github.io/rohd/"
 
@@ -17,6 +19,11 @@ get-started:
         url: /get-started/overview/
       - title: "Setup"
         url: /get-started/setup/
+
+# tutorials link
+tutorials:
+  - title: "Tutorials"
+    url: /tutorials/chapter-1/
 
 # blogs links
 blogs:

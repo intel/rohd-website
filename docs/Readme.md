@@ -1,0 +1,9 @@
+# Tips
+
+## TO Add a new section for navigation
+
+edit:
+
+1. ``_data/navigation.yml``
+2. ``_config.yml``
+3. Add gitignore on the directory ``.gitignore``, since we are going to pull this from the system
