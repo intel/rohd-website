@@ -4,6 +4,8 @@ main:
     url: /get-started/overview/
   - title: "Docs"
     url: /docs/sample-example/
+  - title: "Tutorials"
+    url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
   - title: "API"
     url: "https://intel.github.io/rohd/"
 
