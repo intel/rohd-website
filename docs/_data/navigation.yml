@@ -8,6 +8,8 @@ main:
     url: /docs/sample-example/
   - title: "API Docs"
     url: "https://intel.github.io/rohd/rohd/rohd-library.html"
+  - title: "Tutorials"
+    url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
 
 # get started links
 get-started:
