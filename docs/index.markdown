@@ -7,6 +7,8 @@ header:
   actions:
     - label: "<i class='fas fa-download'></i> Install now"
       url: "/get-started/setup/"
+    - label: "<i class="fa-solid fa-cloud"></i> Try it in-browser"
+      url: "https://dartpad.dev/?id=375e800a9d0bd402c9bfa5ebe2210c40"
 excerpt: >
   The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. <br />
   <small><a href="https://github.com/intel/rohd/releases">Latest release v0.4.2</a></small>

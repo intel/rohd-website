@@ -2,9 +2,11 @@
 main:
   - title: "Get Started"
     url: /get-started/overview/
-  - title: "Docs"
+  - title: "Tutorials"
+    url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
+  - title: "User Guide"
     url: /docs/sample-example/
-  - title: "API"
+  - title: "API Docs"
     url: "https://intel.github.io/rohd/rohd/rohd-library.html"
 
 # get started links
