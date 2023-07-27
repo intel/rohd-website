@@ -28,6 +28,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             title: "Update submodule content"
+            branch: create-pull-request/patch_submodule_content
             base: deploy-website
             commit-message: "Update submodule content"
             delete-branch: false
@@ -44,6 +45,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             title: "Update main content"
+            branch: create-pull-request/patch_main_content
             base: deploy-website
             commit-message: "Update main content"
             delete-branch: false
