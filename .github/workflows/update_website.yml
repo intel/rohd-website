@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: deploy-website
 
       - name: update submodule
         run: |
@@ -25,8 +27,22 @@ jobs:
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
         with:
-            title: "Update Website"
+            title: "Update submodule content"
             base: deploy-website
-            commit-message: "Update website"
+            commit-message: "Update submodule content"
             delete-branch: true
 
+  update_content:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: create pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            title: "Update main content"
+            commit-message: "Update main content"
+            delete-branch: true
