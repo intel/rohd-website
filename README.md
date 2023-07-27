@@ -23,7 +23,7 @@ Generally, this website repository does *not* directly contain documentation cov
 
 ## Acknowledgement
 
-ROHD Logo is created by public contributor under name *Ruby Artstyle*.
+The ROHD Logo is created by a public contributor under the name *Ruby Artstyle*.
 
 ----------------
 

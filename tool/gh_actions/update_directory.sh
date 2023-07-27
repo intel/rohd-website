@@ -23,7 +23,7 @@ for directory in "$rohd_submodule_path/doc/user_guide"/*; do
     directory_name=$(basename "$directory")
 
     if [ -d "$src_path/$directory_name" ]; then
-        echo "directory exist, removing the old directory before copy."
+        echo "directory exists: $src_path/$directory_name, removing the old directory before copy."
         rm -r "$src_path/$directory_name"
     else
         echo "directory not exist, proceed to copy."

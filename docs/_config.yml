@@ -31,7 +31,13 @@ collections:
     permalink: /:collection/:path/
   get-started:
     output: true
-    permalink: /:collection/path/
+    permalink: /:collection/:path/
+  blog:
+    output: true
+    permalink: /:collection/:path/
+  forum:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -49,6 +55,20 @@ defaults:
       layout: single
       sidebar:
         nav: "get-started"
+  - scope:
+      path: ""
+      type: blog
+    values:
+      layout: single
+      sidebar:
+        nav: "blog"
+  - scope:
+      path: ""
+      type: forum
+    values:
+      layout: single
+      sidebar:
+        nav: "forum"
 
 analytics:
   provider: "google-gtag"

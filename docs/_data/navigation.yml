@@ -2,14 +2,30 @@
 main:
   - title: "Get Started"
     url: /get-started/overview/
-  - title: "Tutorials"
-    url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
   - title: "User Guide"
     url: /docs/sample-example/
-  - title: "API Docs"
-    url: "https://intel.github.io/rohd/rohd/rohd-library.html"
   - title: "Tutorials"
     url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
+  - title: "API Docs"
+    url: "https://intel.github.io/rohd/rohd/rohd-library.html"
+  - title: "Forum"
+    url: "/forum/rohd-forum/"
+  - title: "Blog"
+    url: "/blog/blog-intro/"
+
+blog:
+  - title: "Blog"
+    children:
+      - title: "Introducing the ROHD Blog"
+        url: /blog/blog-intro/
+
+forum:
+  - title: "ROHD Forum"
+    children:
+      - title: "ROHD Forum"
+        url: /forum/rohd-forum/
+      - title: "ROHD Forum Agenda & Minutes"
+        url: /forum/rohd-forum-minutes/
 
 # get started links
 get-started:

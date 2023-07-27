@@ -1,6 +1,6 @@
 ## Tutorials
 
-## TO Add a new section for navigation
+## To add a new section for navigation
 
 You are going to need to modified the files above to create a new changes such as delete section, add a new section. However, if you just need to do a simple redirect, you can just modified ``_data/navigation.yml``.
 

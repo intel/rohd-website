@@ -31,7 +31,7 @@ You can access the discussions area here: <https://github.com/intel/rohd-website
 
 ### Meetings in the ROHD Forum
 
-The [ROHD Forum](https://github.com/intel/rohd/wiki/ROHD-Forum) is a periodic virtual meeting for developers and users of ROHD that anyone can join.  Feel free to join the call!
+The [ROHD Forum](https://intel.github.io/rohd-website/forum/rohd-forum/) is a periodic virtual meeting for developers and users of ROHD that anyone can join.  Feel free to join the call!
 
 ## Getting Started
 
