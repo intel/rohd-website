@@ -18,9 +18,6 @@ jobs:
         run: |
             git submodule update --init --recursive
             git submodule update --remote rohd
-
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
         
       - name: update src content
         run: tool/gh_actions/update_directory.sh
@@ -31,5 +28,5 @@ jobs:
             title: "Update Website"
             base: deploy-website
             commit-message: "Update website"
-            delete-branch: false
+            delete-branch: true
 

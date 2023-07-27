@@ -290,4 +290,3 @@ toc: true
     - Chisel comes with many examples, but the language doesn't feel nice
   - Tutorials
     - Not just walk through in meeting, but something generated which could be used outside of the meeting
- 

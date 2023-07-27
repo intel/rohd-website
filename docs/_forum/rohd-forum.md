@@ -10,7 +10,6 @@ The ROHD Forum is a public periodic meeting for users and developers to discuss 
 
 See agendas and minutes [here]({{ site.baseurl }}{% link _forum/rohd-forum-minutes.md %}).
 
-
 ## Joining the Meeting
 
 The meeting is hosted on a Microsoft Teams meeting.  You can join via Microsoft Teams or on the phone using the below instructions:
