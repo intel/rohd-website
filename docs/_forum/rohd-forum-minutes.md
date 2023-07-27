@@ -225,7 +225,7 @@ toc: true
   - Initially, focus on synchronous state machines, with clock provided to the FSM
   - Definition of states and actions
     - Parameterize so that enums can be used to declare states up front
-  - Experimented with what a ROHD API could look like [here](2022_01_05/fsm_experiments.dart)
+  - Experimented with what a ROHD API could look like
 - Examples and tutorials (did not have time to discuss)
   - What types of examples and tutorials would be most valuable for those getting started with ROHD?
   - Review examples from other options like Chisel and cocotb.
