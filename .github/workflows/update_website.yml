@@ -44,6 +44,7 @@ jobs:
       - name: create pull request
         uses: devops-infra/action-pull-request@v0.5.5
         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
             title: "Update main content"
             source_branch: main
             target_branch: deploy-website
