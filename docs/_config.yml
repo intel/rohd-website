@@ -7,7 +7,7 @@ title: ROHD
 title_separator: "-"
 # subtitle: "Framework"
 email: "yao.jing.quek@intel.com"
-description: "The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. ROHD enables you to build and traverse a graph of connectivity between module objects using unrestricted software."
+description: "The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language."
 url: "https://intel.github.io/rohd-website" # the base hostname & protocol for your site, e.g. http://example.com
 baseurl: "/rohd-website/" # the subpath of your site, e.g. /blog
 repository: "intel/rohd"
@@ -31,7 +31,13 @@ collections:
     permalink: /:collection/:path/
   get-started:
     output: true
-    permalink: /:collection/path/
+    permalink: /:collection/:path/
+  blog:
+    output: true
+    permalink: /:collection/:path/
+  forum:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -49,3 +55,23 @@ defaults:
       layout: single
       sidebar:
         nav: "get-started"
+  - scope:
+      path: ""
+      type: blog
+    values:
+      layout: single
+      sidebar:
+        nav: "blog"
+  - scope:
+      path: ""
+      type: forum
+    values:
+      layout: single
+      sidebar:
+        nav: "forum"
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-1NDPL009FG"
+    anonymize_ip: false # default

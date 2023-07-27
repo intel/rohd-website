@@ -8,6 +8,18 @@ search: false
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
 
+.page__content {
+  font-size: 0.8rem;
+}
+
+.feature__item {
+  font-size: 1rem;
+}
+
+ul li, ol li {
+  margin-bottom: 0.1em;
+}
+
 // This changes the code box
 .highlight {
   margin: 0;

@@ -13,14 +13,11 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v3
-
+     
       - name: update submodule
         run: |
             git submodule update --init --recursive
             git submodule update --remote rohd
-
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
         
       - name: update src content
         run: tool/gh_actions/update_directory.sh
@@ -28,8 +25,23 @@ jobs:
       - name: create pull request
         uses: peter-evans/create-pull-request@v5
         with:
-            title: "Update Website"
+            title: "Update submodule content"
+            branch: create-pull-request/patch_submodule_content
             base: deploy-website
-            commit-message: "Update website"
+            commit-message: "Update submodule content"
             delete-branch: false
 
+  update_content:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      # Merge whatever is on main into deploy-website to keep it sync'd
+      - name: Merge main
+        uses: devmasx/merge-branch@1.4.0
+        with:
+          type: now
+          from_branch: main
+          target_branch: deploy-website
+          github_token: ${{ secrets.GITHUB_TOKEN }}
