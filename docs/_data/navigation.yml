@@ -11,13 +11,7 @@ main:
   - title: "Forum"
     url: "/forum/rohd-forum/"
   - title: "Blog"
-    url: "/blog/blog-intro/"
-
-blog:
-  - title: "Blog"
-    children:
-      - title: "Introducing the ROHD Blog"
-        url: /blog/blog-intro/
+    url: "/blog/"
 
 forum:
   - title: "ROHD Forum"
