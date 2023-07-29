@@ -1,0 +1,11 @@
+Max Korbel:
+  name: "Max Korbel"
+  bio: "Hardware Engineer at Intel"
+  avatar: "assets/images/authors/max_korbel_avatar.jpg"
+  links:
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope-square"
+      url: "mailto:max.korbel@intel.com"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/maxkorbel"
