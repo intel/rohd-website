@@ -24,6 +24,9 @@ lunr:
 plugins:
   - jekyll-include-cache
 
+include:
+  - _pages
+
 # Collections
 collections:
   docs:
@@ -55,11 +58,23 @@ defaults:
       layout: single
       sidebar:
         nav: "get-started"
+    
+  # _pages
+  - scope:
+      path: "_pages"
+      type: pages
+    values:
+      layout: single
+  
   - scope:
       path: ""
       type: blog
     values:
       layout: single
+      toc: false
+      author_profile: true
+      show_date: true
+      read_time: true
       sidebar:
         nav: "blog"
   - scope:
