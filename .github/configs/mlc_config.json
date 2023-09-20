@@ -2,6 +2,9 @@
   "ignorePatterns": [
     {
       "pattern": ".*59dac.conference-program.com.*"
+    },
+    {
+      "pattern":"^https://www.intel.com/content/www/us/en/security-center/vulnerability-handling-guidelines.html$"
     }
   ]
 }
