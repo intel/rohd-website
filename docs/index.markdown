@@ -10,7 +10,7 @@ header:
     - label: "<i class='fas fa-cloud'></i> Try it in-browser"
       url: "https://dartpad.dev/?id=375e800a9d0bd402c9bfa5ebe2210c40"
 excerpt: >
-  The Rapid Open Hardware Development (ROHD) framework is a framework for describing and verifying hardware in the Dart programming language. <br />
+  A better way to develop hardware. <br />
   <small><a href="https://github.com/intel/rohd/releases">Latest release</a></small>
 feature_row:
   - image_path: assets/images/adobestock-312879613.jpeg
