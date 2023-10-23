@@ -15,9 +15,17 @@ toc: true
 - Growing contribution
 - Producing video tutorials
 
-### September 6, 2023 @ 8AM Pacific Time
+### November 1, 2023 @ 8AM Pacific Time
 
 - Agenda TBD
+
+### October 4, 2023 @ 8AM Pacific Time
+
+- Opens
+
+### September 6, 2023 @ 8AM Pacific Time
+
+- Opens
 
 ### August 2, 2023 @ 8AM Pacific Time
 
