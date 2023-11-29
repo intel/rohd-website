@@ -76,6 +76,8 @@ docs:
         url: /docs/logic-structures/
       - title: "Logic Arrays"
         url: /docs/logic-arrays/
+      - title: "Generating Outputs"
+        url: /docs/generation/
   - title: "Additional Information"
     children:
       - title: "Contributing"
