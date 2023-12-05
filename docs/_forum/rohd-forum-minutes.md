@@ -15,9 +15,17 @@ toc: true
 - Growing contribution
 - Producing video tutorials
 
+### December 6, 2023 @ 4PM Pacific Time
+
+- Agenda
+  - First meeting on the ROHD Discord server as an event! Join the server here: <https://discord.gg/DfD2RuAzzh>
+  - Opens
+  - New features in ROHD
+  - Configuration app in ROHD-HCL
+
 ### November 1, 2023 @ 8AM Pacific Time
 
-- Agenda TBD
+- Opens
 
 ### October 4, 2023 @ 8AM Pacific Time
 
