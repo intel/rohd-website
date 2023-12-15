@@ -22,7 +22,7 @@ always_comb begin
 end
 ```
 
-This code, as you might guess, sets `calculated_value` to 5, unless `some_condition` is high, in which case it sets `calculated_value` to 3. The use of blocking assignments (as is recommended in `always_comb` blocks) makes these statements execute from top to bottom.  While it's easy to see how a digital circuit (e.g. a mux) could do the same thing functionally, one can imagine that you can do some fancier things whose behavior is more easily understood as procedural execution like this.
+This code, as you might guess, sets `calculated_value` to 5, unless `some_condition` is high, in which case it sets `calculated_value` to 3. The use of blocking assignments (as is recommended in `always_comb` blocks) makes these statements execute from top to bottom.  While it's easy to see how a digital circuit (e.g. a mux) could do the same thing functionally, one can imagine that you can do some fancier things whose behavior is more easily understood as procedural steps like this.
 
 However, there's something weird here. The `calculated_value` signal is _not_ a software variable; it's a hardware signal!  How does it have multiple values during this "execution", and what do things that depend on `calculated_value` "see" when using it?  It turns out there's all kinds of weird behavior from a simulation perspective, as well as more serious issues of simulation/synthesis mismatch and unexpected behavior around `always_comb` blocks depending on how you write them.
 
@@ -50,7 +50,7 @@ assign b = a & mask;
 
 And you'd (probably) be right! It turns out that most simulation _and_ synthesis tools would end up agreeing with you.
 
-However, some lint tools will flag this `always_comb` block for what's called a "write after read" violation, even though this is perfectly legal SystemVerilog and will synthesize and simulate as you expect (probably).  The reason is that he value of `mask` has changed after it's been used in that procedural block of code.
+However, some lint tools will flag this `always_comb` block for what's called a "write after read" violation, even though this is perfectly legal SystemVerilog and will synthesize and simulate as you expect (probably).  The reason is that the value of `mask` has changed after it's been used in that procedural block of code.
 
 Imagine we rewrite the original design like this:
 
@@ -69,26 +69,26 @@ This feels like it should execute pretty much the exact same way as the original
 Unfortunately, the SystemVerilog LRM says otherwise!  The rules we need to be aware of to understand the behavior here are:
 
 - The blocking assignments inside the `always_comb` block will execute in order relative to each other.
-- The `always_comb` block will "re-execute" to signals referenced within that block (the sensitivity list).
+- The `always_comb` block will "re-execute" when signals referenced within that block (the sensitivity list) change.
 
 There's something subtle missing here: notice that there's no requirement that the `assign` statements update at the "right" time during the `always_comb` block execution. That's right, we can "execute" these lines in pretty much any order as long as the three lines inside the `always_comb` block happen in order relative to each other.  The `assign` statements can happen whenever, including in-between lines within the `always_comb` block, but not necessarily.
 
-For example, this is a legal execution flow (and what most simulators actually end up picking):
+For example, this is a legal execution flow (and effectively what most simulators appear to end up picking):
 
-| Execution | `a` | `mask` | `b_temp` | `a_masked` | `b` |
-|---------|---|------|--------|----------|--|
-| `always_comb` `mask=8'hf` | `x` | `8'hf` | `x` | `x` | `x` |
+| Execution Order | `a` | `mask` | `b_temp` | `a_masked` | `b` | Note |
+|---------|---|------|--------|----------|--|--|
+| `always_comb` `mask=8'hf` | `x` | `8'hf` | `x` | `x` | `x` | The `always_comb` executes once at the beignning. |
 | `always_comb` `b_temp = a_masked` |`x` | `8'hf` | `x` | `x` | `x` |
-| `always_comb` `mask=8'h0` | `x` | `8'h0` | `x` | `x` | `x` |
-| Testbench pokes `a = 8'hff` | `8'hff` | `8'h0` | `x` | `x` | `x` |
-| `assign a_masked = a & mask` <br/> retriggers always_comb | `8'hff` | `8'h0` | `x` | `8'h0` | `x` |
+| `always_comb` `mask=8'h0` | `x` | `8'h0` | `x` | `x` | `x` |  |
+| Testbench pokes `a = 8'hff` | `8'hff` | `8'h0` | `x` | `x` | `x` | Suppose a test exists to drive this. |
+| `assign a_masked = a & mask` | `8'hff` | `8'h0` | `x` | `8'h0` | `x` | `a_masked` is in the sensitivity list of the `always_comb` and retriggers it. |
 | `always_comb` `mask=8'hf` | `8'hff` | `8'hf` | `x` | `8'h0` | `x` |
 | `always_comb` `b_temp = a_masked` | `8'hff` | `8'hf` | `8'h0` | `8'h0` | `x` |
 | `always_comb` `mask=8'h0` | `8'hff` | `8'h0` |  `8'h0` | `8'h0` | `x` |
 | `assign b = b_temp` | `8'hff` | `8'h0` |  `8'h0` | `8'h0` | `8'h0` |
 |
 
-Most vendors try really hard to make simulation and synthesis behavior match exactly (understandably), so this is how it ends up synthesizing as well:
+Now we end up with `b` getting 0 instead!  Most vendors try really hard to make simulation and synthesis behavior match exactly (understandably), so this is how it ends up synthesizing as well:
 
 ```SystemVerilog
 assign b = 8'h0;
@@ -171,7 +171,7 @@ While these examples may seem silly and easy to avoid, there are a lot of real b
 
 The vendors and open source tools seem to have come to some implicit agreement about how things should execute (independent of the LRM restrictions) so that things are generally consistent, but it's also best practice to just obey the lint violations for "write after read". If you always avoid those lints, then you should be able to avoid these weird behaviors.
 
-In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e., used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.
+In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e., used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.  In a SystemVerilog simulator, it will pick a way to simulate and just simulate it, leaving you to find a functional issue later via lint (hopefully!).
 
 ## Loss of Usefulness
 
@@ -377,5 +377,4 @@ We're reassigning the same variable multiple times and reusing it.  Actually, ev
 
 The `always_comb` behavior discussed in this post is just one of many examples where SystemVerilog's behavior in simulation and synthesis can be confusing and unpredictable.  Lint checks are a band-aid.  These language issues harm hardware development productivity.
 
-The `Combinational.ssa` in ROHD is one of many examples where developing hardware with ROHD is stricter, safer, and more powerful.  Try it out if you haven't yet!
-
+With this SSA approach, the full benefit of easily translating a block of procedural statements into a combinational block can be achieved in a safe way.  The `Combinational.ssa` in ROHD is one of many examples where developing hardware with ROHD is stricter, safer, and more powerful.  Try it out if you haven't yet!
