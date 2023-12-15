@@ -44,7 +44,7 @@ However, there's something weird here. The `calculated_value` signal is _not_ a 
 
 ## Crazy `always_comb` behavior
 
-There's some types of logic that behave in completed unexpected ways in an `always_comb` block.
+There's some types of logic that can behave in completely unexpected ways in an `always_comb` block.
 
 ### Order of Execution & Sensitivity Madness
 
@@ -179,10 +179,121 @@ assign b = intermediate;
 endmodule : ReuseExample
 ```
 
-This time we still assign `intermediate` three times, but it's only going into a single instance of `IncrModule`.
+This time we still assign `intermediate` three times, but it's only going into a single instance of `IncrModule`.  And what's more, we're assigning it the same thing two of those times.  You may guess that since we only created _one_ incrementer, it should only synthesize _one_ and thus the result should be `b` gets `a + 1`.  But if you guessed that, you'd be wrong (for the tools tested, at least).  In both simulation and synthesis, you get two incrementers and you still get `b = a + 2`!
 
-## Loss of usefulness
+## Guarding Against "Write After Read"
+
+While these examples may seem silly and easy to avoid, there are a lot of real bugs (including ones that make it to silicon) which are caused more complex designs that are affected by this type of problem in unobvious ways.
 
 The vendors and open source tools seem to have come to some implicit agreement about how things should execute (independent of the LRM restrictions) so that things are generally consistent, but it's also best practice to just obey the lint violations for "write after read". If you always avoid those lints, then you should be able to avoid these weird behaviors.
 
-However, this is a pretty big restriction on what initially seems like a super-powerful procedural-code-to-combinational-logic abstraction!  We've practically limited what we can do to what could have also been behaviorally described with `assign` statements anyways, plus some syntactic sugar like `if`/`else` statements.
+In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e. used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.
+
+## Loss of Usefulness
+
+This is a pretty big restriction on what initially seemed like a super-powerful procedural-software-to-combinational-hardware abstraction!  We've practically limited what we can do to what could have also been behaviorally described with `assign` statements anyways, plus some bells and whistles like `if`/`else` statements.
+
+For example, we'd have to rewrite our first example like this:
+
+```SystemVerilog
+always_comb begin
+  mask = 8'hf;
+  b = a & mask;
+  mask_that_isnt_used = 8'h0;
+end
+```
+
+This also comes with additional overhead to declare extra intermediate signals any time we face a potential "write after read" issue.
+
+This also happens to break a lot of the usefulness of the [`Pipeline`](https://intel.github.io/rohd/rohd/Pipeline-class.html) abstraction in ROHD, since the whole point is that you can move around, split, and combine combinational blocks of code and have it automatically repipeline.
+
+## Static Single-Assignment (SSA) Form
+
+It would be nice if we could still write our combinational logic in a procedural way, with the tools automatically figuring out how to safely implement it.  Changing the SystemVerilog specification and all the tools that implement it would be quite difficult (or impossible).  But with ROHD, we can automate the creation and connectivity of intermediate signals to avoid "write after read" violations.
+
+It turns out that we can borrow something called [Static Single-Assignment (SSA) form](https://en.wikipedia.org/wiki/Static_single-assignment_form) from compiler design to help us.  The Wikipedia article does a pretty good job explaining it, so we won't cover it in detail here.  SSA allows us to rework procedural code such that each variable is "assigned exactly once and defined before it is used", which is exactly what we need.
+
+Let's take a look at some of our examples above to understand how we can use `Combinational.ssa` to avoid "write after read" violations.
+
+The first one can be implemented (originally) like this in ROHD:
+
+```dart
+Combinational([
+    mask < 0xf,
+    b < a & mask,
+    mask < 0,
+]);
+```
+
+With the changes in the ROHD simulator to guard against "write after read", this will fail in simulation.  If we convert this to use `Combinational.ssa`, we get:
+
+```dart
+Combinational.ssa((s) => [
+    s(mask) < 0xf,
+    b < a & s(mask),
+    s(mask) < 0,
+]);
+```
+
+Here, the type of `s` is a `Logic Function(Logic signal)`.  In english, it's a function which given a `Logic signal` will provide a different `Logic`.  This is our remapping function allowing us to write our procedural code with a single signal as reference (`mask`).  When ROHD builds the actual logic, it will swap the signal out from under us to implement SSA.  We can use the result from calling `s` anywhere we could use any other `Logic` for the purposes of generating our `Combinational`.  Let's take a look at the generated SystemVerilog from ROHD for this block:
+
+```SystemVerilog
+always_comb begin
+  mask_0 = 8'hf;
+  b = (a & mask_0);
+  mask = 8'h0;
+end
+```
+
+Note that it has automatically mapped `s(mask)` to two different "mask" signals (`mask` and `mask_0`) such that we're getting the intent of our combinational logic.  This generated code is lint free and safe from any associated simulation/synthesis mismatches.
+
+We can do something similar with one of our other examples.  Originally, 
+
+```dart
+Combinational([
+    intermediate < a,
+    intermediate < IncrModule(intermediate).result,
+    intermediate < IncrModule(intermediate).result,
+]);
+```
+
+but with SSA:
+
+```dart
+Combinational.ssa((s) => [
+    s(intermediate) < a,
+    s(intermediate) < IncrModule(s(intermediate)).result,
+    s(intermediate) < IncrModule(s(intermediate)).result,
+]);
+```
+
+which generates:
+
+```SystemVerilog
+module DuplicateExampleSsa(
+input logic [7:0] a,
+output logic [7:0] b
+);
+logic [7:0] intermediate;
+logic [7:0] result;
+logic [7:0] result_0;
+logic [7:0] toIncr;
+logic [7:0] toIncr_0;
+
+IncrModule  incr(.toIncr(toIncr),.result(result));
+IncrModule  incr_0(.toIncr(toIncr_0),.result(result_0));
+
+always_comb begin
+  toIncr = a;
+  toIncr_0 = result;
+  intermediate = result_0;
+end
+
+assign b = intermediate;
+
+endmodule : DuplicateExampleSsa
+```
+
+Again, notice that the SSA has taken care of renaming signals.  It is unambiguous what signals are feeding into which increment and what the final result `b` will be.
+
+
