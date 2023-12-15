@@ -1,25 +1,9 @@
 ---
 title: "Procedural Combinational Logic with SSA in ROHD"
 permalink: /blog/combinational-ssa/
-last_modified_at: 2023-12-14
+last_modified_at: 2023-12-15
 author: "Max Korbel"
 ---
-
-<!-- 
-Outline:
-- Background on always_comb
-- Example of some crazy behavior
-- Adding guard to fix it
-- But now we lost the always_comb benefits! (+ pipelining)
-- Add SSA, how it works 
-
-PROBLEMS:
-- scope of execution is variables referenced
-- order of execution is non-determinsitic
-
-LINT check catches
-
--->
 
 ROHD has recently gained a powerful new feature in the [`Combinational.ssa`](https://intel.github.io/rohd/rohd/Combinational/Combinational.ssa.html) constructor for `Combinational`s that allows safer implementations of equivalent `always_comb` logic in SystemVerilog.  This post discusses some of the motivations of the feature and highlights the power gained by using it.
 
@@ -205,7 +189,7 @@ end
 
 This also comes with additional overhead to declare extra intermediate signals any time we face a potential "write after read" issue.
 
-This also happens to break a lot of the usefulness of the [`Pipeline`](https://intel.github.io/rohd/rohd/Pipeline-class.html) abstraction in ROHD, since the whole point is that you can move around, split, and combine combinational blocks of code and have it automatically repipeline.
+This also happens to break a lot of the usefulness of the [`Pipeline`](https://intel.github.io/rohd/rohd/Pipeline-class.html) abstraction in ROHD, since the whole point is that you can move around, split, and combine combinational blocks of code and have it automatically repipeline.  More on this later.
 
 ## Static Single-Assignment (SSA) Form
 
@@ -214,6 +198,8 @@ It would be nice if we could still write our combinational logic in a procedural
 It turns out that we can borrow something called [Static Single-Assignment (SSA) form](https://en.wikipedia.org/wiki/Static_single-assignment_form) from compiler design to help us.  The Wikipedia article does a pretty good job explaining it, so we won't cover it in detail here.  SSA allows us to rework procedural code such that each variable is "assigned exactly once and defined before it is used", which is exactly what we need.
 
 Let's take a look at some of our examples above to understand how we can use `Combinational.ssa` to avoid "write after read" violations.
+
+### Example 1
 
 The first one can be implemented (originally) like this in ROHD:
 
@@ -225,7 +211,7 @@ Combinational([
 ]);
 ```
 
-With the changes in the ROHD simulator to guard against "write after read", this will fail in simulation.  If we convert this to use `Combinational.ssa`, we get:
+With the changes in the ROHD simulator to guard against "write after read", this will fail in simulation.  If we convert this to use `Combinational.ssa`, we can write:
 
 ```dart
 Combinational.ssa((s) => [
@@ -235,7 +221,7 @@ Combinational.ssa((s) => [
 ]);
 ```
 
-Here, the type of `s` is a `Logic Function(Logic signal)`.  In english, it's a function which given a `Logic signal` will provide a different `Logic`.  This is our remapping function allowing us to write our procedural code with a single signal as reference (`mask`).  When ROHD builds the actual logic, it will swap the signal out from under us to implement SSA.  We can use the result from calling `s` anywhere we could use any other `Logic` for the purposes of generating our `Combinational`.  Let's take a look at the generated SystemVerilog from ROHD for this block:
+Here, the type of `s` is a `Logic Function(Logic signal)`.  In English, it's a function which given a `Logic signal` will provide a different `Logic`.  This is our remapping function allowing us to write our procedural code with a single signal as reference (`mask`).  When ROHD builds the actual logic, it will swap the signal to implement SSA.  We can use the result from calling `s` anywhere we could use any other `Logic` (e.g. passed to a another `Module`) for the purposes of generating our `Combinational`.  Let's take a look at the generated SystemVerilog from ROHD for this block:
 
 ```SystemVerilog
 always_comb begin
@@ -245,9 +231,11 @@ always_comb begin
 end
 ```
 
-Note that it has automatically mapped `s(mask)` to two different "mask" signals (`mask` and `mask_0`) such that we're getting the intent of our combinational logic.  This generated code is lint free and safe from any associated simulation/synthesis mismatches.
+Note that it has automatically mapped `s(mask)` to two different "mask" signals (`mask` and `mask_0`) such that we're getting the intent of our combinational logic.  This generated code is lint clean and safe from any associated simulation/synthesis mismatches.
 
-We can do something similar with one of our other examples.  Originally, 
+### Example 2
+
+We can do something similar with one of our other examples.  Originally,
 
 ```dart
 Combinational([
@@ -255,9 +243,11 @@ Combinational([
     intermediate < IncrModule(intermediate).result,
     intermediate < IncrModule(intermediate).result,
 ]);
+
+b <= intermediate;
 ```
 
-but with SSA:
+This one will fail in simulation due to "write after read" violations.  Reimplemented with SSA:
 
 ```dart
 Combinational.ssa((s) => [
@@ -265,6 +255,8 @@ Combinational.ssa((s) => [
     s(intermediate) < IncrModule(s(intermediate)).result,
     s(intermediate) < IncrModule(s(intermediate)).result,
 ]);
+
+b <= intermediate;
 ```
 
 which generates:
@@ -294,6 +286,96 @@ assign b = intermediate;
 endmodule : DuplicateExampleSsa
 ```
 
-Again, notice that the SSA has taken care of renaming signals.  It is unambiguous what signals are feeding into which increment and what the final result `b` will be.
+Again, notice that the SSA has taken care of renaming signals.  It is unambiguous what signals are feeding into which increment and what the final result `b` will be.  The ROHD simulation will work as expected now, and the generated SystemVerilog matches the intent for simulation and synthesis.
 
+### Example 3
+
+Let's take a look at the third example as well, which only had one incrementer.  Originally in ROHD,
+
+```dart
+final inc = IncrModule(intermediate);
+
+Combinational([
+  intermediate < a,
+  intermediate < inc.result,
+  intermediate < inc.result,
+]);
+
+b <= intermediate;
+```
+
+With ssa:
+
+```dart
+final inc = IncrModule(intermediate);
+
+Combinational.ssa((s) => [
+  s(intermediate) < a,
+  s(intermediate) < inc.result,
+  s(intermediate) < inc.result,
+]);
+
+b <= intermediate;
+```
+
+Which generates:
+
+```SystemVerilog
+module ReuseExampleSsa(
+input logic [7:0] a,
+output logic [7:0] b
+);
+logic [7:0] intermediate;
+logic [7:0] intermediate_0;
+logic [7:0] intermediate_1;
+logic [7:0] result;
+
+IncrModule  incr(.toIncr(intermediate),.result(result));
+
+always_comb begin
+  intermediate_0 = a;
+  intermediate_1 = result;
+  intermediate = result;
+end
+
+assign b = intermediate;
+
+endmodule : ReuseExampleSsa
+```
+
+We have avoided the "write after read" issue here, however it now looks very clear that we have a single incrementer where the output is fed directly back into the input. In the ROHD simulation, this is a combinational loop and you'll get `x` on the affected signals. It turns out SystemVerilog simulators (again, the ones tested, at least) also will simulate this with `x` generation due to the combinational loop.
+
+## ROHD `Pipeline`s and SSA
+
+Recall that a `Pipeline` in ROHD is an abstraction that enables easy refactoring of combinational logic across stages.  A toy example is incrementing by 1 three times, once per cycle, is shown here:
+
+```dart
+Pipeline(clk, stages: [
+  (p) => [p.get(a) < p.get(a) + 1],
+  (p) => [p.get(a) < p.get(a) + 1],
+  (p) => [p.get(a) < p.get(a) + 1],
+]);
+```
+
+The `Combinational.ssa` is plugged right into the abstraction automatically (notice that `p.get` usage in `Pipeline` and `s` usage in `Combinational.ssa` look similar).
+
+We can refactor this to do them all in one cycle without rewriting any logic:
+
+```dart
+Pipeline(clk, stages: [
+  (p) => [
+        p.get(a) < p.get(a) + 1,
+        p.get(a) < p.get(a) + 1,
+        p.get(a) < p.get(a) + 1,
+      ],
+]);
+```
+
+We're reassigning the same variable multiple times and reusing it.  Actually, even with just a single increment we're already doing a "write after read".  This API takes care of using SSA to safely construct the pipeline hardware as intended.
+
+## Conclusion
+
+The `always_comb` behavior discussed in this post is just one of many examples where SystemVerilog's behavior in simulation and synthesis can be confusing and unpredictable.  Lint checks are a band-aid.  These language issues harm hardware development productivity.
+
+The `Combinational.ssa` in ROHD is one of many examples where developing hardware with ROHD is stricter, safer, and more powerful.  Try it out if you haven't yet!
 
