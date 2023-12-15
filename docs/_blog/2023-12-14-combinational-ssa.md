@@ -28,7 +28,7 @@ However, there's something weird here. The `calculated_value` signal is _not_ a 
 
 ## Crazy `always_comb` behavior
 
-There's some types of logic that can behave in completely unexpected ways in an `always_comb` block.
+There are some types of logic that can behave in completely unexpected ways in an `always_comb` block.
 
 ### Order of Execution & Sensitivity Madness
 
@@ -42,15 +42,15 @@ always_comb begin
 end
 ```
 
-We set an 8-bit mask to `0x0f`, then assign our output `b` to be &-masked by `mask`, then re-assign `mask` back to `0`.  On first glance, this looks like this logic should be exactly equivalent to this:
+We set an 8-bit mask to `0x0f`, then assign our output `b` to be &-masked by `mask`, then re-assign `mask` back to `0`.  You may think this looks like this logic should be exactly equivalent to this:
 
 ```SystemVerilog
 assign b = a & mask;
 ```
 
-And you're (probably) right! It turns out that most simulation _and_ synthesis tools will end up agreeing with you.
+And you'd (probably) be right! It turns out that most simulation _and_ synthesis tools would end up agreeing with you.
 
-However, some lint tools will flag this `always_comb` block for what's called a "write after read" violation, even though this is perfectly legal SystemVerilog, will synthesize and simulate as you expect (probably).  The reason is that he value of `mask` has changed after it's been used in that procedural block of code.
+However, some lint tools will flag this `always_comb` block for what's called a "write after read" violation, even though this is perfectly legal SystemVerilog and will synthesize and simulate as you expect (probably).  The reason is that he value of `mask` has changed after it's been used in that procedural block of code.
 
 Imagine we rewrite the original design like this:
 
@@ -64,12 +64,12 @@ assign a_masked = a & mask;
 assign b = b_temp;
 ```
 
-This feels like it should execute pretty much the exact same way as the original design.  All we've done is moved some of the logic and assignments outside of the always_comb block, and if we think about this in terms of hardware then it looks liek the same & operation should exist.
+This feels like it should execute pretty much the exact same way as the original design.  All we've done is moved some of the logic and assignments outside of the always_comb block, and if we think about this in terms of hardware then it looks like the same & operation should exist.
 
 Unfortunately, the SystemVerilog LRM says otherwise!  The rules we need to be aware of to understand the behavior here are:
 
 - The blocking assignments inside the `always_comb` block will execute in order relative to each other.
-- The `always_comb` block will "re-execute" to signals referenced within that block (the senstivity list).
+- The `always_comb` block will "re-execute" to signals referenced within that block (the sensitivity list).
 
 There's something subtle missing here: notice that there's no requirement that the `assign` statements update at the "right" time during the `always_comb` block execution. That's right, we can "execute" these lines in pretty much any order as long as the three lines inside the `always_comb` block happen in order relative to each other.  The `assign` statements can happen whenever, including in-between lines within the `always_comb` block, but not necessarily.
 
@@ -94,7 +94,7 @@ Most vendors try really hard to make simulation and synthesis behavior match exa
 assign b = 8'h0;
 ```
 
-But as mentioned, it could have executed in a lot of different ways with different results, and all of thise would have been legal according to the SystemVerilog LRM.
+But as mentioned, it could have executed in a lot of different ways with different results, any of which would have been legal according to the SystemVerilog LRM.
 
 [This issue](https://github.com/steveicarus/iverilog/issues/872) discusses a real scenario where this difference caused the same design passed through two different ROHD `Synthesizers` (the SystemVerilog one and the [CIRCT](https://circt.llvm.org/) one) to have different behavior.
 
@@ -163,7 +163,7 @@ assign b = intermediate;
 endmodule : ReuseExample
 ```
 
-This time we still assign `intermediate` three times, but it's only going into a single instance of `IncrModule`.  And what's more, we're assigning it the same thing two of those times.  You may guess that since we only created _one_ incrementer, it should only synthesize _one_ and thus the result should be `b` gets `a + 1`.  But if you guessed that, you'd be wrong (for the tools tested, at least).  In both simulation and synthesis, you get two incrementers and you still get `b = a + 2`!
+This time we still assign `intermediate` three times, but it's only going into a single instance of `IncrModule`.  And what's more, we're assigning it the same thing two of those times.  You may guess that since we only created _one_ incrementor, it should only synthesize _one_ and thus the result should be `b` gets `a + 1`.  But if you guessed that, you'd be wrong (for the tools tested, at least).  In both simulation and synthesis, you get two incrementors and you still get `b = a + 2`!
 
 ## Guarding Against "Write After Read"
 
@@ -171,7 +171,7 @@ While these examples may seem silly and easy to avoid, there are a lot of real b
 
 The vendors and open source tools seem to have come to some implicit agreement about how things should execute (independent of the LRM restrictions) so that things are generally consistent, but it's also best practice to just obey the lint violations for "write after read". If you always avoid those lints, then you should be able to avoid these weird behaviors.
 
-In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e. used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.
+In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e., used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.
 
 ## Loss of Usefulness
 
@@ -189,7 +189,7 @@ end
 
 This also comes with additional overhead to declare extra intermediate signals any time we face a potential "write after read" issue.
 
-This also happens to break a lot of the usefulness of the [`Pipeline`](https://intel.github.io/rohd/rohd/Pipeline-class.html) abstraction in ROHD, since the whole point is that you can move around, split, and combine combinational blocks of code and have it automatically repipeline.  More on this later.
+This also happens to break a lot of the usefulness of the [`Pipeline`](https://intel.github.io/rohd/rohd/Pipeline-class.html) abstraction in ROHD, since the whole point is that you can move around, split, and combine combinational blocks of code and have it automatically re-pipeline.  More on this later.
 
 ## Static Single-Assignment (SSA) Form
 
@@ -290,7 +290,7 @@ Again, notice that the SSA has taken care of renaming signals.  It is unambiguou
 
 ### Example 3
 
-Let's take a look at the third example as well, which only had one incrementer.  Originally in ROHD,
+Let's take a look at the third example as well, which only had one incrementor.  Originally in ROHD,
 
 ```dart
 final inc = IncrModule(intermediate);
@@ -343,7 +343,7 @@ assign b = intermediate;
 endmodule : ReuseExampleSsa
 ```
 
-We have avoided the "write after read" issue here, however it now looks very clear that we have a single incrementer where the output is fed directly back into the input. In the ROHD simulation, this is a combinational loop and you'll get `x` on the affected signals. It turns out SystemVerilog simulators (again, the ones tested, at least) also will simulate this with `x` generation due to the combinational loop.
+We have avoided the "write after read" issue here, however it now looks very clear that we have a single incrementor where the output is fed directly back into the input. In the ROHD simulation, this is a combinational loop and you'll get `x` on the affected signals. It turns out SystemVerilog simulators (again, the ones tested, at least) also will simulate this with `x` generation due to the combinational loop.
 
 ## ROHD `Pipeline`s and SSA
 
