@@ -1,7 +1,7 @@
 ---
 title: "Procedural Combinational Logic, SystemVerilog's `always_comb`, and SSA in ROHD"
 permalink: /blog/combinational-ssa/
-last_modified_at: 2023-12-15
+last_modified_at: 2023-12-18
 author: "Max Korbel"
 ---
 
