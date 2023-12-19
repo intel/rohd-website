@@ -9,7 +9,7 @@ ROHD has recently gained a powerful new feature in the [`Combinational.ssa`](htt
 
 ## Some background on `always_comb`
 
-The [`always_comb`](https://www.verilogpro.com/systemverilog-always_comb-always_ff/) in SystemVerilog is a useful construct for describing purely combinational logic (no sequential elements).  Effectively, it lets you write a block of _procedural_ software-like code that represents and compiles into a combinational block of code, assuming you follow some best practices.
+The [`always_comb`](https://www.verilogpro.com/systemverilog-always_comb-always_ff/) in SystemVerilog is a useful construct for describing purely combinational logic (no sequential elements).  Effectively, it lets you write a block of _procedural_ software-like code that represents and compiles into a combinational block of hardware, assuming you follow some best practices.
 
 For example, you could write some combinational logic like:
 
@@ -22,9 +22,9 @@ always_comb begin
 end
 ```
 
-This code, as you might guess, sets `calculated_value` to 5, unless `some_condition` is high, in which case it sets `calculated_value` to 3. The use of blocking assignments (as is recommended in `always_comb` blocks) makes these statements execute from top to bottom.  While it's easy to see how a digital circuit (e.g. a mux) could do the same thing functionally, one can imagine that you can do some fancier things whose behavior is more easily understood as procedural steps like this.
+This code, as you might guess, sets `calculated_value` to 5, unless `some_condition` is high, in which case it sets `calculated_value` to 3. The use of blocking assignments (as is recommended in `always_comb` blocks) makes these statements execute from top to bottom.  While it's easy to see how a digital circuit (e.g. a mux) could do the same thing functionally, you can also use `always_comb` to do some fancier things whose behavior is more easily understood as procedural steps like this.
 
-However, there's something weird here. The `calculated_value` signal is _not_ a software variable; it's a hardware signal!  How does it have multiple values during this "execution", and what do things that depend on `calculated_value` "see" when using it?  It turns out there's all kinds of weird behavior from a simulation perspective, as well as more serious issues of simulation/synthesis mismatch and unexpected behavior around `always_comb` blocks depending on how you write them.
+However, there's something weird here. The `calculated_value` signal is _not_ a software variable; it's a hardware signal!  How does it have multiple values during this "execution", and what do things that depend on `calculated_value` "see" when using it?  It turns out there's all kinds of weird behavior from a simulation perspective, as well as more serious issues of simulation/synthesis mismatch and unexpected behavior, around `always_comb` blocks depending on how you write them.
 
 ## Crazy `always_comb` behavior
 
@@ -42,7 +42,7 @@ always_comb begin
 end
 ```
 
-We set an 8-bit mask to `0x0f`, then assign our output `b` to be &-masked by `mask`, then re-assign `mask` back to `0`.  You may think this looks like this logic should be exactly equivalent to this:
+We set an 8-bit mask to `0x0f`, then assign our output `b` to be `&`-masked by `mask`, then re-assign `mask` back to `0`.  You may think this looks like this logic should be exactly equivalent to this:
 
 ```verilog
 assign b = a & mask;
@@ -76,7 +76,7 @@ There's something subtle missing here: notice that there's no requirement that t
 For example, this is a legal execution flow (and effectively what most simulators appear to end up picking):
 
 | Execution Order | `a` | `mask` | `b_temp` | `a_masked` | `b` |
-|---------|---|------|--------|----------|--|--|
+|---------|---|------|--------|----------|--|
 | `always_comb` `mask=8'hf` (The `always_comb` executes once at the beignning.) | `x` | `8'hf` | `x` | `x` | `x` |
 | `always_comb` `b_temp = a_masked` |`x` | `8'hf` | `x` | `x` | `x` |
 | `always_comb` `mask=8'h0` | `x` | `8'h0` | `x` | `x` | `x` |
@@ -96,7 +96,7 @@ assign b = 8'h0;
 
 But as mentioned, it could have executed in a lot of different ways with different results, any of which would have been legal according to the SystemVerilog LRM.
 
-[This issue](https://github.com/steveicarus/iverilog/issues/872) discusses a real scenario where this difference caused the same design passed through two different ROHD `Synthesizers` (the SystemVerilog one and the [CIRCT](https://circt.llvm.org/) one) to have different behavior.
+[This issue](https://github.com/steveicarus/iverilog/issues/872) discusses a real scenario where this difference caused the same design passed through two different ROHD `Synthesizers` (the SystemVerilog one and the [CIRCT](https://circt.llvm.org/) one) to have different behavior (before SSA changes discussed further down).
 
 ### Behavioral and Synthesis Surprises
 
@@ -138,7 +138,7 @@ endmodule : DuplicateExample
 
 Notice that we have the same signal fed into both `IncrModule`s, `intermediate`, and yet it seems to have 3 values during "execution" of the `always_comb`.
 
-We declared two increment modules, and yes it actually does synthesize both of them (for the tools tested, at least). The output `b` gets `a + 2` in both simulation and synthesis.
+We declared two increment modules, and yes it actually does synthesize both of them (for the tools tested, at least). The output `b` gets `a + 2` in both simulation and synthesis.  If you put `3` on `a`, you'd get `5` on `b`.
 
 That's pretty weird, but how about this one?
 
@@ -167,9 +167,9 @@ This time we still assign `intermediate` three times, but it's only going into a
 
 ## Guarding Against "Write After Read"
 
-While these examples may seem silly and easy to avoid, there are a lot of real bugs (including ones that make it into silicon) which are caused more complex designs that are affected by this type of problem in unobvious ways.
+While these examples may seem silly and easy to avoid, there are a lot of real bugs (including ones that make it into silicon) which are caused by more complex designs that are affected by this type of problem in unobvious ways.
 
-The vendors and open source tools seem to have come to some implicit agreement about how things should execute (independent of the LRM) so that things are generally consistent, but it's also best practice to just obey the lint violations for "write after read". If you always avoid those lints, then you should be able to avoid these weird behaviors.
+The vendors and open source tools seem to have come to some implicit agreement about how things should execute (in addition to the LRM minimum requirements) so that things are generally consistent, but it's also best practice to just obey the lint violations for "write after read". If you always avoid those lints, then you should be able to avoid these weird behaviors.
 
 In ROHD, the `Combinational` class (maps to `always_comb`) has special simulation-time behavior to catch "write after read" violations. It works by, during execution of a combinational block, keeping track of any signal that is "read" (i.e., used to compute the execution) and flags an issue if it is "written" (i.e. reassigned) later in that same execution.  This is a really powerful check that prevents _any_ of the above situations, or any other similar ones, from simulating without error. This is one of the many ways in which ROHD is significantly stricter (and safer) than SystemVerilog.  In a SystemVerilog simulator, it will pick one of the many legal ways to simulate and just simulate it, leaving you to find a functional issue later via lint (hopefully!).
 
@@ -231,11 +231,11 @@ always_comb begin
 end
 ```
 
-Note that it has automatically mapped `s(mask)` to two different "mask" signals (`mask` and `mask_0`) such that we're getting the intent of our combinational logic.  This generated code is lint clean and safe from any associated simulation/synthesis mismatches.
+Note that it has automatically mapped `s(mask)` to two different "mask" signals (`mask` and `mask_0`) such that we're getting the intent of our combinational logic.  This generated code is lint clean and safe from any "write after read" violations or associated simulation/synthesis mismatches.
 
 ### Two Increment Modules Example
 
-We can do something similar with one of our other examples.  Originally,
+We can do something similar with one of our other examples.  Originally in ROHD,
 
 ```dart
 Combinational([
@@ -371,10 +371,10 @@ Pipeline(clk, stages: [
 ]);
 ```
 
-We're reassigning the same variable multiple times and reusing it.  Actually, even with just a single increment we're already doing a "write after read".  This API takes care of using SSA to safely construct the pipeline hardware as intended.
+We're reassigning the same variable multiple times and reusing it.  Actually, even with just a single increment we're already doing a "write after read" (we're assigning `a` after using it to calculate `a + 1`).  This API takes care of using SSA to safely construct the pipeline hardware as intended.
 
 ## Conclusion
 
 The `always_comb` behavior discussed in this post is just one of many examples where SystemVerilog's behavior in simulation and synthesis can be confusing and unpredictable.  Lint checks are a band-aid.  These language issues harm hardware development productivity.
 
-With this SSA approach, the full benefit of easily translating a block of procedural statements into a combinational block can be achieved in a safe way.  The `Combinational.ssa` in ROHD is one of many examples where developing hardware with ROHD is stricter, safer, and more powerful.  Try it out if you haven't yet!
+With this SSA approach, the full benefit of easily translating a block of procedural statements into a combinational block can be achieved in a safe way.  The `Combinational.ssa` in ROHD is one of many examples where developing hardware with ROHD is stricter, safer, and more powerful.  Try it out, if you haven't yet!
