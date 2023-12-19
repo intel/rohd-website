@@ -8,10 +8,10 @@ main:
     url: "https://github.com/intel/rohd/tree/main/doc/tutorials"
   - title: "API Docs"
     url: "https://intel.github.io/rohd/rohd/rohd-library.html"
-  - title: "Forum"
-    url: "/forum/rohd-forum/"
   - title: "Blog"
     url: "/blog/"
+  - title: "Forum"
+    url: "/forum/rohd-forum/"
 
 forum:
   - title: "ROHD Forum"
