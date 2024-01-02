@@ -1,11 +1,17 @@
 name: update website
 on:
   schedule:
-    - cron: '5 8 * * 0' # Evry Sunday 8.05
+    - cron: '5 8 * * 0' # Every Sunday 8.05
   workflow_dispatch:
+
+# Top-level default, no permissions
+permissions: {}
 
 jobs:
   update_submodule:
+    permissions:
+      pull-requests: write
+      contents: write
     runs-on: ubuntu-22.04
     steps:
       - name: checkout repository
