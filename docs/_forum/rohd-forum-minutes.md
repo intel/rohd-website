@@ -18,6 +18,7 @@ toc: true
   - Opens & Questions
   - ROHD-HCL Release v0.1.0
   - Configuration app in ROHD-HCL
+  - ROHD YouTube Channel
   - New features in ROHD
 
 ### December 6, 2023 @ 4PM Pacific Time
