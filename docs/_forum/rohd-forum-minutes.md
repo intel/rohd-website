@@ -2,25 +2,23 @@
 title: "ROHD Forum Agenda & Minutes"
 permalink: /forum/rohd-forum-minutes/
 excerpt: "ROHD Forum Agenda & Minutes"
-last_modified_at: 2023-07-27
+last_modified_at: 2024-01-02
 toc: true
 ---
 
 ### Future agenda topics
 
-- SSA in Combinational
 - Arrays and Structures
 - Pair interfaces
 - Discussion on HLS integration with ROHD
-- Growing contribution
-- Producing video tutorials
 
 ### January 3, 2024 @ 4PM Pacific Time
 
 - Agenda
-  - Opens
-  - New features in ROHD
+  - Opens & Questions
+  - ROHD-HCL Release v0.1.0
   - Configuration app in ROHD-HCL
+  - New features in ROHD
 
 ### December 6, 2023 @ 4PM Pacific Time
 
