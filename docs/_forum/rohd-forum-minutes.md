@@ -12,14 +12,20 @@ toc: true
 - Pair interfaces
 - Discussion on HLS integration with ROHD
 
-### January 3, 2024 @ 4PM Pacific Time
+### February 7, 2024 @ 4PM Pacific Time
 
 - Agenda
   - Opens & Questions
-  - ROHD-HCL Release v0.1.0
   - Configuration app in ROHD-HCL
-  - ROHD YouTube Channel
-  - New features in ROHD
+
+### January 3, 2024 @ 4PM Pacific Time
+
+- Opens & Questions
+  - Debug tooling
+- ROHD-HCL Release v0.1.0
+- Configuration app in ROHD-HCL
+- ROHD YouTube Channel
+- New features in ROHD
 
 ### December 6, 2023 @ 4PM Pacific Time
 
