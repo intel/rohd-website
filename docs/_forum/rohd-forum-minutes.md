@@ -2,7 +2,7 @@
 title: "ROHD Forum Agenda & Minutes"
 permalink: /forum/rohd-forum-minutes/
 excerpt: "ROHD Forum Agenda & Minutes"
-last_modified_at: 2024-01-02
+last_modified_at: 2024-02-05
 toc: true
 ---
 
@@ -12,11 +12,13 @@ toc: true
 - Pair interfaces
 - Discussion on HLS integration with ROHD
 
-### February 7, 2024 @ 4PM Pacific Time
+### February 7, 2024 @ 8AM Pacific Time
 
 - Agenda
   - Opens & Questions
   - Configuration app in ROHD-HCL
+  - Other open-source development in Dart for hardware ([rohme](https://pub.dev/packages/rohme))
+  - Hamming ECC in ROHD-HCL
 
 ### January 3, 2024 @ 4PM Pacific Time
 
