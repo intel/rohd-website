@@ -50,7 +50,8 @@ Dart has an excellent package manager called "pub" (<https://pub.dev>).  It is p
 
 ### The Challenge of Justifying Trying a New Language
 
-[This StackOverflow answer](https://stackoverflow.com/questions/53007782/what-benefits-does-chisel-offer-over-classic-hardware-description-languages) about why it's worth trying Chisel (an alternative to ROHD) contains valuable insight into why it is difficult in general to justify a new language to someone who hasn't used it before:
+<!-- markdownlint-disable -->[This StackOverflow answer](https://stackoverflow.com/questions/53007782/what-benefits-does-chisel-offer-over-classic-hardware-description-languages) about why it's worth trying Chisel (an alternative to ROHD) contains valuable insight into why it is difficult in general to justify a new language to someone who hasn't used it before:
+<!-- markdownlint-enable -->
 
 > Language *power* is notoriously difficult to objectively evaluate. Paul Graham describes this as the "Blub Paradox" in his ["Beating the Averages" essay](http://www.paulgraham.com/avg.html). Graham's thesis is that an engineer proficient in a less powerful language cannot evaluate the utility of a more powerful language.
 
