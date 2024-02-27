@@ -11,6 +11,9 @@
     },
     {
       "pattern": "^https://nbviewer.org/github/pcornier/1pCPU/blob/master/pCPU.ipynb$"
+    },
+    {
+      "pattern":"^https://stackoverflow.com"
     }
   ]
 }
