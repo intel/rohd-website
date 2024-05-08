@@ -1,7 +1,7 @@
 ---
 title: "A Flutter UI Debugger for ROHD"
 permalink: /blog/announcing-rohd-devtool-extension/
-last_modified_at: 2024-02-23
+last_modified_at: 2024-05-08
 author: "Yao Jing Quek"
 ---
 
@@ -12,7 +12,7 @@ When you hear the term "Flutter", your mind might instantly associate it with na
 ROHD, or Rapid Open Hardware Development Framework (<https://intel.github.io/rohd-website/>), is a framework for hardware generation and design using the Dart programming language. Yes, you read that right - Dart, the same language used by Flutter for development. ROHD offers the flexibility to develop your hardware using modern languages and software practices, resulting in a cleaner and more powerful library.
 But why did ROHD choose Dart? The answer lies in Dart's potential and the features it offers. Dart's Futures allow for efficient simulation, and its low learning curve means you can become proficient in less than a week. Furthermore, Dart's object-oriented design, excellent community support, and the ability to build EDA tools on top of it make it an ideal choice for ROHD. The results and testing shown that efficiency, performance, and engineer productivity have achieved significant gains by using ROHD, as detailed in the <https://woset-workshop.github.io/WOSET2022.html>. You can watch the video explaining this at <https://www.youtube.com/watch?v=ahF6MRJKLVw> as well!
 
-## Flutter VS ROHD: A powerful combination
+## Flutter + ROHD: A powerful combination
 
 At the time of writing this article, ROHD has adopted a beta version of a debugger built using Flutter. The full capabilities and proposal of the debugger are detailed in this discussion <https://github.com/intel/rohd/discussions/418>, which started with the hierarchy viewer as the proof of concept (POC) for the development.
 This implementation allows for a seamless experience where users can design and debug simultaneously. Users can step through the VSCode debug points and instantly see the value changes over time in each clock cycle. This feature serves as the foundation for other tools to be designed and built using Flutter.
