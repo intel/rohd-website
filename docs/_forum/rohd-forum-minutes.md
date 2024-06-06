@@ -8,9 +8,9 @@ toc: true
 
 ### Future agenda topics
 
-- Arrays and Structures
-- Pair interfaces
 - Discussion on HLS integration with ROHD
+- LogicNets, in/out ports, and tri-state buffers
+- ROHD Wave Viewer
 
 ### February 7, 2024 @ 8AM Pacific Time
 

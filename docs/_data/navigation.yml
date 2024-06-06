@@ -78,6 +78,8 @@ docs:
         url: /docs/logic-arrays/
       - title: "Generating Outputs"
         url: /docs/generation/
+      - title: "Logic Nets"
+        url: /docs/logic-nets/
   - title: "Additional Information"
     children:
       - title: "Contributing"
