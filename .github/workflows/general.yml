@@ -30,8 +30,8 @@ jobs:
         with:
           use-quiet-mode: yes # output is too noisy, see https://github.com/gaurav-nelson/github-action-markdown-link-check/issues/121
           config-file: .github/configs/mlc_config.json
-
-
-
-        
-
+      
+      - uses: PaulRosenthal/Jekyll-Deploy-Test-Action@v3
+        with:
+          gemfile-location: '/docs'
+          site-directory: '/docs'
