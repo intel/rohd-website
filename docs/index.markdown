@@ -26,7 +26,7 @@ feature_row:
   - image_path: assets/images/adobestock-196076777.jpeg
     alt: "Flexible & Extensible"
     title: "Flexible & Extensible"
-    excerpt: "<p>Achieve the dream of hardware abstraction via composition of building blocks with ROHD. ROHD comes with built-in abstractions for procedural behavior, finite state machines, pipelining, and more.</p><p>Use interfaces and unrestricted software to accelerate integration tasks. Dynamically create and connect module ports.</p><p>Kick-start development and use <a href='https://github.com/intel/rohd-vf'>ROHD-HCL</a> for pre-validated components for your design and testbench.</p>"
+    excerpt: "<p>Achieve the dream of hardware abstraction via composition of building blocks with ROHD. ROHD comes with built-in abstractions for procedural behavior, finite state machines, pipelining, and more.</p><p>Use interfaces and unrestricted software to accelerate integration tasks. Dynamically create and connect module ports.</p><p>Kick-start development and use <a href='https://github.com/intel/rohd-hcl'>ROHD-HCL</a> for pre-validated components for your design and testbench.</p>"
       
 feature_row2:
   - image_path: assets/images/rohdvfdiagram1.png
