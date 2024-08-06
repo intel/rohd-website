@@ -28,7 +28,8 @@ There are some installation requirements to be able to run it locally.
 3. Install dependencies
 
     ```bash
-    sudo bundle install
+	cd docs/
+    bundle install
     ```
 
     - If you run into a permissions issue, you can try setting `export BUNDLE_PATH=~/.gems`.
