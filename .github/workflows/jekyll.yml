@@ -3,12 +3,14 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll site to Pages
+# Workflow for building and deploying a Jekyll site to GitHub Pages
+name: Build and Deploy Jekyll site to Pages
 
 on:
   # Runs on pushes targeting the default branch
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -34,9 +36,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Ruby
-        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1' # Not needed with a .ruby-version file
+          # ruby-version: '3.1' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
       - name: Setup Pages
@@ -58,6 +60,9 @@ jobs:
 
   # Deployment job
   deploy:
+    # only deploy when it's merged into the main branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
