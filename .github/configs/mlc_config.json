@@ -19,7 +19,7 @@
       "pattern":"^https://github.com"
     },
     {
-      "pattern":"^http://.*.sourceforge.net "
+      "pattern":"^http://.*.sourceforge.net"
     }
   ]
 }
