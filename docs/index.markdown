@@ -43,7 +43,7 @@ feature_row2:
         A hardware component library developed with ROHD. This library aims to collect a set of reusable, configurable components that can be leveraged in other designs. These components are also intended as good examples of ROHD hardware implementations.</p><p>Components are focused on correctness, are heavily validated, and come with excellent documentation. Verification components are provided as well, including checkers for proper usage and trackers to log interesting activity.
       </p>
       <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-        <a href='https://github.com/intel/rohd-hcl' style="display: inline-flex; align-items: center; text-decoration: none;">
+        <a href='https://github.com/intel/rohd-hcl' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
         <a class="github-button" href="https://github.com/intel/rohd-hcl" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-hcl on GitHub">Star Count</a>
@@ -58,7 +58,7 @@ feature_row3:
         A verification framework built upon the Rapid Open Hardware Development (ROHD) framework. It enables testbench organization in a way similar to UVM.</p><p>A key motivation behind it is that hardware testbenches are really just software, and verification engineers should be empowered to write them as great software. The ROHD Verification Framework enables development of a testbench in a modern programming language, taking advantage of recent innovations in the software industry.
       </p>
       <p style="display: flex; align-items: center; justify-content: flex-end; gap: 15px; flex-wrap: wrap;">
-        <a href='https://github.com/intel/rohd-vf' style="display: inline-flex; align-items: center; text-decoration: none;">
+        <a href='https://github.com/intel/rohd-vf' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
         <a class="github-button" href="https://github.com/intel/rohd-vf" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-vf on GitHub">Star Count</a>
@@ -76,7 +76,7 @@ feature_row4:
         Mix and match modules and verification components across ROHD and SystemVerilog for your design and testbench and cosimulate it all together. ROHD Cosim comes with different configurations depending on whether you have custom build and/or simulation flows.
       </p>
       <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-        <a href='https://github.com/intel/rohd-cosim' style="display: inline-flex; align-items: center; text-decoration: none;">
+        <a href='https://github.com/intel/rohd-cosim' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
         <a class="github-button" href="https://github.com/intel/rohd-cosim" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-cosim on GitHub">Star Count</a>
@@ -94,7 +94,7 @@ feature_row5:
         Generate connectivity and hierarchy between leaf-level modules, blocks, partitions, or any other hierarchy in either SoC or IP contexts.
       </p>
       <p style="display: flex; align-items: center; justify-content: flex-end; gap: 15px; flex-wrap: wrap;">
-        <a href='https://github.com/intel/rohd-bridge' style="display: inline-flex; align-items: center; text-decoration: none;">
+        <a href='https://github.com/intel/rohd-bridge' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
         <a class="github-button" href="https://github.com/intel/rohd-bridge" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-bridge on GitHub">Star Count</a>
