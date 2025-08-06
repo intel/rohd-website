@@ -57,7 +57,7 @@ feature_row3:
       <p>
         A verification framework built upon the Rapid Open Hardware Development (ROHD) framework. It enables testbench organization in a way similar to UVM.</p><p>A key motivation behind it is that hardware testbenches are really just software, and verification engineers should be empowered to write them as great software. The ROHD Verification Framework enables development of a testbench in a modern programming language, taking advantage of recent innovations in the software industry.
       </p>
-      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+      <p style="display: flex; align-items: center; justify-content: flex-end; gap: 15px; flex-wrap: wrap;">
         <a href='https://github.com/intel/rohd-vf' style="display: inline-flex; align-items: center; text-decoration: none;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
@@ -93,7 +93,7 @@ feature_row5:
       <p>
         Generate connectivity and hierarchy between leaf-level modules, blocks, partitions, or any other hierarchy in either SoC or IP contexts.
       </p>
-      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+      <p style="display: flex; align-items: center; justify-content: flex-end; gap: 15px; flex-wrap: wrap;">
         <a href='https://github.com/intel/rohd-bridge' style="display: inline-flex; align-items: center; text-decoration: none;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
