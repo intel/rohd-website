@@ -9,12 +9,14 @@ header:
       url: "/get-started/setup/"
     - label: "<i class='fas fa-cloud'></i> Try it in-browser"
       url: "https://dartpad.dev/?id=375e800a9d0bd402c9bfa5ebe2210c40"
+    - label: "<i class='fab fa-github'></i> View on GitHub"
+      url: "https://github.com/intel/rohd"
+    - label: "<i class='fas fa-tag'></i> Latest Release"
+      url: "https://pub.dev/packages/rohd/changelog"
 excerpt: >
   A better way to develop hardware. <br />
   <small>
-    <a href="https://github.com/intel/rohd/releases">Latest release</a>
-    <br>
-    <a class="github-button" href="https://github.com/intel/rohd" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star intel/rohd on GitHub">Star</a>
+    <a class="github-button" href="https://github.com/intel/rohd" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd on GitHub">Star Count</a>
   </small>
 feature_row:
   - image_path: assets/images/adobestock-312879613.jpeg
@@ -31,24 +33,8 @@ feature_row:
     alt: "Flexible & Extensible"
     title: "Flexible & Extensible"
     excerpt: "<p>Achieve the dream of hardware abstraction via composition of building blocks with ROHD. ROHD comes with built-in abstractions for procedural behavior, finite state machines, pipelining, and more.</p><p>Use interfaces and unrestricted software to accelerate integration tasks. Dynamically create and connect module ports.</p><p>Kick-start development and use <a href='https://github.com/intel/rohd-hcl'>ROHD-HCL</a> for pre-validated components for your design and testbench.</p>"
-      
-feature_row2:
-  - image_path: assets/images/rohdvfdiagram1.png
-    alt: "ROHD Verification Framework (ROHD-VF)"
-    title: "ROHD Verification Framework (ROHD-VF)"
-    excerpt: > 
-      <p>
-        A verification framework built upon the Rapid Open Hardware Development (ROHD) framework. It enables testbench organization in a way similar to UVM.</p><p>A key motivation behind it is that hardware testbenches are really just software, and verification engineers should be empowered to write them as great software. The ROHD Verification Framework enables development of a testbench in a modern programming language, taking advantage of recent innovations in the software industry.
-      </p>
-      <p>
-        <a href='https://github.com/intel/rohd-vf' style="display: inline-flex; align-items: center; text-decoration: none;">
-          <i class='fab fa-fw fa-github'></i>View on GitHub
-        </a>
-        <br>
-        <a class="github-button" href="https://github.com/intel/rohd-vf" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-vf on GitHub">Star Count</a>
-      </p>
 
-feature_row3:
+feature_row2:
   - image_path: assets/images/gettyimages-847623056.jpg
     alt: "ROHD Hardware Component Library (ROHD-HCL)"
     title: "ROHD Hardware Component Library (ROHD-HCL)"
@@ -56,12 +42,26 @@ feature_row3:
       <p>
         A hardware component library developed with ROHD. This library aims to collect a set of reusable, configurable components that can be leveraged in other designs. These components are also intended as good examples of ROHD hardware implementations.</p><p>Components are focused on correctness, are heavily validated, and come with excellent documentation. Verification components are provided as well, including checkers for proper usage and trackers to log interesting activity.
       </p>
-      <p>
+      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
         <a href='https://github.com/intel/rohd-hcl' style="display: inline-flex; align-items: center; text-decoration: none;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
-        <br>
         <a class="github-button" href="https://github.com/intel/rohd-hcl" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-hcl on GitHub">Star Count</a>
+      </p>
+
+feature_row3:
+  - image_path: assets/images/rohdvfdiagram1.png
+    alt: "ROHD Verification Framework (ROHD-VF)"
+    title: "ROHD Verification Framework (ROHD-VF)"
+    excerpt: > 
+      <p>
+        A verification framework built upon the Rapid Open Hardware Development (ROHD) framework. It enables testbench organization in a way similar to UVM.</p><p>A key motivation behind it is that hardware testbenches are really just software, and verification engineers should be empowered to write them as great software. The ROHD Verification Framework enables development of a testbench in a modern programming language, taking advantage of recent innovations in the software industry.
+      </p>
+      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <a href='https://github.com/intel/rohd-vf' style="display: inline-flex; align-items: center; text-decoration: none;">
+          <i class='fab fa-fw fa-github'></i>View on GitHub
+        </a>
+        <a class="github-button" href="https://github.com/intel/rohd-vf" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-vf on GitHub">Star Count</a>
       </p>
 
 feature_row4:
@@ -70,14 +70,34 @@ feature_row4:
     title: "ROHD Cosim"
     excerpt: > 
       <p>
-        A Dart package built upon ROHD for cosimulation between the ROHD Simulator and a SystemVerilog simulator.</p><p>Mix and match modules and verification components across ROHD and SystemVerilog for your design and testbench and cosimulate it all together. ROHD Cosim comes with different configurations depending on whether you have custom build and/or simulation flows.
+        A Dart package built upon ROHD for cosimulation between the ROHD Simulator and a SystemVerilog simulator.
       </p>
       <p>
+        Mix and match modules and verification components across ROHD and SystemVerilog for your design and testbench and cosimulate it all together. ROHD Cosim comes with different configurations depending on whether you have custom build and/or simulation flows.
+      </p>
+      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
         <a href='https://github.com/intel/rohd-cosim' style="display: inline-flex; align-items: center; text-decoration: none;">
           <i class='fab fa-fw fa-github'></i>View on GitHub
         </a>
-        <br>
         <a class="github-button" href="https://github.com/intel/rohd-cosim" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-cosim on GitHub">Star Count</a>
+      </p>
+
+feature_row5:
+  - image_path: assets/images/adobestock-175635130.jpeg
+    alt: "ROHD Bridge"
+    title: "ROHD Bridge"
+    excerpt: > 
+      <p>
+        An extremely fast ROHD-based library that helps automate generation of hardware connectivity.
+      </p>
+      <p>
+        Generate connectivity and hierarchy between leaf-level modules, blocks, partitions, or any other hierarchy in either SoC or IP contexts.
+      </p>
+      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <a href='https://github.com/intel/rohd-bridge' style="display: inline-flex; align-items: center; text-decoration: none;">
+          <i class='fab fa-fw fa-github'></i>View on GitHub
+        </a>
+        <a class="github-button" href="https://github.com/intel/rohd-bridge" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-bridge on GitHub">Star Count</a>
       </p>
 ---
 
@@ -88,3 +108,5 @@ feature_row4:
 {% include feature_row id="feature_row3" type="right" %}
 
 {% include feature_row id="feature_row4" type="left" %}
+
+{% include feature_row id="feature_row5" type="right" %}
