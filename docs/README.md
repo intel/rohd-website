@@ -28,7 +28,7 @@ There are some installation requirements to be able to run it locally.
 3. Install dependencies
 
     ```bash
-	cd docs/
+    cd docs/
     bundle install
     ```
 
