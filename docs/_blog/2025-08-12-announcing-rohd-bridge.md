@@ -5,11 +5,17 @@ last_modified_at: 2025-08-12
 author: "Max Korbel"
 ---
 
-When building large, complex hardware designs, it can be surprisingly difficult to manage instantiaion, hierarchy, and connections between many interdependent subsystems and IPs.  Even though the top-level of a large SoC doesn't usually have a substantial amount of meaningful digital logic, just routing signals from point A to point B can be challenging to get right, especially in a way that is easily refactorable.
+Designing large hardware systems can be tough -— especially when it comes to managing hierarchy and connecting all the pieces. Even if the top level of your SoC is mostly just wiring, keeping everything organized and refactorable can be a real challenge.
 
-Various tools exist, whether from vendors or built as proprietary flows within companies, to address this collection of problems.  However, they often suffer from long run times, depend on outdated technologies, and/or invent new languages and specification formats.  These tools and inputs can be brittle or limiting, and error messages can be confusing.
+Most existing tools for this job are slow, rigid, or force you into limiting languages and formats. They can be confusing, brittle, and not much fun to use.
 
-Introducing ROHD Bridge: a new library built upon ROHD for building hierarchy and making connections for large hardware designs!  ROHD Bridge has a flexible API built in Dart, fully compatible with ROHD, and is lightning fast, even for the largest and most complex designs.
+That’s why we built ROHD Bridge: a new open-source library for automating hardware connectivity and hierarchy, built on top of ROHD and Dart. ROHD Bridge is:
 
-ROHD Bridge is now open-source and available at <https://github.com/intel/rohd-bridge>!  Check out the README to learn more and get started!
+- **Extremely fast** – Even huge designs assemble in seconds, or at worst, a few minutes.
+- **Flexible** – Use the Dart API to build, connect, and refactor your hierarchy however you want.
+- **Powerful** – Automate connections, pull up ports/interfaces, and generate SystemVerilog for your whole design.
+- **Modern** – No more outdated tech or brittle formats. Just open-source, portable, and easy to extend APIs.
 
+Write programs in a modern software language to automate your connectivity and hierarchy.  Decouple connectivity and use-case-specific hierarchy requirements, from testbenches to physical partitioning.  Build configurable IPs, generate statically resolved designs, and deliver generator applications that can read customer specifications.
+
+If you’re tired of legacy tools or just want a better way to assemble and connect your hardware, give ROHD Bridge a try! The [README](https://github.com/intel/rohd-bridge) has details, examples, and a full API guide. We’re excited to see what you build!
