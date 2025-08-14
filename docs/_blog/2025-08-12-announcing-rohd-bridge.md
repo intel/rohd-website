@@ -5,9 +5,9 @@ last_modified_at: 2025-08-12
 author: "Max Korbel"
 ---
 
-Designing large hardware systems can be tough -— especially when it comes to managing hierarchy and connecting all the pieces. Even if the top level of your SoC is mostly just wiring, keeping everything organized and refactorable can be a real challenge.
+Designing large hardware systems can be tough, and it's crucial to have a good solution for managing hierarchy and connecting all the pieces. Even though the top level of your SoC is mostly just wiring, keeping everything organized and refactorable can be a real challenge.
 
-Most existing tools for this job are slow, rigid, or force you into limiting languages and formats. They can be confusing, brittle, and not much fun to use.
+Most existing tools for this job are slow, rigid, or force you into constrained languages and formats. They can be confusing, brittle, and not much fun to use.
 
 That’s why we built ROHD Bridge: a new open-source library for automating hardware connectivity and hierarchy, built on top of ROHD and Dart. ROHD Bridge is:
 
