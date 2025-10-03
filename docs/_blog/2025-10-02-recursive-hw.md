@@ -74,16 +74,20 @@ the node is '1' otherwise the right element as the LRU `way`.
 
 ### Hardware PLRU Allocation
 
-To implement PLRU in traditional HDLs, a designer usually has to
-encode the tree and write a decoder, limited to a specific number of
-ways. This is not unlike when software developers had to write
-assembly -- using a bit-level abstraction in which to embed algorithms
-for either software or hardware is painful and error-prone.  Here is
-an example in Verilog HDL for a *fixed* 8-way allocation. It is very
-hard to determine this is correct and obfuscates the algorithm almost
-completely. Looking at this code a designer would likely wish this to
-be compiled from a higher level description than have to write and
-maintain this kind of bit-level code.
+To implement a tree-based algorithm like PLRU allocation in
+traditional HDLs, a designer usually has to encode the tree and write
+a decoder, limited to a specific number of ways. This is not unlike
+when software developers had to write assembly -- using a bit-level
+abstraction in which to embed algorithms for either software or
+hardware is painful and error-prone.
+
+Here is an example in Verilog HDL for a *fixed* 8-way allocation. It
+is very hard to determine this is correct and obfuscates the algorithm
+almost completely. Looking at this code a designer would likely wish
+this to be compiled from a higher level description than have to write
+and maintain this kind of bit-level code (there could easily be an
+error in this code that cannot be seen without exhaustive testing of
+what is an approximate algorithm!).
 
 ```verilog
     always @(*) begin
@@ -188,7 +192,7 @@ would have set a '0', we would set a '1' instead to invalidate and
 vice-versa. Invalidate forces the tree nodes to follow the final way
 with a series of '0s'.
 
-### Hardware PLRU Hit/Invalidate
+### ROHD Recursive Hardware PLRU Hit/Invalidate
 
 The hardware recursion for PLRU hit/invalidate follows the same
 pattern as software. Yet because we need to pass back the entire state
@@ -257,9 +261,9 @@ latency of computation logarithmically by arranging a tree of
 computation to perform parallel operations even when the output is a
 single result. 
 
-In Hardware Description Languages (HDL)s, there is even syntax to
-perform common bit-level reductions like or-reduction and
-and-reduction. It is more difficult to describe reductions on more
+In Hardware Description Languages (HDL)s, there is even operator
+syntax to perform common bit-level reductions like `or-reduction` and
+`and-reduction`. It is more difficult to describe reductions on more
 complex inputs or operations in traditional HDLs.
 
 Yet in software, more complex reduction trees are possible because of
@@ -302,12 +306,10 @@ adders.
 10         vec, radix: 4, addReduce, clk: clk, depthBetweenFlops; 2);
 ```
 
-It would be quite simple to do other operations like `max` or `min` or operate on
-other datatypes like `FloatingPoint` or `FixedPoint`.
-
-By replacing the operator `addReduce` with more complex hardware
-generators, we can also generate more complex tree reduction
-computations in hardware.
+It would be quite simple to do other operations like `max` or `min` or
+operate on other datatypes like `FloatingPoint` or `FixedPoint`,
+replacing the operator `addReduce` with more complex hardware
+generators.
 
 ## Mux Reduction Tree
 
