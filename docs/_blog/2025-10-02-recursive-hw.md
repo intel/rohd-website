@@ -71,10 +71,46 @@ Here you can see that the recursion splits on the middle element of a
 searching right. At the leaf (line 4) it returns the left element if
 the node is '1' otherwise the right element as the LRU `way`.
 
+
 ### Hardware PLRU Allocation
 
+To implement PLRU in traditional HDLs, a designer usually has to
+encode the tree and write a decoder, limited to a specific number of
+ways. This is not that unlike when software developers had to write
+assembly -- a bit-level abstraction in which to embed algorithms for
+both. Here is an example in Verilog HDL for a *fixed* 8-way
+allocation. It is very hard to determine this is correct and
+obfuscates the algorithm almost completely. Looking at this code a
+designer would likely wish this to be compiled from a higher level
+description than have to write and maintain this kind of bit-level
+code.
+
+```verilog
+    always @(*) begin
+        if (plru_bits[0] == 0) begin
+            if (plru_bits[2] == 0) begin
+                if (plru_bits[6] == 0) lru_way = 3'b111;
+                else lru_way = 3'b110;
+            end else begin
+                if (plru_bits[5] == 0) lru_way = 3'b101;
+                else lru_way = 3'b100;
+            end
+        end else begin
+            if (plru_bits[1] == 0) begin
+                if (plru_bits[4] == 0) lru_way = 3'b011;
+                else lru_way = 3'b010;
+            end else begin
+                if (plru_bits[3] == 0) lru_way = 3'b001;
+                else lru_way = 3'b000;
+            end
+        end
+    end
+```
+	  
+### ROHD Recursive Hardware PLRU Allocation
+
 ROHD allows us to describe the LRU allocation algorithm recursively in
-hardware as well because it allows us to generate hardware recursively
+hardware as well because it enables us to generate hardware recursively
 for the tree.
 
 In the hardware algorithm below, we see that we pass in a bitvector in
@@ -146,7 +182,7 @@ then set the node to '0' to switch LRU away from this leaf, otherwise
 set to '1' to indicate that LRU is this node (remember '0' indicates
 the LRU direction).
 
-If we consider the `invalidate` true case, the logic is simply
+If we consider the `invalidate=true` case, the logic is simply
 reversed: a hit means LRU is going in this direction and wherever we
 would have set a '0', we would set a '1' instead to invalidate and
 vice-versa. Invalidate forces the tree nodes to follow the final way
@@ -196,11 +232,12 @@ return the midpoint value (line 17) unchanged. This is one situation
 in which hardware recursion differs from software that we need to
 check this condition which adds range comparison at every node.
 
-Otherwise, in the 'hit' case (`invalidate` is false), we return '1' if the `way`
-is in the left subtree and '0' if it is in the right (line 18).
+Otherwise, in the 'hit' case (`invalidate`=`false`), we return '1'
+if the `way` is in the left subtree and '0' if it is in the right
+(line 18).
 
 Finally, we return a concatenation of the computed PLRU state vector
-(line 19).  Again note that the `invalidate`=true case simply reverses
+(line 19).  Again note that the `invalidate=true` case simply reverses
 them meaning of '1' and '0'.
 
 We can see that maintaining a PLRU tree to support pseudo-LRU
