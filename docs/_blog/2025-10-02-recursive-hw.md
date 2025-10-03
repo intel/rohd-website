@@ -36,7 +36,7 @@ node indicates the LRU 'way' is to the right and a '1' indicates the
 LRU 'way' is to the left. In the figure below, we can see that 'way'
 '5' is LRU according to the current settings at each node of the tree.
 
-![plru]({{site}/assets/images/plru.png)
+![plru]({{site.baseurl}}/assets/images/plru.png)
 
 Two routines are needed to maintain the PLRU tree above in order to do
 pseudo-LRU computation, first for finding the LRU `way` to 'allocate' a
