@@ -11,7 +11,7 @@ algorithms. Today, we see a lot of hardware design in the space of
 hardware accelerators which are being used to speed up algorithms that
 already exist in software. It is interesting, therefore, to consider
 design patterns that help us transform traditional software techniques
-into hardware: a key software technique to consider is recursion which
+into hardware: a key software technique to consider is *recursion* which
 is often the most natural way to describe a given computation.
 
 Trees are a key data structure in both software and hardware upon
@@ -28,12 +28,13 @@ Set-associative caching requires a replacement policy to figure out
 which 'way' in the cache to evict data from in order to store new
 data. Least Recently Used (LRU) algorithms require a very complex
 history mechanism to compute exactly, so an approximation is often
-used called 'pseudo-LRU'. To compute the least-recently-used 'way', a
-pseudo-LRU algorithm uses binary tree with 'ways' as leaves, where a
-'0' at a node indicates the LRU 'way' is to the right and a '1'
-indicates the LRU 'way' is to the left. In the figure below, we can
-see that 'way' '5' is LRU according to the current settings at each
-node of the tree.
+used called 'pseudo-LRU'. 
+
+To compute the least-recently-used 'way', a pseudo-LRU algorithm uses
+a binary tree with 'ways' as leaves, where a '0' at an intermediate
+node indicates the LRU 'way' is to the right and a '1' indicates the
+LRU 'way' is to the left. In the figure below, we can see that 'way'
+'5' is LRU according to the current settings at each node of the tree.
 
 ![plru](/assets/images/plru.png)
 
@@ -47,10 +48,10 @@ by reads or writes.
 ### Software PLRU Allocation
 
 It is quite natural to describe the allocation on the PLRU tree in a
-recursive routine. Here we show the routine written in software
-returning an integer for the LRU `way` given a list of integers
-capturing the 0/1 state of the tree nodes (the vector of nodes is
-stored as seen from left to right).
+recursive routine. Here we show the routine written in software that,
+given the state of the PLRU tree as a list of 0/1 values returns an
+the integer LRU `way`. This state vector is stored from the tree nodes
+as seen from left-to-right.
 
 ```dart
  1 int allocPLRU(List<int> v, {int base = 0}) {
@@ -71,17 +72,17 @@ the node is '1' otherwise the right element as the LRU `way`.
 
 ### Hardware PLRU Allocation
 
-ROHD allows us to describe the LRU allocation algorithm in hardware
-recursively because it allows us to generate hardware recursively for
-the tree.
+ROHD allows us to describe the LRU allocation algorithm recursively in
+hardware as well because it allows us to generate hardware recursively
+for the tree.
 
 In the hardware algorithm below, we see that we pass in a bitvector in
 the form of `Logic` and again split on the middle element of the
-vector. Instead of a ternary operation (lines 4-6 of the software
-algorithm above), we can use a `mux` (line 8 below) on the middle element
-value to return the result of the left recursion or right recursion.
-At the leaf (line 7), we can `mux` on the node to return the left
-element in case of a '1' otherwise the right element.
+vector (line 5). Instead of a ternary operation (lines 4-6 of the
+software algorithm above), we can use a `mux` (line 8 below) on the
+middle element value to return the result of the left recursion or
+right recursion.  At the leaf (line 7), we can `mux` on the node to
+return the left element in case of a '1' otherwise the right element.
 
 ```dart
  1 Logic allocPLRU(Logic v, {int base = 0, int sz = 0}) {
@@ -111,8 +112,8 @@ update the state of the PLRU tree and return it.
 For the software form of the hit algorithm, the PLRU state is again
 traversed recursively, splitting on the middle element (line 6) and
 processing the lower and upper portions of the state vector.  If the
-`way` being hit is in the left, then the left portion of the tree is
-processed, otherwise it is simply returned and similarly for the right.
+`way` being hit is in the left portion, then that portion of the tree is
+processed, otherwise it is simply returned -- similarly for the right.
 
 ```dart
  1 List<int> hitPLRU(List<int> v, int way,
@@ -136,11 +137,10 @@ processed, otherwise it is simply returned and similarly for the right.
 ```
 
 Let's consider the 'hit' case where `invalidate` is false. Then at
-split point, the middle value is set to '0' if the `way` is left or same
-as the middle, and it is set to '1' if the `way` is to the right, both
-indicating the LRU is in the opposite direction. The middle value is
-set to '0' to indicate LRU must be right now (all on line 15). The
-leaf processing (line 4) is similar: if we match the `way` at the node,
+split point, the middle value (line 15) is set to '0' if the `way` is
+left or same as the middle, and it is set to '1' if the `way` is to
+the right, both indicating the LRU is in the opposite direction. The leaf
+processing (line 4) is similar: if we match the `way` at the node,
 then set the node to '0' to switch LRU away from this leaf, otherwise
 set to '1' to indicate that LRU is this node (remember '0' indicates
 the LRU direction).
@@ -148,18 +148,22 @@ the LRU direction).
 If we consider the `invalidate` true case, the logic is simply
 reversed: a hit means LRU is going in this direction and wherever we
 would have set a '0', we would set a '1' instead to invalidate and
-vice-versa.
+vice-versa. Invalidate forces the tree nodes to follow the final way
+with a series of '0s'.
 
 ### Hardware PLRU Hit/Invalidate
 
-The hardware recursion follows the same pattern as software. Yet
-because we need to pass back the entire state vector, we need to fully
-process each element of the vector in the algorithm. That can be seen
-most clearly in the upper and lower recursions (lines 13 and 14) where
-we must call the routine both directions so that the `way` signal is
-generated into both sides of the tree at each node to be compared
-appropriately in hardware since it is a dynamic signal that changes
-after hardware generation.
+The hardware recursion for PLRU hit/invalidate follows the same
+pattern as software. Yet because we need to pass back the entire state
+vector, not knowing the actual value of `way` at generation time, we
+need to fully process each element of the vector with the `way` in the
+algorithm. That can be seen most clearly in the upper and lower
+recursions (lines 13 and 14) where we must invoke the recursive
+routine for both directions so that the `way` signal is generated into
+both sides of the tree at each node to be compared appropriately in
+hardware since it is a dynamic signal that changes after hardware
+generation. Remember in software we knew the value of `way` so we
+could just return the left or right portion unprocessed.
 
 ```dart
  1 Logic hitPLRU(Logic v, Logic way,
@@ -187,7 +191,7 @@ after hardware generation.
 
 At the split point (line 15), we compare the `way` to the range of the
 current subtree to ensure it is within that range. If not we simply
-return the midpoint value (line 17) unchanaged. This is one situation
+return the midpoint value (line 17) unchanged. This is one situation
 in which hardware recursion differs from software that we need to
 check this condition which adds range comparison at every node.
 
@@ -201,7 +205,8 @@ them meaning of '1' and '0'.
 We can see that maintaining a PLRU tree to support pseudo-LRU
 computation is quite similar in both software and hardware recursive
 forms. ROHD makes it simple to follow software patterns to generate
-hardware naturally.
+hardware naturally when the computation is easily described
+recursively.
 
 ## A Reduction Tree Component
 
