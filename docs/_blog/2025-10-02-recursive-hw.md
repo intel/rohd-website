@@ -56,14 +56,14 @@ as seen from left-to-right.
 
 ```dart
  1 int allocPLRU(List<int> v, {int base = 0}) {
- 2   final mid = v.length ~/ 2;
- 3   return v.length == 1
- 4       ? v[0] == 1
- 5           ? base
- 6           : base + 1
- 7       : v[mid] == 1
- 8           ? allocPLRU(v.sublist(0, mid), base: base)
- 9           : allocPLRU(v.sublist(mid + 1, v.length), base: mid + 1 + base);
+ 2   final mid = v.length ~/ 2;
+ 3   return v.length == 1
+ 4       ? v[0] == 1
+ 5           ? base
+ 6           : base + 1
+ 7       : v[mid] == 1
+ 8           ? allocPLRU(v.sublist(0, mid), base: base)
+ 9           : allocPLRU(v.sublist(mid + 1, v.length), base: mid + 1 + base);
 10 }
 ```
 Here you can see that the recursion splits on the middle element of a
@@ -90,7 +90,7 @@ error in this code that cannot be seen without exhaustive testing of
 what is an approximate algorithm!).
 
 ```verilog
-    always @(*) begin
+    always_comb begin
         if (plru_bits[0] == 0) begin
             if (plru_bits[2] == 0) begin
                 if (plru_bits[6] == 0) lru_way = 3'b111;
@@ -127,17 +127,17 @@ return the left element in case of a '1' otherwise the right element.
 
 ```dart
  1 Logic allocPLRU(Logic v, {int base = 0, int sz = 0}) {
- 2   final lsz = sz == 0 ? log2Ceil(v.width) : sz;
- 3   Logic convertInt(int i) => Const(i, width: lsz);
+ 2   final lsz = sz == 0 ? log2Ceil(v.width) : sz;
+ 3   Logic convertInt(int i) => Const(i, width: lsz);
  4
- 5   final mid = v.width ~/ 2;
- 6   return v.width == 1
- 7       ? mux(v[0], convertInt(base), convertInt(base + 1))
- 8       : mux(
- 9            v[mid],
-10  _         allocPLRU(v.slice(mid - 1, 0), base: base, sz: lsz),
-11  _         allocPLRU(v.getRange(mid + 1),
-12  _             base: mid + 1 + base, sz: lsz));
+ 5   final mid = v.width ~/ 2;
+ 6   return v.width == 1
+ 7       ? mux(v[0], convertInt(base), convertInt(base + 1))
+ 8       : mux(
+ 9            v[mid],
+10            allocPLRU(v.slice(mid - 1, 0), base: base, sz: lsz),
+11            allocPLRU(v.getRange(mid + 1),
+12                      base: mid + 1 + base, sz: lsz));
 13 }
 ```
 ## PLRU Hit/Invalidate
@@ -158,22 +158,22 @@ processed, otherwise it is simply returned -- similarly for the right.
 
 ```dart
  1 List<int> hitPLRU(List<int> v, int way,
- 2     {int base = 0, bool invalidate = false}) {
- 3   if (v.length == 1) {
- 4     return [if ((way == base) == invalidate) 1 else 0];
- 5   } else {
- 6     final mid = v.length ~/ 2;
- 7     var lower = v.sublist(0, mid);
- 8     var upper = v.sublist(mid + 1, v.length);
- 9     lower = (way <= mid + base)
-10         ? hitPLRU(lower, way, base: base, invalidate: invalidate)
-11         : lower;
-12     upper = (way > mid + base)
-13         ? hitPLRU(upper, way, base: mid + base + 1, invalidate: invalidate)
-14         : upper;
-15     final midVal = ((way <= mid + base) == invalidate) ? 1 : 0;
-16     return [...lower, midVal, ...upper];
-17   }
+ 2     {int base = 0, bool invalidate = false}) {
+ 3   if (v.length == 1) {
+ 4     return [if ((way == base) == invalidate) 1 else 0];
+ 5   } else {
+ 6     final mid = v.length ~/ 2;
+ 7     var lower = v.sublist(0, mid);
+ 8     var upper = v.sublist(mid + 1, v.length);
+ 9     lower = (way <= mid + base)
+10         ? hitPLRU(lower, way, base: base, invalidate: invalidate)
+11         : lower;
+12     upper = (way > mid + base)
+13         ? hitPLRU(upper, way, base: mid + base + 1, invalidate: invalidate)
+14         : upper;
+15     final midVal = ((way <= mid + base) == invalidate) ? 1 : 0;
+16     return [...lower, midVal, ...upper];
+17   }
 18 }
 ```
 
@@ -208,25 +208,25 @@ could just return the left or right portion unprocessed.
 
 ```dart
  1 Logic hitPLRU(Logic v, Logic way,
- 2     {int base = 0, Logic? invalidate}) {
- 3   Logic convertInt(int i) => Const(i, width: way.width);
+ 2     {int base = 0, Logic? invalidate}) {
+ 3   Logic convertInt(int i) => Const(i, width: way.width);
  4 
- 5   invalidate ??= Const(0);
- 6   if (v.width == 1) {
- 7     return mux(way.eq(convertInt(base)), invalidate,
- 8         mux(way.eq(convertInt(base + 1)), ~invalidate, v[0]));
- 9   } else {
-10     final mid = v.width ~/ 2;
-11     var lower = v.slice(mid - 1, 0);
-12     var upper = v.getRange(mid + 1);
-13     lower = hitPLRU(lower, way, base: base, invalidate: invalidate);
-14     upper = hitPLRU(upper, way, base: mid + base + 1, invalidate: invalidate);
-15     final midVal = mux(
-16         way.lt(convertInt(base)) | way.gt(convertInt(base + v.width)),
-17         v[mid],
-18         mux(way.lte(convertInt(mid + base)), invalidate, ~invalidate));
-19     return [lower, midVal, upper].rswizzle();
-20   }
+ 5   invalidate ??= Const(0);
+ 6   if (v.width == 1) {
+ 7     return mux(way.eq(convertInt(base)), invalidate,
+ 8         mux(way.eq(convertInt(base + 1)), ~invalidate, v[0]));
+ 9   } else {
+10     final mid = v.width ~/ 2;
+11     var lower = v.slice(mid - 1, 0);
+12     var upper = v.getRange(mid + 1);
+13     lower = hitPLRU(lower, way, base: base, invalidate: invalidate);
+14     upper = hitPLRU(upper, way, base: mid + base + 1, invalidate: invalidate);
+15     final midVal = mux(
+16         way.lt(convertInt(base)) | way.gt(convertInt(base + v.width)),
+17         v[mid],
+18         mux(way.lte(convertInt(mid + base)), invalidate, ~invalidate));
+19     return [lower, midVal, upper].rswizzle();
+20   }
 21 }
 ```
 
@@ -252,9 +252,9 @@ recursively.
 
 ## A Reduction Tree Component
 
-A reduction is an efficient arrangement of computation of associative
-operations (like sum or max) to compute a single result from an array
-of inputs.
+A parallel reduction is an efficient arrangement of computation of
+associative operations (like sum or max) to compute a single result
+from an array of inputs.
 
 Reductions are common in both software and hardware and improve the
 latency of computation logarithmically by arranging a tree of
@@ -286,38 +286,50 @@ reduction length.
 Here is an example of a reduction tree using the native add operations
 of SystemVerilog, but written using a ROHD generator class. 
 
-On lines 1-3 is the operation to be instantiated by tree generator, in
-this case a native addition of two inputs.
 
-On lines 9-10 is the tree generation, producing a binary tree of
-these 79 13-bit inputs and adding pipelining at every other level of
-adders.
+The method `addReduce` is an operation to be instantiated by the
+reduction tree generator. In this case it is simply a native addition
+of two inputs, but could be a more complex generator or `Module`
+instance of an associative 2-input computation. Because the tree can
+handle lengths that are not powers of 2, the operation must take care
+of the `length=1` case where the tree is not balanced perfectly.
 
 ```dart
- 1  Logic addReduce(List<Logic> inputs,
- 2          {int depth, Logic? control, String name = ''}) =>
- 3       inputs.reduce((v, e) => v + e);
- 4   /// Tree reduction using addReduce
- 5     const width = 13;
- 6     const length = 79;
- 7     final vec = <Logic>[];
- 8
- 9     final reductionTree = ReductionTree(
-10         vec, addReduce, clk: clk, depthBetweenFlops; 2);
+  Logic addReduce(List<Logic> inputs,
+          {int depth, Logic? control, String name = ''}) =>
+       inputs.length < 2 ? inputs[0] : inputs[0] + inputs[1];
+ ```
+ 
+The following is an instance of generating computation using the
+`ReductionTree`, producing a binary tree of these 79 13-bit inputs and
+adding pipelining at every other level of adders (inserted via the
+`addReduce` method).
+
+ ```dart
+ main () {
+     const width = 13;
+     const length = 79;
+     final vec = <Logic>[];
+
+     final reductionTree = ReductionTree(
+         vec, addReduce, clk: clk, depthBetweenFlops; 2);
+}
 ```
 
 It would be quite simple to do other operations like `max` or `min` or
-operate on other datatypes like `FloatingPoint` or `FixedPoint`,
+operate on other datatypes like `FloatingPoint` or `FixedPoint`
 replacing the operator `addReduce` with more complex hardware
-generators.
+generators, or to manage data widening and sign extension.
 
 ## Mux Reduction Tree
 
-Here is a more complex example (similar to reduction) that passes in a
-control line that can be indexed by the depth of the tree to perform a
-muxing operation, an operation quite useful in hardware:
+Here is a more complex example (similar to, but not technically
+reduction) that passes in a control line that can be indexed by the
+depth of the tree to perform a muxing operation, an operation quite
+useful in hardware:
 
 ```dart
+main() {
     const length = 1024;
     final width = log2Ceil(length);
     final vec = <Logic>[];
@@ -329,8 +341,9 @@ muxing operation, an operation quite useful in hardware:
 
     final muxTree = ReductionTree(vec, muxReduce,
         clk: clk, depthBetweenFlops: 2, control: control, name: 'mux');
+}
 ```
 
-Being able to quickly generate tree reductions is another way to map
+Being able to quickly generate tree computations is another way to map
 what are common software design patterns into hardware with a high
 degree of control over the performance of that hardware.
