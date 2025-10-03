@@ -76,14 +76,14 @@ the node is '1' otherwise the right element as the LRU `way`.
 
 To implement PLRU in traditional HDLs, a designer usually has to
 encode the tree and write a decoder, limited to a specific number of
-ways. This is not that unlike when software developers had to write
-assembly -- a bit-level abstraction in which to embed algorithms for
-both. Here is an example in Verilog HDL for a *fixed* 8-way
-allocation. It is very hard to determine this is correct and
-obfuscates the algorithm almost completely. Looking at this code a
-designer would likely wish this to be compiled from a higher level
-description than have to write and maintain this kind of bit-level
-code.
+ways. This is not unlike when software developers had to write
+assembly -- using a bit-level abstraction in which to embed algorithms
+for either software or hardware is painful and error-prone.  Here is
+an example in Verilog HDL for a *fixed* 8-way allocation. It is very
+hard to determine this is correct and obfuscates the algorithm almost
+completely. Looking at this code a designer would likely wish this to
+be compiled from a higher level description than have to write and
+maintain this kind of bit-level code.
 
 ```verilog
     always @(*) begin
