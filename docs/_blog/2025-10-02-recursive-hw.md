@@ -309,10 +309,11 @@ adding pipelining at every other level of adders (inserted via the
  main () {
      const width = 13;
      const length = 79;
+	 final clk = Logic();
      final vec = <Logic>[];
 
      final reductionTree = ReductionTree(
-         vec, addReduce, clk: clk, depthBetweenFlops; 2);
+         vec, addReduce, clk: clk, depthBetweenFlops: 2);
 }
 ```
 
@@ -326,12 +327,16 @@ generators, or to manage data widening and sign extension.
 Here is a more complex example (similar to, but not technically
 reduction) that passes in a control line that can be indexed by the
 depth of the tree to perform a muxing operation, an operation quite
-useful in hardware:
+useful in hardware. Here you see the operation is now the `muxReduce`
+method which injects a mux at each node of the tree. Recognize that
+`ReductionTree` does not know apriori what the node hardware will be
+giving it infinite extensibility.
 
 ```dart
 main() {
     const length = 1024;
     final width = log2Ceil(length);
+	final clk = Logic();
     final vec = <Logic>[];
     final control = Logic(width: log2Ceil(vec.length)));
 
