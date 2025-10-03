@@ -289,7 +289,7 @@ of SystemVerilog, but written using a ROHD generator class.
 On lines 1-3 is the operation to be instantiated by tree generator, in
 this case a native addition of two inputs.
 
-On lines 9-10 is the tree generation, producing a radix-4 tree of
+On lines 9-10 is the tree generation, producing a binary tree of
 these 79 13-bit inputs and adding pipelining at every other level of
 adders.
 
@@ -303,7 +303,7 @@ adders.
  7     final vec = <Logic>[];
  8
  9     final reductionTree = ReductionTree(
-10         vec, radix: 4, addReduce, clk: clk, depthBetweenFlops; 2);
+10         vec, addReduce, clk: clk, depthBetweenFlops; 2);
 ```
 
 It would be quite simple to do other operations like `max` or `min` or
