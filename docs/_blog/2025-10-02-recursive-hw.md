@@ -6,14 +6,13 @@ author: "Desmond A. Kirkpatrick"
 ---
 
 As a new way of describing hardware programmatically, ROHD opens up
-the world of hardware to design to people with background in
-software algorithms. Today, we see a lot of hardware design in
-the space of hardware accelerators which are being used to speed up
-algorithms that already exist in software. It is interesting,
-therefore, to consider design patterns that help us transform
-traditional software techniques into hardware: a key software
-technique to consider is recursion which is often the most natural way
-to describe a given computation.
+the world of hardware design to people with background in software
+algorithms. Today, we see a lot of hardware design in the space of
+hardware accelerators which are being used to speed up algorithms that
+already exist in software. It is interesting, therefore, to consider
+design patterns that help us transform traditional software techniques
+into hardware: a key software technique to consider is recursion which
+is often the most natural way to describe a given computation.
 
 Trees are a key data structure in both software and hardware upon
 which recursive algorithms can operate to achieve fast
@@ -26,13 +25,14 @@ in hardware using ROHD.
 ## A Pseudo-LRU Algorithm
 
 Set-associative caching requires a replacement policy to figure out
-which data to evict to store new data. Least Recently Used (LRU)
-algorithms require a very history to compute exactly, so an
-approximation is often used called 'pseudo-LRU'. To compute the
-least-recently-used 'way', a pseudo-LRU algorithm is to use a binary
-tree where a '0' at a node indicates the LRU node is to the right and
-a '1' indicates the LRU node is to the left. In the figure below, we
-can see that `way` '5' is LRU according to the current settings at each
+which 'way' in the cache to evict data from in order to store new
+data. Least Recently Used (LRU) algorithms require a very complex
+history mechanism to compute exactly, so an approximation is often
+used called 'pseudo-LRU'. To compute the least-recently-used 'way', a
+pseudo-LRU algorithm uses binary tree with 'ways' as leaves, where a
+'0' at a node indicates the LRU 'way' is to the right and a '1'
+indicates the LRU 'way' is to the left. In the figure below, we can
+see that 'way' '5' is LRU according to the current settings at each
 node of the tree.
 
 ![plru](/assets/images/plru.png)
@@ -49,7 +49,8 @@ by reads or writes.
 It is quite natural to describe the allocation on the PLRU tree in a
 recursive routine. Here we show the routine written in software
 returning an integer for the LRU `way` given a list of integers
-capturing the state of the tree.
+capturing the 0/1 state of the tree nodes (the vector of nodes is
+stored as seen from left to right).
 
 ```dart
  1 int allocPLRU(List<int> v, {int base = 0}) {
@@ -66,17 +67,18 @@ capturing the state of the tree.
 Here you can see that the recursion splits on the middle element of a
 0/1 vector at line 7, searching left if the node has a '1' otherwise
 searching right. At the leaf (line 4) it returns the left element if
-the node is '1' otherwise the right element.
+the node is '1' otherwise the right element as the LRU `way`.
 
 ### Hardware PLRU Allocation
 
-ROHD allows us to describe the allocation algorithm in hardware
+ROHD allows us to describe the LRU allocation algorithm in hardware
 recursively because it allows us to generate hardware recursively for
 the tree.
 
 In the hardware algorithm below, we see that we pass in a bitvector in
-the form of `Logic` and again split on the middle element. Instead of
-a ternary operation, we can use a `mux` (line 8) on the middle element
+the form of `Logic` and again split on the middle element of the
+vector. Instead of a ternary operation (lines 4-6 of the software
+algorithm above), we can use a `mux` (line 8 below) on the middle element
 value to return the result of the left recursion or right recursion.
 At the leaf (line 7), we can `mux` on the node to return the left
 element in case of a '1' otherwise the right element.
@@ -100,9 +102,9 @@ element in case of a '1' otherwise the right element.
 
 A second algorithm needed to maintain the PLRU tree is to manage
 'hits' to a given `way`, making that `way` 'recently used', or to
-invalidate a `way`, making it available for use and marking it as LRU
-to enforce this. Given a `way` to hit or invalidate, this algorithm
-needs to update the state of the PLRU tree and return it.
+invalidate a `way`, making it available for use and marking it as
+LRU. Given a `way` to hit or invalidate, this algorithm needs to
+update the state of the PLRU tree and return it.
 
 ### Software PLRU Hit/Invalidate
 
@@ -132,9 +134,10 @@ processed, otherwise it is simply returned and similarly for the right.
 17   }
 18 }
 ```
+
 Let's consider the 'hit' case where `invalidate` is false. Then at
 split point, the middle value is set to '0' if the `way` is left or same
-as the middle, and it is set to '1' if the `way` is to the right
+as the middle, and it is set to '1' if the `way` is to the right, both
 indicating the LRU is in the opposite direction. The middle value is
 set to '0' to indicate LRU must be right now (all on line 15). The
 leaf processing (line 4) is similar: if we match the `way` at the node,
@@ -144,7 +147,8 @@ the LRU direction).
 
 If we consider the `invalidate` true case, the logic is simply
 reversed: a hit means LRU is going in this direction and wherever we
-would have set a '0', we set a '1' and vice-versa.
+would have set a '0', we would set a '1' instead to invalidate and
+vice-versa.
 
 ### Hardware PLRU Hit/Invalidate
 
@@ -188,11 +192,16 @@ in which hardware recursion differs from software that we need to
 check this condition which adds range comparison at every node.
 
 Otherwise, in the 'hit' case (`invalidate` is false), we return '1' if the `way`
-is in the left subtree and '0 if it is in the right (line 18).
+is in the left subtree and '0' if it is in the right (line 18).
 
 Finally, we return a concatenation of the computed PLRU state vector
 (line 19).  Again note that the `invalidate`=true case simply reverses
 them meaning of '1' and '0'.
+
+We can see that maintaining a PLRU tree to support pseudo-LRU
+computation is quite similar in both software and hardware recursive
+forms. ROHD makes it simple to follow software patterns to generate
+hardware naturally.
 
 ## A Reduction Tree Component
 
