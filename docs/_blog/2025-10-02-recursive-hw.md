@@ -219,9 +219,10 @@ latency of computation logarithmically by arranging a tree of
 computation to perform parallel operations even when the output is a
 single result. 
 
-In hardware description languages, there is even syntax to perform
-common bit-level reductions like or-reduction and and-reduction. It is
-more difficult to reductions on more complex inputs or operations.
+In Hardware Description Languages (HDL)s, there is even syntax to
+perform common bit-level reductions like or-reduction and
+and-reduction. It is more difficult to describe reductions on more
+complex inputs or operations in traditional HDLs.
 
 Yet in software, more complex reduction trees are possible because of
 the compositional nature of software languages. For example the C++
@@ -231,11 +232,12 @@ containers. Indeed, these operations are threaded to ensure fastest
 possible execution in reduction tree arrangements within STL.
 
 To perform more complex reductions in hardware, the [ROHD Hardware
-Component Library (HCL)](<https://github.com/intel/rohd-hcl>) provides a
-`ReductionTree` component which takes an associative operation and
+Component Library (HCL)](<https://github.com/intel/rohd-hcl>) provides
+a `ReductionTree` component which takes an associative operation and
 populates a hardware tree arrangement to compute a hardware reduction
-in logarithmic latency. In hardware we need to consider pipelining as
-well for any significant reduction length.
+with a latency that is logarithmic with the number of inputs. In
+hardware we need to consider pipelining as well for any significant
+reduction length.
 
 ### Add Reduction Tree
 
@@ -268,6 +270,26 @@ other datatypes like `FloatingPoint` or `FixedPoint`.
 By replacing the operator `addReduce` with more complex hardware
 generators, we can also generate more complex tree reduction
 computations in hardware.
+
+## Mux Reduction Tree
+
+Here is a more complex example (similar to reduction) that passes in a
+control line that can be indexed by the depth of the tree to perform a
+muxing operation, an operation quite useful in hardware:
+
+```dart
+    const length = 1024;
+    final width = log2Ceil(length);
+    final vec = <Logic>[];
+    final control = Logic(width: log2Ceil(vec.length)));
+
+    Logic muxReduce(List<Logic> inputs,
+        {int depth, Logic? control, String name = 'mux'}) =>
+      mux(control![depth], inputs[1], inputs[0]);
+
+    final muxTree = ReductionTree(vec, muxReduce,
+        clk: clk, depthBetweenFlops: 2, control: control, name: 'mux');
+```
 
 Being able to quickly generate tree reductions is another way to map
 what are common software design patterns into hardware with a high
