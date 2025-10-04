@@ -198,11 +198,11 @@ The hardware recursion for PLRU hit/invalidate follows the same
 pattern as software. Yet because we need to pass back the entire state
 vector, not knowing the actual value of `way` at generation time, we
 need to fully process each element of the vector with the `way` in the
-algorithm. That can be seen most clearly in the upper and lower
+algorithm. That can be seen most clearly in the lower and upper
 recursions (lines 13 and 14) where we must invoke the recursive
-routine for both directions so that the `way` signal is generated into
-both sides of the tree at each node to be compared appropriately in
-hardware since it is a dynamic signal that changes after hardware
+routine for both directions. That the `way` signal is available at
+each node to be compared appropriately in hardware since `way` is a
+dynamic signal, not a fixed value, that changes after hardware
 generation. Remember in software we knew the value of `way` so we
 could just return the left or right portion unprocessed.
 
@@ -232,13 +232,13 @@ could just return the left or right portion unprocessed.
 
 At the split point (line 15), we compare the `way` to the range of the
 current subtree to ensure it is within that range. If not we simply
-return the midpoint value (line 17) unchanged. This is one situation
-in which hardware recursion differs from software that we need to
-check this condition which adds range comparison at every node.
+return the midpoint value (line 17) unchanged. This is an example
+where hardware recursion differs from software that we need to check
+this condition which adds range comparison at every node.
 
-Otherwise, in the 'hit' case (`invalidate`=`false`), we return '1'
-if the `way` is in the left subtree and '0' if it is in the right
-(line 18).
+Otherwise, in the 'hit' case (`invalidate`=`false`), we return '0' if
+the `way` is in the left subtree and '1' if it is in the right (line
+18) (again, we point the LRU in the opposite direction of the 'hit').
 
 Finally, we return a concatenation of the computed PLRU state vector
 (line 19).  Again note that the `invalidate=true` case simply reverses
