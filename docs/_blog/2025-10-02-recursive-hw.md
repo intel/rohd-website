@@ -50,9 +50,10 @@ by reads or writes.
 
 It is quite natural to describe the allocation of the PLRU tree in a
 recursive routine. Let us assume the PLRU tree is represented as a 0/1
-state vector of the tree nodes as seen from left-to-right. Below is
-the routine written in software that, given the state of the PLRU tree
-as a `List`, returns the integer LRU `way`.
+state vector of the tree nodes as seen from left-to-right. In the
+example above, the state vector would be `[1,0,1,0,0,1,0]`. Below is the
+routine written in software that, given the state of the PLRU tree as
+a `List`, returns the integer LRU `way`.
 
 ```dart
  1 int allocPLRU(List<int> v, {int base = 0}) {
