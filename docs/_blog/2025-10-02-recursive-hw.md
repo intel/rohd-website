@@ -48,11 +48,11 @@ by reads or writes.
 
 ### Software PLRU Allocation
 
-It is quite natural to describe the allocation on the PLRU tree in a
-recursive routine. Here we show the routine written in software that,
-given the state of the PLRU tree as a list of 0/1 values returns an
-the integer LRU `way`. This state vector is stored from the tree nodes
-as seen from left-to-right.
+It is quite natural to describe the allocation of the PLRU tree in a
+recursive routine. Let us assume the PLRU tree is represented as a 0/1
+state vector of the tree nodes as seen from left-to-right. Below is
+the routine written in software that, given the state of the PLRU tree
+as a `List`, returns the integer LRU `way`.
 
 ```dart
  1 int allocPLRU(List<int> v, {int base = 0}) {
@@ -66,8 +66,8 @@ as seen from left-to-right.
  9           : allocPLRU(v.sublist(mid + 1, v.length), base: mid + 1 + base);
 10 }
 ```
-Here you can see that the recursion splits on the middle element of a
-0/1 vector at line 7, searching left if the node has a '1' otherwise
+Here you can see that the recursion splits on the middle element of 
+the `List` at line 7, searching left if the node has a '1' otherwise
 searching right. At the leaf (line 4) it returns the left element if
 the node is '1' otherwise the right element as the LRU `way`.
 
@@ -140,6 +140,10 @@ return the left element in case of a '1' otherwise the right element.
 12                      base: mid + 1 + base, sz: lsz));
 13 }
 ```
+
+This algorithm is incredibly similar to the software recursive
+algorithm, replacing conditionals with muxes.
+
 ## PLRU Hit/Invalidate
 
 A second algorithm needed to maintain the PLRU tree is to manage
@@ -189,8 +193,8 @@ the LRU direction).
 If we consider the `invalidate=true` case, the logic is simply
 reversed: a hit means LRU is going in this direction and wherever we
 would have set a '0', we would set a '1' instead to invalidate and
-vice-versa. Invalidate forces the tree nodes to follow the final way
-with a series of '0s'.
+vice-versa. Invalidate forces the tree nodes to follow the final `way`
+with a series of '0s' to mark it as LRU.
 
 ### ROHD Recursive Hardware PLRU Hit/Invalidate
 
@@ -239,9 +243,10 @@ this condition which adds range comparison at every node.
 Otherwise, in the 'hit' case (`invalidate`=`false`), we return '0' if
 the `way` is in the left subtree and '1' if it is in the right (line
 18) (again, we point the LRU in the opposite direction of the 'hit').
-
 Finally, we return a concatenation of the computed PLRU state vector
-(line 19).  Again note that the `invalidate=true` case simply reverses
+(line 19).
+
+Again note that the `invalidate=true` case simply reverses
 them meaning of '1' and '0'.
 
 We can see that maintaining a PLRU tree to support pseudo-LRU
@@ -301,9 +306,9 @@ of the `length=1` case where the tree is not balanced perfectly.
  ```
  
 The following is an instance of generating computation using the
-`ReductionTree`, producing a binary tree of these 79 13-bit inputs and
-adding pipelining at every other level of adders (inserted via the
-`addReduce` method).
+`ReductionTree`, producing a binary tree with 79 13-bit inputs and a
+tree of adders (inserted via the `addReduce` method, along with adding
+pipelining at every other level of the tree.
 
  ```dart
  main () {
@@ -317,10 +322,11 @@ adding pipelining at every other level of adders (inserted via the
 }
 ```
 
-It would be quite simple to do other operations like `max` or `min` or
+It is quite simple to do other operations like `max` or `min` or
 operate on other datatypes like `FloatingPoint` or `FixedPoint`
 replacing the operator `addReduce` with more complex hardware
-generators, or to manage data widening and sign extension.
+generators, including `Module` instances, or to manage data widening
+and sign extension.
 
 ## Mux Reduction Tree
 
@@ -329,8 +335,8 @@ reduction) that passes in a control line that can be indexed by the
 depth of the tree to perform a muxing operation, an operation quite
 useful in hardware. Here you see the operation is now the `muxReduce`
 method which injects a mux at each node of the tree. Recognize that
-`ReductionTree` does not know apriori what the node hardware will be
-giving it infinite extensibility.
+the `ReductionTree` component does not know apriori what the node
+hardware will be, giving it infinite extensibility.
 
 ```dart
 main() {
