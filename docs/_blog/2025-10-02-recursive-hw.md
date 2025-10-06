@@ -28,7 +28,7 @@ Set-associative caching requires a replacement policy to figure out
 which 'way' in the cache to evict data from in order to store new
 data. Least Recently Used (LRU) algorithms require a very complex
 history mechanism to compute exactly, so an approximation is often
-used called 'pseudo-LRU'. 
+used called 'pseudo-LRU'.
 
 To compute the least-recently-used 'way', a pseudo-LRU algorithm uses
 a binary tree with 'ways' as leaves, where a '0' at an intermediate
@@ -67,11 +67,11 @@ a `List`, returns the integer LRU `way`.
  9           : allocPLRU(v.sublist(mid + 1, v.length), base: mid + 1 + base);
 10 }
 ```
-Here you can see that the recursion splits on the middle element of 
+
+Here you can see that the recursion splits on the middle element of
 the `List` at line 7, searching left if the node has a '1' otherwise
 searching right. At the leaf (line 4) it returns the left element if
 the node is '1' otherwise the right element as the LRU `way`.
-
 
 ### Hardware PLRU Allocation
 
@@ -111,7 +111,7 @@ what is an approximate algorithm!).
         end
     end
 ```
-	  
+
 ### ROHD Recursive Hardware PLRU Allocation
 
 ROHD allows us to describe the LRU allocation algorithm recursively in
@@ -265,7 +265,7 @@ from an array of inputs.
 Reductions are common in both software and hardware and improve the
 latency of computation logarithmically by arranging a tree of
 computation to perform parallel operations even when the output is a
-single result. 
+single result.
 
 In Hardware Description Languages (HDL)s, there is even operator
 syntax to perform common bit-level reductions like `or-reduction` and
@@ -290,8 +290,7 @@ reduction length.
 ### Add Reduction Tree
 
 Here is an example of a reduction tree using the native add operations
-of SystemVerilog, but written using a ROHD generator class. 
-
+of SystemVerilog, but written using a ROHD generator class.
 
 The method `addReduce` is an operation to be instantiated by the
 reduction tree generator. In this case it is simply a native addition
@@ -305,7 +304,7 @@ of the `length=1` case where the tree is not balanced perfectly.
           {int depth, Logic? control, String name = ''}) =>
        inputs.length < 2 ? inputs[0] : inputs[0] + inputs[1];
  ```
- 
+
 The following is an instance of generating computation using the
 `ReductionTree`, producing a binary tree with 79 13-bit inputs and a
 tree of adders (inserted via the `addReduce` method, along with adding
@@ -315,7 +314,7 @@ pipelining at every other level of the tree.
  main () {
      const width = 13;
      const length = 79;
-	 final clk = Logic();
+     final clk = Logic();
      final vec = <Logic>[];
 
      final reductionTree = ReductionTree(
@@ -343,7 +342,7 @@ hardware will be, giving it infinite extensibility.
 main() {
     const length = 1024;
     final width = log2Ceil(length);
-	final clk = Logic();
+    final clk = Logic();
     final vec = <Logic>[];
     final control = Logic(width: log2Ceil(vec.length)));
 
