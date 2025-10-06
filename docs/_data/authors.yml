@@ -9,3 +9,15 @@ Max Korbel:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/maxkorbel"
+
+Desmond A. Kirkpatrick:
+  name: "Desmond A. Kirkpatrick"
+  bio: "Senior Principal Engineer at Intel"
+  avatar: "assets/images/authors/desmond_kirkpatrick_avatar.jpg"
+  links:
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope-square"
+      url: "mailto:desmond.a.kirkpatrick@intel.com"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/desmond-kirkpatrick-57470b7"
