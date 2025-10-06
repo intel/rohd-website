@@ -315,7 +315,7 @@ pipelining at every other level of the tree.
  main () {
      const width = 13;
      const length = 79;
-	 final clk = Logic();
+     final clk = Logic();
      final vec = <Logic>[];
 
      final reductionTree = ReductionTree(
