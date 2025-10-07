@@ -1,7 +1,7 @@
 ---
 title: "Refining Software Algorithms to Hardware Implementations: Recursion"
 permalink: /blog/recursive-hw/
-last_modified_at: 2025-10-02
+last_modified_at: 2025-10-06
 author: "Desmond A. Kirkpatrick"
 ---
 
@@ -9,7 +9,7 @@ As a new way of describing hardware programmatically, ROHD opens up
 the world of hardware design to people with background in software
 algorithms. Today, we see a lot of hardware design in the space of
 hardware accelerators which are being used to speed up algorithms that
-already exist in software. It is interesting, therefore, to consider
+already exist in software. It is therefore interesting to consider
 design patterns that help us transform traditional software techniques
 into hardware: a key software technique to consider is *recursion* which
 is often the most natural way to describe a given computation.
@@ -24,31 +24,30 @@ in hardware using ROHD.
 
 ## A Pseudo-LRU Algorithm
 
-Set-associative caching requires a replacement policy to figure out
-which 'way' in the cache to evict data from in order to store new
-data. Least Recently Used (LRU) algorithms require a very complex
-history mechanism to compute exactly, so an approximation is often
-used called 'pseudo-LRU'.
+Set-associative caching requires a replacement policy to figure out which 'way'
+in the cache from which to evict data in order to store new data. Least Recently
+Used (LRU) algorithms require a very complex history mechanism to compute
+exactly, so an approximation is often used called 'pseudo-LRU'.
 
-To compute the least-recently-used 'way', a pseudo-LRU algorithm uses
-a binary tree with 'ways' as leaves, where a '0' at an intermediate
-node indicates the LRU 'way' is to the right and a '1' indicates the
-LRU 'way' is to the left. In the figure below, we can see that 'way'
-'5' is LRU according to the current settings at each node of the tree.
+To compute the least-recently-used 'way', a pseudo-LRU algorithm uses a binary
+tree with 'ways' as leaves, where a '0' at an intermediate node indicates the
+LRU 'way' is to the right and a '1' indicates it is to the left. In the figure
+below, we can see that 'way' '5' is LRU according to the current settings at
+each node of the tree.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/plru.png)
 
 Two routines are needed to maintain the PLRU tree above in order to do
 pseudo-LRU computation, first for finding the LRU `way` to 'allocate' a
-new entry and the other for updating the LRU state as `way`s are 'hit'
+new entry and a second for updating the LRU state as `way`s are 'hit'
 by reads or writes.
 
 ## PLRU Allocation
 
 ### Software PLRU Allocation
 
-It is quite natural to describe the allocation of the PLRU tree in a
+It is quite natural to describe allocation in the PLRU tree as a
 recursive routine. Let us assume the PLRU tree is represented as a 0/1
 state vector of the tree nodes as seen from left-to-right. In the
 example above, the state vector would be `[1,0,1,0,0,1,0]`. Below is the
@@ -68,10 +67,10 @@ a `List`, returns the integer LRU `way`.
 10 }
 ```
 
-Here you can see that the recursion splits on the middle element of
-the `List` at line 7, searching left if the node has a '1' otherwise
-searching right. At the leaf (line 4) it returns the left element if
-the node is '1' otherwise the right element as the LRU `way`.
+Here you can see that the recursion splits on the middle element of the `List`
+at line 7, searching left for the LRU if the node has a '1' otherwise searching
+right. At the leaf (line 4) if the node is '1' it returns the left element,
+otherwise the right, as the LRU `way`.
 
 ### Hardware PLRU Allocation
 
@@ -79,16 +78,16 @@ To implement a tree-based algorithm like PLRU allocation in
 traditional HDLs, a designer usually has to encode the tree and write
 a decoder, limited to a specific number of ways. This is not unlike
 when software developers had to write assembly -- using a bit-level
-abstraction in which to embed algorithms for either software or
+abstraction in which to embed algorithms in either software or
 hardware is painful and error-prone.
 
-Here is an example in Verilog HDL for a *fixed* 8-way allocation. It
-is very hard to determine this is correct and obfuscates the algorithm
-almost completely. Looking at this code a designer would likely wish
-this to be compiled from a higher level description than have to write
-and maintain this kind of bit-level code (there could easily be an
-error in this code that cannot be seen without exhaustive testing of
-what is an approximate algorithm!).
+Here is an example in Verilog HDL for a *fixed* 8-way allocation. It is very
+hard to determine this algorithm is correct as this description obfuscates the
+algorithm almost completely. Looking at this code a designer would likely wish
+this to be compiled from a higher level description than have to write and
+maintain this kind of bit-level code (there could easily be an error in this
+code that cannot be seen without exhaustive testing of what is an approximate
+algorithm!).
 
 ```verilog
     always_comb begin
@@ -116,15 +115,15 @@ what is an approximate algorithm!).
 
 ROHD allows us to describe the LRU allocation algorithm recursively in
 hardware as well because it enables us to generate hardware recursively
-for the tree.
+for a PLRU tree of an arbitrary number of ways.
 
-In the hardware algorithm below, we see that we pass in a bitvector in
-the form of `Logic` and again split on the middle element of the
-vector (line 5). Instead of a ternary operation (lines 4-6 of the
-software algorithm above), we can use a `mux` (line 8 below) on the
-middle element value to return the result of the left recursion or
-right recursion.  At the leaf (line 7), we can `mux` on the node to
-return the left element in case of a '1' otherwise the right element.
+In the hardware algorithm below, we see that we pass in a bitvector in the form
+of `Logic` and again split on the middle element of the vector (line 5 below).
+Instead of a ternary operation (lines 4-6 of the software algorithm above), we
+can use a multiplexor or `mux` (line 8 below) on the middle element value to
+return the result of the left recursion or right recursion.  At the leaf (line
+7), we can `mux` on the node to return the left element in case of a '1'
+otherwise the right element.
 
 ```dart
  1 Logic allocPLRU(Logic v, {int base = 0, int sz = 0}) {
@@ -147,19 +146,19 @@ algorithm, replacing conditionals with muxes.
 
 ## PLRU Hit/Invalidate
 
-A second algorithm needed to maintain the PLRU tree is to manage
-'hits' to a given `way`, making that `way` 'recently used', or to
-invalidate a `way`, making it available for use and marking it as
-LRU. Given a `way` to hit or invalidate, this algorithm needs to
-update the state of the PLRU tree and return it.
+A second algorithm needed to maintain the PLRU tree is managing 'hits' to a
+given `way`, making that `way` 'recently used', or to manage 'invalidates' of a
+`way`, making it available for use and marking it as LRU. Given a `way` to hit
+or invalidate, this algorithm needs to update the state of the PLRU tree and
+return that state vector.
 
 ### Software PLRU Hit/Invalidate
 
-For the software form of the hit algorithm, the PLRU state is again
-traversed recursively, splitting on the middle element (line 6) and
-processing the lower and upper portions of the state vector.  If the
-`way` being hit is in the left portion, then that portion of the tree is
-processed, otherwise it is simply returned -- similarly for the right.
+For the software form of the hit algorithm, the PLRU state is again traversed
+recursively, splitting on the middle element (line 6) and processing the lower
+(line 9) and upper (line 12) portions of the state vector.  If the `way` being
+hit is in the left portion, then that portion of the tree is processed,
+otherwise it is simply returned as is -- similarly for the right.
 
 ```dart
  1 List<int> hitPLRU(List<int> v, int way,
@@ -182,34 +181,33 @@ processed, otherwise it is simply returned -- similarly for the right.
 18 }
 ```
 
-Let's consider the 'hit' case where `invalidate` is false. Then at
-split point, the middle value (line 15) is set to '0' if the `way` is
-left or same as the middle, and it is set to '1' if the `way` is to
-the right, both indicating the LRU is in the opposite direction. The leaf
-processing (line 4) is similar: if we match the `way` at the node,
-then set the node to '0' to switch LRU away from this leaf, otherwise
-set to '1' to indicate that LRU is this node (remember '0' indicates
-the LRU direction).
+Let's consider the 'hit' case where `invalidate=false`, so we are marking the
+`way` as recently used. At the splitting point, the middle value (line 15) is
+set to '1' if the `way` is to the right of middle, otherwise it is
+set to '0', indicating the LRU is in the opposite direction of the  hit `way`.
+The leaf processing code (line 4) is similar: if we match the `way` at the node,
+then set the node to '0' to switch LRU away from this leaf, otherwise set to '1'
+(remember '0' indicates the LRU direction is to the right).
 
-If we consider the `invalidate=true` case, the logic is simply
-reversed: a hit means LRU is going in this direction and wherever we
-would have set a '0', we would set a '1' instead to invalidate and
-vice-versa. Invalidate forces the tree nodes to follow the final `way`
-with a series of '0s' to mark it as LRU.
+If we consider the `invalidate=true` case, where we are marking the `way` as
+available or LRU, the logic is simply reversed: a hit means LRU is going in the
+same direction of the hit `way` and wherever we would have set a '0' for a
+'hit', we would set a '1' instead to invalidate and a '1' instead of a '0'.
+Invalidate marks each node along the path to the invalidated `way` with a '0' to
+designate the `way` as LRU.
 
 ### ROHD Recursive Hardware PLRU Hit/Invalidate
 
-The hardware recursion for PLRU hit/invalidate follows the same
-pattern as software. Yet because we need to pass back the entire state
-vector, not knowing the actual value of `way` at generation time, we
-need to fully process each element of the vector with the `way` in the
-algorithm. That can be seen most clearly in the lower and upper
-recursions (lines 13 and 14) where we must invoke the recursive
-routine for both directions. That the `way` signal is available at
-each node to be compared appropriately in hardware since `way` is a
-dynamic signal, not a fixed value, that changes after hardware
-generation. Remember in software we knew the value of `way` so we
-could just return the left or right portion unprocessed.
+The hardware recursion for PLRU hit/invalidate follows the same pattern as
+software. Yet because we need to pass back the entire state vector, not knowing
+the actual value of `way` at generation time, we need to fully process each
+element of the vector with the `Logic` signal `way` in the recursion. That can
+be seen most clearly in the lower and upper recursions (lines 13 and 14) where
+we must invoke the recursive routine to pass the `way` for both. Thes makes
+the `way` signal available at each node to be compared appropriately in
+hardware since `way` is a dynamic signal that changes value after hardware
+generation. Remember that in the software algorithm we knew the value of `way`
+so we could just recurse into the appropriate subtree and return the other subtree unprocessed.
 
 ```dart
  1 Logic hitPLRU(Logic v, Logic way,
@@ -235,31 +233,26 @@ could just return the left or right portion unprocessed.
 21 }
 ```
 
-At the split point (line 15), we compare the `way` to the range of the
-current subtree to ensure it is within that range. If not we simply
-return the midpoint value (line 17) unchanged. This is an example
-where hardware recursion differs from software that we need to check
-this condition which adds range comparison at every node.
+At the current node, we compare the `way` to the range of the current
+subtree. If the `way` is not in range (line 16), we simply return the midpoint
+value (line 17) unchanged. This is an example where hardware recursion differs
+from software in that we need to check this condition.
 
-Otherwise, in the 'hit' case (`invalidate`=`false`), we return '0' if
-the `way` is in the left subtree and '1' if it is in the right (line
-18) (again, we point the LRU in the opposite direction of the 'hit').
-Finally, we return a concatenation of the computed PLRU state vector
-(line 19).
+At line 18, we can see that when the `way` falls within this subtree and when
+processing the 'hit' case (`invalidate`=`false`), we return '1' if the `way` is
+in the right subtree and '0' otherwise. Finally, we return a concatenation of
+the computed PLRU state vector (line 19). Note that the `invalidate=true` case
+simply reverses the meaning of '1' and '0'.
 
-Again note that the `invalidate=true` case simply reverses
-them meaning of '1' and '0'.
-
-We can see that maintaining a PLRU tree to support pseudo-LRU
-computation is quite similar in both software and hardware recursive
-forms. ROHD makes it simple to follow software patterns to generate
-hardware naturally when the computation is easily described
-recursively.
+We can see that maintaining a PLRU tree to support pseudo-LRU computation is
+quite similar in both software and hardware recursive forms. ROHD makes it
+simple to follow software patterns to generate hardware when the computation is
+easily described recursively.
 
 ## A Reduction Tree Component
 
 A parallel reduction is an efficient arrangement of computation of
-associative operations (like sum or max) to compute a single result
+associative operations (like sum or maximum) to compute a single result
 from an array of inputs.
 
 Reductions are common in both software and hardware and improve the
@@ -268,8 +261,8 @@ computation to perform parallel operations even when the output is a
 single result.
 
 In Hardware Description Languages (HDL)s, there is even operator
-syntax to perform common bit-level reductions like `or-reduction` and
-`and-reduction`. It is more difficult to describe reductions on more
+syntax to perform common bit-wise reductions like `or-reduction` and
+`and-reduction`. It is more difficult to describe reductions on
 complex inputs or operations in traditional HDLs.
 
 Yet in software, more complex reduction trees are possible because of
@@ -279,25 +272,24 @@ Standard Template Library (STL) contains a template operator
 containers. Indeed, these operations are threaded to ensure fastest
 possible execution in reduction tree arrangements within STL.
 
-To perform more complex reductions in hardware, the [ROHD Hardware
-Component Library (HCL)](<https://github.com/intel/rohd-hcl>) provides
-a `ReductionTree` component which takes an associative operation and
-populates a hardware tree arrangement to compute a hardware reduction
-with a latency that is logarithmic with the number of inputs. In
-hardware we need to consider pipelining as well for any significant
-reduction length.
+To perform more complex reductions in hardware, the [ROHD Hardware Component
+Library (HCL)](<https://github.com/intel/rohd-hcl>) provides a `ReductionTree`
+component which takes an associative operation and populates a hardware tree
+arrangement to compute a hardware reduction with a latency that is logarithmic
+with the number of inputs. In hardware we need to consider pipelining as well
+for a reduction of significant length.
 
 ### Add Reduction Tree
 
-Here is an example of a reduction tree using the native add operations
-of SystemVerilog, but written using a ROHD generator class.
+Here is a simple example of a reduction tree using the native add operations of
+SystemVerilog, but written using a ROHD generator class.
 
 The method `addReduce` is an operation to be instantiated by the
 reduction tree generator. In this case it is simply a native addition
 of two inputs, but could be a more complex generator or `Module`
 instance of an associative 2-input computation. Because the tree can
 handle lengths that are not powers of 2, the operation must take care
-of the `length=1` case where the tree is not balanced perfectly.
+of the `length=1` case when the tree is not balanced perfectly.
 
 ```dart
   Logic addReduce(List<Logic> inputs,
@@ -305,10 +297,10 @@ of the `length=1` case where the tree is not balanced perfectly.
        inputs.length < 2 ? inputs[0] : inputs[0] + inputs[1];
  ```
 
-The following is an instance of generating computation using the
-`ReductionTree`, producing a binary tree with 79 13-bit inputs and a
-tree of adders (inserted via the `addReduce` method, along with adding
-pipelining at every other level of the tree.
+Then we pass this reduction operation during an instantiation of
+`ReductionTree`, producing a binary tree with 79 13-bit inputs and a tree of
+adders (inserted at each node by the `addReduce` method), along with adding
+pipelining at every other level of the tree, starting from the leaves.
 
  ```dart
  main () {
@@ -322,20 +314,21 @@ pipelining at every other level of the tree.
 }
 ```
 
-It is quite simple to do other operations like `max` or `min` or
-operate on other datatypes like `FloatingPoint` or `FixedPoint`
-replacing the operator `addReduce` with more complex hardware
-generators, including `Module` instances, or to manage data widening
-and sign extension.
+It is quite simple to do other operations like `max` or `min` or operate on
+other datatypes like `FloatingPoint` or `FixedPoint` replacing the operator
+`addReduce` with more complex hardware generators, including `Module` instances.
+The `ReductionTree` can also manage data widening and sign extension for
+arithmetic operation reductions.
 
 ## Mux Reduction Tree
 
-Here is a more complex example (similar to, but not technically
-reduction) that passes in a control line that can be indexed by the
-depth of the tree to perform a muxing operation, an operation quite
-useful in hardware. Here you see the operation is now the `muxReduce`
-method which injects a mux at each node of the tree. Recognize that
-the `ReductionTree` component does not know apriori what the node
+Here is a more complex example (similar to, but not technically reduction) that
+passes in a control line that can be indexed by the depth of the tree to perform
+a multiplexing (or 'mux'ing) operation, an operation quite useful in hardware.
+Here you see the operation is now the `muxReduce` method which injects a mux at
+each node of the tree.
+
+Note that the `ReductionTree` component does not know apriori what the node
 hardware will be, giving it infinite extensibility.
 
 ```dart
