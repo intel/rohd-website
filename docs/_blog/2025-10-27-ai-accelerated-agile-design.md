@@ -5,20 +5,20 @@ last_modified_at: 2025-10-27
 author: "Desmond A. Kirkpatrick"
 ---
 
-There is a lot of excitement about applying AI to VLSI design as well as a lot of concern that LLMs will generate hardware descriptions riddled with hard-to-find bugs. While software is experiencing a renaissance in AI-assistance, hardware semantics and its unpatchable nature mean that we need to find ways to leverage AI to help build in much more correctness as we design if we expect to see similar gains in productivity.
+There is a lot of excitement about applying AI to VLSI design as well as a lot of concern that Large Language Models (LLMs) will generate expansive hardware descriptions riddled with hard-to-find bugs. While software is experiencing a renaissance in AI-assistance, hardware semantics and its un-patchable nature mean that we need to find ways to leverage AI to help build with a high level of focus on correctness as we design hardware if we expect to see similar gains in productivity.
 
-A methodology that is synergistic with using AI to boost correctness while accelerating design is agile hardware design which borrows from the software world the precepts of test-driven, always-alive, and feature-by-feature design evolution. Focusing on abstraction, components, modularity, and reuse is especially synergistic with the way LLMs retain and apply knowedge in a limited context window. At the heart of this approach is the recognition that the perfect specification does not exist and that design is an evolution of discovery and implementation -- and AI is perfect for accelerating both! In this methodology, though, there is no push-button design -- the designer is in the loop directing the next evolution of the design, whether it is fixing a problem or adding a new feature.
+A methodology that is synergistic with using AI to boost correctness while accelerating design is agile hardware design, which borrows the precepts of test-driven, always-alive, and feature-by-feature design evolution, endemic in the software world. Focusing on abstraction, components, modularity, and reuse is especially synergistic with the way LLMs retain and apply knowledge in a limited context window. At the heart of this approach is the recognition that the perfect specification does not exist, and that design is an evolution of discovery and implementation -- and AI is perfect for accelerating both! In this methodology, therefore, there is no push-button design -- the designer is in the loop directing the next evolution of the design, whether it is fixing a problem or adding a new feature, to reach the intended behavior and performance of the hardware design.
 
-In this blog, we will describe our experiences in applying AI to help accelerate design of a ROHD-HCL component. The ROHD framework provides some key advantages for using AI to accelerate agile hardware design. As Dart is a popular programming language, an LLM is well trained in Dart and able to take advantage of a lot of the software abstractions we use in ROHD. A big innovation is the AI coding agents like
-[Dart MCP servers](https://blog.flutter.dev/supercharge-your-dart-flutter-development-experience-with-the-dart-mcp-server-2edcc8107b49) for bridging between AI agents and Dart coding IDEs and are automatically enabled in VSCode CoPilot.
+In this blog, we will describe our experiences in applying AI to help accelerate design of a ROHD-HCL component. The ROHD framework provides some key advantages for using AI to accelerate agile hardware design. As Dart is a popular programming language, LLMs are well-trained in Dart and able to take advantage of a lot of the software abstractions we use in ROHD. A big innovation is the AI coding agents like
+[Dart MCP servers](https://blog.flutter.dev/supercharge-your-dart-flutter-development-experience-with-the-dart-mcp-server-2edcc8107b49) for bridging between AI agents and Dart coding IDEs and are automatically enabled in VS Code Copilot.
 
-By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human) have to keep around. The framework has a very rapid edit/simulate loop due to its built-in simulator, providng an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
+By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human!) have to keep around. The ROHD framework has a very rapid edit/simulate loop due to its built-in simulator, providing an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
 
  We also have a detailed video demonstration of the AI-accelerated design evolution of this component: [AI-Accelerated Agile Design Demo](https://youtu.be/xOsWIT9Y4iE?si=h1Ttu9eD_6b4ouvG).
 
 ## AI Challenge:  Build a New Caching Request/Response Channel
 
-An interesting component for use with communication channels is a request/response channel where we send an address request to a downstream agent and we receive data back over a response channel, using ready/valid protocols. The specific channel we want to build is one that would cache address/data pairs to speed up future address/data requests.
+An interesting component for use with communication channels is a request/response channel where we send an address request to a downstream agent, and we receive data back over a response channel, using ready/valid protocols. The specific channel we want to build is one that would cache address/data pairs to speed up future address/data requests.
 
 {:refdef: style="text-align: center;"}
 <!-- markdownlint-disable-next-line MD034 -->
@@ -29,14 +29,14 @@ Designing this component using an agile hardware design methodology, this blog w
 
 ## Design the API First
 
-The problem of designing a good component starts with defining a good API and we realized we could define a small family of request/response channels and familiarize ourselves and the LLM with how to assemble and test these channels.
+The problem of designing a good component starts with defining a good API, and we realized we could define a small family of request/response channels and familiarize ourselves and the LLM with how to assemble and test these channels.
 
-Here is the prompt we used to generate a primitive form of our component, simple forwarding, before we build the caching form. This helped drive the correct API first, as well as set up simple testing frameworks, as a warmup for the LLM, and in our case we used Claude Sonnet 4.
+Here is the prompt we used to generate a primitive form of our component, simple forwarding, before we build the caching form. This helped drive the correct API first, as well as set up simple testing frameworks, as a warm-up for the LLM, and in our case we used Claude Sonnet 4.
 
 >
 Please create a future memory ROHD component called RequestResponseChannel that  has an upstream pair of interfaces, one for request and then response, and a mirror set of downstream request and response interfaces. The component will forward an upstream request to the downstream request, and forward a downstream response to the upstream response interface. As it will eventually have subcomponents, please add required clk and reset signal to the component.
 >
-These interfaces will be based on the ReadyValidInterface class in  lib/src/interface/ready_valid_interface.dart, derived from PairInterface which connects internal ports using pairConnectIO.
+These interfaces will be based on the ReadyValidInterface class in lib/src/interface/ready_valid_interface.dart, derived from PairInterface which connects internal ports using pairConnectIO.
 >
 A request would be comprised of an id and address, and the response would have an id and data.
 >
@@ -138,32 +138,32 @@ And here is the generated API of the abstract base class of the component:
 
 ## A Caching Request Response Channel
 
-Our LLM was also able to quickly build a buffered form of the `RequestResponseChannel`, inserting FIFOs where the wires are. It learned the basics of ready/valid interface testing using this component and was well prepared to move on to the more complex caching form shown here.
+Our LLM was also able to quickly build a buffered form of the `RequestResponseChannel`, inserting FIFOs where the wires are. It learned the basics of ready/valid interface testing using this component and was well-prepared to move on to the more complex caching form shown here.
 
 {:refdef: style="text-align: center;"}
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/ai-accelerated-agile-design/CachedRequestResponseChannel.png){:width="500px"}
 {: refdef}
 
-The caching form has fairly simple rules for data flow and we captured them in as short an English language description as we thought necessary to cover all data flow.  
+The caching form has fairly simple rules for data flow, and we captured them in as short an English language description as we thought necessary to cover all data flow.  
 
 >
 Upstream address requests that miss the cache are passed downstream and stored in a CAM. Request hits are stored in the response FIFO to send as an upstream response. Downstream responses are paired with their matching address based on id lookup in the CAM to store in the cache and are also added to the response FIFO.
 
 This description was the starting point for our first prompt for the LLM (below) after which we used directed tests to iron out any corner conditions that were not clearly understood, or where our own understanding evolved after seeing first attempts by the LLM.
 
-At all times we had a running implementation:  the LLM was quite good at creating correct syntax on both implementation and testing side, and made minor mistakes on semantics, like when to sample a combinational signal in a test. Very few iterations were needed to correct the LLM and drive new features without redirecting the LLM on basics.
+At all times we had a running implementation: the LLM was quite good at creating correct syntax on both implementation and testing side, and made minor mistakes on semantics, like when to sample a combinational signal in a test. Very few iterations were needed to correct the LLM and drive new features without redirecting the LLM on basics.
 
 Here is the prompt we used to generate an initial form of our component, after which we used a sequence of prompts to test the component and resolve ambiguities in the specification until the component can pass the tests we proposed.
 
 >
 This is a ROHD component that inherits from the RequestResponseChannelBase and caches address requests.
 >
-Internally this component would check if the upstream request address is in an address/data Cache and if so, it would add an entry to a response ReadyValidFifo that comprises the Id and data to eventually return through the upstream response.  
+Internally this component would check if the upstream request address is in an address/data Cache and if so, it would add an entry to a response ReadyValidFifo that comprises the id and data to eventually return through the upstream response.  
 >
-If the address is not in the cache, It would store the request in a FullyAssociativeCache (or Cam) with Id as tag and the address as data and forward the request to the downstream request interface. The upstream request blocks on a hit if either the FIFO is not ready or the downstream response is valid and needs to store the response in the FIFO. On a miss it blocks if the downstream FullyAssociativeCache is full.
+If the address is not in the cache, It would store the request in a FullyAssociativeCache (or Cam) with id as tag and the address as data and forward the request to the downstream request interface. The upstream request blocks on a hit if either the FIFO is not ready or the downstream response is valid and needs to store the response in the FIFO. On a miss it blocks if the downstream FullyAssociativeCache is full.
 >
-The downstream response interface blocks if the response FIFO is not ready.  Once the downstream response interface is valid, its response Id is tag-matched in the FullyAssociativeCache (or Cam) to find the address associated with the Id. It would pair that with the data on the response interface and store that in the cache. It would also push an entry onto the response Fifo containing the id and data from downstream.
+The downstream response interface blocks if the response FIFO is not ready.  Once the downstream response interface is valid, its response id is tag-matched in the FullyAssociativeCache (or Cam) to find the address associated with the id. It would pair that with the data on the response interface and store that in the cache. It would also push an entry onto the response Fifo containing the id and data from downstream.
 
 ### Initial LLM generated Tests
 
@@ -194,7 +194,7 @@ The first was directed at the response FIFO:
 >
 Please create a test case for our CachedRequestResponseChannel where we send a series of unique address requests whose downstream responses fill up the response FIFO and end up back-pressuring the downstream response interface, as well as the upstream request interface but only for hits (on an address from a previous request) not further misses on unique address requests.
 
-In this test you can see data responses `(id,data)=[(1,1),(2,2),(3,3)]` starting at cycle 13 responding to upstream address requests `(id,address)=[(1,a),(2,b),(3,c)]` starting at cycle 3. At cycle 14, with the `(3,3)` data response, the response FIFO becomes full which blocks the upstream request at cycle 20 `(id,address)=(a,a)` because the address `a` would be a hit.  The next cycle 21, `(id,address)=(b,f)` is a miss and propagates to the downstream request even though the response FIFO remains full. At cycle 24, the upstream response is `ready` which starts clearing the response FIFO and we see responses `(id,data)=[(1,1),(2,2),(3,3)]` accepted. The response FIFO is no longer full starting at cycle 25.
+In this test you can see data responses `(id,data)=[(1,1),(2,2),(3,3)]` starting at cycle 13 responding to upstream address requests `(id,address)=[(1,a),(2,b),(3,c)]` starting at cycle 3. At cycle 14, with the `(3,3)` data response, the response FIFO becomes full which blocks the upstream request at cycle 20 `(id,address)=(a,a)` because the address `a` would be a hit.  The next cycle 21, `(id,address)=(b,f)` is a miss and propagates to the downstream request even though the response FIFO remains full. At cycle 24, the upstream response is `ready` which starts clearing the response FIFO, and we see responses `(id,data)=[(1,1),(2,2),(3,3)]` accepted. The response FIFO is no longer full starting at cycle 25.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/ai-accelerated-agile-design/backpressure_response_FIFO.png)
@@ -202,9 +202,9 @@ In this test you can see data responses `(id,data)=[(1,1),(2,2),(3,3)]` starting
 This test was directed at timing an upstream hit and downstream response to land at the response FIFO at the same time.
 
 >
-Please create a test case where we have an upstream request with an address that, if accepted, would hit in our cache at the same time as a downstream response is coming back and needs to be stored in the response FIFO.  Demonstrate that the upstream request is backpressured and not accepted until the downstream response is stored in the FIFO.
+Please create a test case where we have an upstream request with an address that, if accepted, would hit in our cache at the same time as a downstream response is coming back and needs to be stored in the response FIFO.  Demonstrate that the upstream request is back pressured and not accepted until the downstream response is stored in the FIFO.
 
-In this case, you see that at cycle 5, a downstream response `(id,data)=(1,5)` lands in the cache.  Then at cycle 110, a data resposne `(id,data)=(2,7)` is arriving along with an upstream request `(id,address)=(a,a)`.  Since address `a` would be a hit, we can see the upstream request ready is dropped to block this request.
+In this case, you see that at cycle 5, a downstream response `(id,data)=(1,5)` lands in the cache.  Then at cycle 110, a data response `(id,data)=(2,7)` is arriving along with an upstream request `(id,address)=(a,a)`.  Since address `a` would be a hit, we can see the upstream request ready is dropped to block this request.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/ai-accelerated-agile-design/arbitrate_response_FIFO.png)
@@ -212,15 +212,15 @@ In this case, you see that at cycle 5, a downstream response `(id,data)=(1,5)` l
 A third path to consider is how the CAM filling up would block upstream address miss requests.
 
 >
-Create a test-case where the pendingRequestCam fills up and backpressures the upstream request.
+Create a test-case where the pendingRequestCam fills up and back-pressures the upstream request.
 
-In this case there was no way to create a failing case and the LLM reported a struggle in finding any convincing case that backpressure could occur.
+In this case there was no way to create a failing case and the LLM reported a struggle in finding any convincing case that back-pressure could occur.
 
-It was at this point that we realized we had not built a CAM with backpressure yet, we only had a fully associative cache that would simply keep pushing out older ids as we did more miss fills.  We need a CAM with backpressure! When we insisted this test pass, the LLM inserted occupancy tracking in the component around the CAM. But this was starting to look fragile, as entries in the CAM were allowed to be evicted as they aged instead of by intent and this would require more careful testing with ordering to make sure no live id was accidentally evicted.  It would be better to make the CAM component smarter and handle its own backpressure.
+It was at this point that we realized we had not built a CAM with back-pressure yet, we only had a fully associative cache that would simply keep pushing out older ids as we did more miss fills.  We need a CAM with back-pressure! When we insisted this test pass, the LLM inserted occupancy tracking in the component around the CAM. But this was starting to look fragile, as entries in the CAM were allowed to be evicted as they aged instead of by intent and this would require more careful testing with ordering to make sure no live id was accidentally evicted.  It would be better to make the CAM component smarter and handle its own back-pressure.
 
 ## CAM with Back-pressure
 
-In realizing we needed a CAM with backpressure, we used AI to drive this feature into the existing component.  We broke this up into two sub-features: first, we wanted to support the case that if the CAM were full and a tag-match was happening at the same time as a fill, it would not block the fill (in this case our address miss).  One way to accomplish this is to perform a read and invalidate of the entry.  Then the second sub-feature was to keep track of the count of valid entries.  But to do both of these required fairly invasive changes to the logic around the tag `RegisterFile` inside the CAM.
+In realizing we needed a CAM with back-pressure, we used AI to drive this feature into the existing component.  We broke this up into two sub-features: first, we wanted to support the case that if the CAM were full and a tag-match was happening at the same time as a fill, it would not block the fill (in this case our address miss).  One way to accomplish this is to perform a read and invalidate of the entry.  Then the second sub-feature was to keep track of the count of valid entries.  But to do both of these required fairly invasive changes to the logic around the tag `RegisterFile` inside the CAM.
 
 ### Read with Invalidate
 
@@ -237,11 +237,11 @@ Please add a boolean option on the `ValidDataPortInterface` to allow for a readW
 The AI agent worked much the same way, but also created tests for the readWithInvalidate flag set, testing that a second read would miss.
 
 >
-Create logic to do readWithInvalidate:  make sure a cache tag match checks that the corresponding valid bit is true, and upon a cache hit, return the hit data, but also set the valid bit of the entry to false.
+Create logic to do readWithInvalidate: make sure a cache tag match checks that the corresponding valid bit is true, and upon a cache hit, return the hit data, but also set the valid bit of the entry to false.
 
 ### Occupancy Tracking
 
-We had two examples of occupancy tracking at our fingertips: first  was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component.  We chose to drive with the latter because it reused things like our `Count` component and works with multiported access.
+We had two examples of occupancy tracking at our fingertips: first  was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component.  We chose to drive with the latter because it reused things like our `Count` component and works with multi-ported access.
 
 >
 Now add optional occupancy logic to our FullyAssociativeCache, using a similar API as the Fifo for full/empty.  Use a key test that a fill simultaneously with a readWithInvalidate on a full cache should be possible, just like a read and write on a full Fifo is possible.
@@ -273,7 +273,7 @@ Here is the resulting test output of our `CachedReqeuestResponseChannel` with th
 
 ### Generalized API
 
-Using patterns in the ROHD-HCL library, the LLM was able to cleanup and generalize the API of our component, allowing for arbitrary `Cache`s to be used for the data-address cache and arbitrary `ReplacementPolicy` for the CAM along with the usual depth and way parameters of the memories.
+Using patterns in the ROHD-HCL library, the LLM was able to clean up and generalize the API of our component, allowing for arbitrary `Cache`s to be used for the data-address cache and arbitrary `ReplacementPolicy` for the CAM along with the usual depth and way parameters of the memories.
 
 ```dart
 class CachedRequestResponseChannel extends RequestResponseChannelBase {
@@ -426,8 +426,8 @@ Here is the internal logic connecting the address/data cache, response FIFO and 
 
 ## AI-accelerated Agile Design for the Win
 
-  Our experiences in using AI in an interactive agile design environment show that using AI to assist the design in an iterative, test-driven, always-alive and feature-by-feature design flow is an amazingly synergistic methodology. Having a working design and running tests helps keep an LLM understanding the targets of the design while expanding the feature set or focusing on fixing the counter-examples. Building features from tests is even easier and more natural when an LLM is implementing the design than when a human is:  tests can be described at a higher, more goal-oriented level to drive toward the conditions you want explored as a designer. At no point in this experience were we forced to debug a very low, bit-level problem or fencepost error, but rather we simply asked AI to help resolve detailed problems on its own using abstract challenge prompts.
+  Our experiences in using AI in an interactive agile design environment show that using AI to assist the design in an iterative, test-driven, always-alive and feature-by-feature design flow is an amazingly synergistic methodology. Having a working design and running tests helps keep an LLM understanding the targets of the design while expanding the feature set or focusing on fixing the counter-examples. Building features from tests is even easier and more natural when an LLM is implementing the design than when a human is: tests can be described at a higher, more goal-oriented level to drive toward the conditions you want explored as a designer. At no point in this experience were we forced to debug a very low, bit-level problem or fence post error, but rather we simply asked AI to help resolve detailed problems on its own using abstract challenge prompts.
 
-  Another synergy between agile design and employing an LLM within the design loop is the idea of starting from a working design, breaking it with a new feature and then driving toward a full fix for the current feature and previous tests. AI lets the designer be far more assertive in making large changes -- witness our refactoring of our tag array to isolate out the valid bit and add read+invalidate, a feature that took minutes to try with an LLM to build a working version and tests for what started out as a high level direction. This allowed us us to massively break a currently working design and quickly restore it adding new functionality and verification tests with confidence.
+  Another synergy between agile design and employing an LLM within the design loop is the idea of starting from a working design, breaking it with a new feature and then driving toward a full fix for the current feature and previous tests. AI lets the designer be far more assertive in making large changes -- witness our refactoring of our tag array to isolate out the valid bit and add read+invalidate, a feature that took minutes to try with an LLM to build a working version and tests for what started out as a high level direction. This allowed us to break a currently working design and quickly restore it adding new functionality and verification tests with confidence.
 
   Overall, AI-accelerated hardware design is a very effective and satisfying way to achieve very high levels of productivity without the fear of changing too much hardware too quickly to back out of suboptimal design choices in the search of design improvements or advanced features.
