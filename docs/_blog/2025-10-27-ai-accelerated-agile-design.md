@@ -9,7 +9,10 @@ There is a lot of excitement about applying AI to VLSI design as well as a lot o
 
 A methodology that is synergistic with using AI to boost correctness while accelerating design is agile hardware design which borrows from the software world the precepts of test-driven, always-alive, and feature-by-feature design evolution. Focusing on abstraction, components, modularity, and reuse is especially synergistic with the way LLMs retain and apply knowedge in a limited context window. At the heart of this approach is the recognition that the perfect specification does not exist and that design is an evolution of discovery and implementation -- and AI is perfect for accelerating both! In this methodology, though, there is no push-button design -- the designer is in the loop directing the next evolution of the design, whether it is fixing a problem or adding a new feature.
 
-In this blog, we will describe our experiences in applying AI to help accelerate design of a ROHD-HCL component. The ROHD framework provides some key advantages for using AI to accelerate agile hardware design. As Dart is a popular programming language, an LLM is well trained in Dart and able to take advantage of a lot of the software abstractions we use in ROHD. By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human) have to keep around. The framework has a very rapid edit/simulate loop due to its built-in simulator, providng an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
+In this blog, we will describe our experiences in applying AI to help accelerate design of a ROHD-HCL component. The ROHD framework provides some key advantages for using AI to accelerate agile hardware design. As Dart is a popular programming language, an LLM is well trained in Dart and able to take advantage of a lot of the software abstractions we use in ROHD. A big innovation is the AI coding agents like
+[Dart MCP servers](https://blog.flutter.dev/supercharge-your-dart-flutter-development-experience-with-the-dart-mcp-server-2edcc8107b49) for bridging between AI agents and Dart coding IDEs and are automatically enabled in VSCode CoPilot.
+
+By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human) have to keep around. The framework has a very rapid edit/simulate loop due to its built-in simulator, providng an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
 
  We also have a detailed video demonstration of the design evolution of this component, accelerated by AI (link here).
 
@@ -164,7 +167,7 @@ The downstream response interface blocks if the response FIFO is not ready.  Onc
 
 ### Initial LLM generated Tests
 
-As part of its debugging process, the LLM generated simple tests to check to see if the component it created was matching our specification, or to resolve its own understanding simulation semantics of pieces of code.
+As part of its debugging process, the LLM generated simple tests to check if the component it created was matching our specification, or to resolve its own understanding of simulation semantics by simulating its own pieces of code.
 
 For example, the first test to pass was this simple 1-miss, then 1-hit which sends the `(id,address)=(1,a)` request which transits to the downstream which responds with `(id,data)= (1,d)` at clock cycle 5, which gets sent as an upstream response at clock cycle 6 of `(1,d)`.  Then at clock cycle 7, a second request `(id,address)=(2,a)` is sent in which is accepted and hits as there is no downstream propagation.  At clock cycle 8, the upstream response receives `(id,data)=(2,d)`.
 
