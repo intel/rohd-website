@@ -424,6 +424,8 @@ Here is the internal logic connecting the address/data cache, response FIFO and 
   }
   ```
 
+All LLM-generated code and tests, including a lot of the debugging and learning Dart files that the LLM used, are available in [AI-generated CachedRequestResponseChannel](https://github.com/intel/rohd-hcl/pull/266).
+
 ## AI-accelerated Agile Design for the Win
 
   Our experiences in using AI in an interactive agile design environment show that using AI to assist the design in an iterative, test-driven, always-alive and feature-by-feature design flow is an amazingly synergistic methodology. Having a working design and running tests helps keep an LLM understanding the targets of the design while expanding the feature set or focusing on fixing the counter-examples. Building features from tests is even easier and more natural when an LLM is implementing the design than when a human is: tests can be described at a higher, more goal-oriented level to drive toward the conditions you want explored as a designer. At no point in this experience were we forced to debug a very low, bit-level problem or fence post error, but rather we simply asked AI to help resolve detailed problems on its own using abstract challenge prompts.
