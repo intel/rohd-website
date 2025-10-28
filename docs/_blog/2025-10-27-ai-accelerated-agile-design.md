@@ -14,7 +14,7 @@ In this blog, we will describe our experiences in applying AI to help accelerate
 
 By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human) have to keep around. The framework has a very rapid edit/simulate loop due to its built-in simulator, providng an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
 
- We also have a detailed video demonstration of the design evolution of this component, accelerated by AI (link here).
+ We also have a detailed video demonstration of the AI-accelerated design evolution of this component: [AI-Accelerated Agile Design Demo](https://youtu.be/xOsWIT9Y4iE?si=h1Ttu9eD_6b4ouvG).
 
 ## AI Challenge:  Build a New Caching Request/Response Channel
 
