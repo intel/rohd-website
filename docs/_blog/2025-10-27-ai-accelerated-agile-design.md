@@ -16,7 +16,8 @@ By keeping to highly modular and flexible components, we raise the abstraction o
 
  We also have a detailed video demonstration of the AI-accelerated design evolution of this component: [AI-Accelerated Agile Design Demo](https://www.youtube.com/watch?v=1_EZTLkQ1wE).
 
-{% include youtube.html id="1_EZTLkQ1wE" %}
+<!-- markdownlint-disable-next-line MD033 -->
+ <iframe width="560" height="315" src="https://www.youtube.com/embed/1_EZTLkQ1wE?si=xdX_kzsoDHRFCY3N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## AI Challenge:  Build a New Caching Request/Response Channel
 
