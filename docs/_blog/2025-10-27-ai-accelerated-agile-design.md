@@ -19,7 +19,7 @@ By keeping to highly modular and flexible components, we raise the abstraction o
 <!-- markdownlint-disable-next-line MD033 -->
  <iframe width="560" height="315" src="https://www.youtube.com/embed/1_EZTLkQ1wE?si=xdX_kzsoDHRFCY3N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## AI Challenge:  Build a New Caching Request/Response Channel
+## AI Challenge: Build a New Caching Request/Response Channel
 
 An interesting component for use with communication channels is a request/response channel where we send an address request to a downstream agent, and we receive data back over a response channel, using ready/valid protocols. The specific channel we want to build is one that would cache address/data pairs to speed up future address/data requests.
 
@@ -37,7 +37,7 @@ The problem of designing a good component starts with defining a good API, and w
 Here is the prompt we used to generate a primitive form of our component, simple forwarding, before we build the caching form. This helped drive the correct API first, as well as set up simple testing frameworks, as a warm-up for the LLM, and in our case we used Claude Sonnet 4.
 
 >
-Please create a future memory ROHD component called RequestResponseChannel that  has an upstream pair of interfaces, one for request and then response, and a mirror set of downstream request and response interfaces. The component will forward an upstream request to the downstream request, and forward a downstream response to the upstream response interface. As it will eventually have subcomponents, please add required clk and reset signal to the component.
+Please create a future memory ROHD component called RequestResponseChannel that has an upstream pair of interfaces, one for request and then response, and a mirror set of downstream request and response interfaces. The component will forward an upstream request to the downstream request, and forward a downstream response to the upstream response interface. As it will eventually have subcomponents, please add required clk and reset signal to the component.
 >
 These interfaces will be based on the ReadyValidInterface class in lib/src/interface/ready_valid_interface.dart, derived from PairInterface which connects internal ports using pairConnectIO.
 >
@@ -179,7 +179,7 @@ For example, the first test to pass was this simple 1-miss, then 1-hit which sen
 ![plru]({{ site.baseurl}}/assets/images/ai-accelerated-agile-design/basic_miss_hit.png)
 {: refdef}
 
-A second test to pass was similarly simple:  a sequence of three misses `(id,address)=[(1,a),(2,b),(3,c)]` at cycles 3,5,7, which get transmitted downstream as misses with data returns at cycles 9,10,11 as `(id,data)=[(1,d),(2,d),(3,b)]`. These data responses are returned upstream at cycles 10,11, and 12, respectively.  At cycles 15, 17, and 19, new requests to the same addresses are made `(id,address)=[(b,a),(c,b),(d,c)]`, which hit, and are returned as upstream data responses `(id,data)=[b,d),(c,c),(d,b)]` at cycles 16, 18, and 20 (one cycle later) respectively.
+A second test to pass was similarly simple: a sequence of three misses `(id,address)=[(1,a),(2,b),(3,c)]` at cycles 3,5,7, which get transmitted downstream as misses with data returns at cycles 9,10,11 as `(id,data)=[(1,d),(2,d),(3,b)]`. These data responses are returned upstream at cycles 10,11, and 12, respectively.  At cycles 15, 17, and 19, new requests to the same addresses are made `(id,address)=[(b,a),(c,b),(d,c)]`, which hit, and are returned as upstream data responses `(id,data)=[b,d),(c,c),(d,b)]` at cycles 16, 18, and 20 (one cycle later) respectively.
 
 {:refdef: style="text-align: center;"}
 <!-- markdownlint-disable-next-line MD034 -->
@@ -244,7 +244,7 @@ Create logic to do readWithInvalidate: make sure a cache tag match checks that t
 
 ### Occupancy Tracking
 
-We had two examples of occupancy tracking at our fingertips: first  was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component.  We chose to drive with the latter because it reused things like our `Count` component and works with multi-ported access.
+We had two examples of occupancy tracking at our fingertips: first was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component.  We chose to drive with the latter because it reused things like our `Count` component and works with multi-ported access.
 
 >
 Now add optional occupancy logic to our FullyAssociativeCache, using a similar API as the Fifo for full/empty.  Use a key test that a fill simultaneously with a readWithInvalidate on a full cache should be possible, just like a read and write on a full Fifo is possible.
