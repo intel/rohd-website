@@ -14,10 +14,10 @@ In this blog, we will describe our experiences in applying AI to help accelerate
 
 By keeping to highly modular and flexible components, we raise the abstraction of design and narrow the amount of context the LLM (and the human!) have to keep around. The ROHD framework has a very rapid edit/simulate loop due to its built-in simulator, providing an LLM with a very fast way to experiment with tests and learn what went wrong. We found this to be absolutely critical in converging hardware design by specifying tests to quickly resolve key ambiguities in our first specification.
 
- We also have a detailed video demonstration of the AI-accelerated design evolution of this component: [AI-Accelerated Agile Design Demo](https://www.youtube.com/watch?v=1_EZTLkQ1wE).
+ We also have a detailed video demonstration of the AI-accelerated design evolution of this component: [AI-Accelerated Agile Design Demo](https://youtu.be/1_EZTLkQ1wE?si=3KFVu1Z96kthe1_v&t=0).
 
 <!-- markdownlint-disable-next-line MD033 -->
- <iframe width="560" height="315" src="https://www.youtube.com/embed/1_EZTLkQ1wE?si=xdX_kzsoDHRFCY3N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/SAPAi8Y4Z68?si=PWz6MeuQbyhhmOi1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## AI Challenge: Build a New Caching Request/Response Channel
 
