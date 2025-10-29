@@ -166,20 +166,20 @@ Internally this component would check if the upstream request address is in an a
 >
 If the address is not in the cache, It would store the request in a FullyAssociativeCache (or Cam) with id as tag and the address as data and forward the request to the downstream request interface. The upstream request blocks on a hit if either the FIFO is not ready or the downstream response is valid and needs to store the response in the FIFO. On a miss it blocks if the downstream FullyAssociativeCache is full.
 >
-The downstream response interface blocks if the response FIFO is not ready.  Once the downstream response interface is valid, its response id is tag-matched in the FullyAssociativeCache (or Cam) to find the address associated with the id. It would pair that with the data on the response interface and store that in the cache. It would also push an entry onto the response Fifo containing the id and data from downstream.
+The downstream response interface blocks if the response FIFO is not ready. Once the downstream response interface is valid, its response id is tag-matched in the FullyAssociativeCache (or Cam) to find the address associated with the id. It would pair that with the data on the response interface and store that in the cache. It would also push an entry onto the response Fifo containing the id and data from downstream.
 
 ### Initial LLM generated Tests
 
 As part of its debugging process, the LLM generated simple tests to check if the component it created was matching our specification, or to resolve its own understanding of simulation semantics by simulating its own pieces of code.
 
-For example, the first test to pass was this simple 1-miss, then 1-hit which sends the `(id,address)=(1,a)` request which transits to the downstream which responds with `(id,data)= (1,d)` at clock cycle 5, which gets sent as an upstream response at clock cycle 6 of `(1,d)`.  Then at clock cycle 7, a second request `(id,address)=(2,a)` is sent in which is accepted and hits as there is no downstream propagation.  At clock cycle 8, the upstream response receives `(id,data)=(2,d)`.
+For example, the first test to pass was this simple 1-miss, then 1-hit which sends the `(id,address)=(1,a)` request which transits to the downstream which responds with `(id,data)= (1,d)` at clock cycle 5, which gets sent as an upstream response at clock cycle 6 of `(1,d)`. Then at clock cycle 7, a second request `(id,address)=(2,a)` is sent in which is accepted and hits as there is no downstream propagation.  At clock cycle 8, the upstream response receives `(id,data)=(2,d)`.
 
 {:refdef: style="text-align: center;"}
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl}}/assets/images/ai-accelerated-agile-design/basic_miss_hit.png)
 {: refdef}
 
-A second test to pass was similarly simple: a sequence of three misses `(id,address)=[(1,a),(2,b),(3,c)]` at cycles 3,5,7, which get transmitted downstream as misses with data returns at cycles 9,10,11 as `(id,data)=[(1,d),(2,d),(3,b)]`. These data responses are returned upstream at cycles 10,11, and 12, respectively.  At cycles 15, 17, and 19, new requests to the same addresses are made `(id,address)=[(b,a),(c,b),(d,c)]`, which hit, and are returned as upstream data responses `(id,data)=[b,d),(c,c),(d,b)]` at cycles 16, 18, and 20 (one cycle later) respectively.
+A second test to pass was similarly simple: a sequence of three misses `(id,address)=[(1,a),(2,b),(3,c)]` at cycles 3,5,7, which get transmitted downstream as misses with data returns at cycles 9,10,11 as `(id,data)=[(1,d),(2,d),(3,b)]`. These data responses are returned upstream at cycles 10,11, and 12, respectively. At cycles 15, 17, and 19, new requests to the same addresses are made `(id,address)=[(b,a),(c,b),(d,c)]`, which hit, and are returned as upstream data responses `(id,data)=[b,d),(c,c),(d,b)]` at cycles 16, 18, and 20 (one cycle later) respectively.
 
 {:refdef: style="text-align: center;"}
 <!-- markdownlint-disable-next-line MD034 -->
@@ -205,9 +205,9 @@ In this test you can see data responses `(id,data)=[(1,1),(2,2),(3,3)]` starting
 This test was directed at timing an upstream hit and downstream response to land at the response FIFO at the same time.
 
 >
-Please create a test case where we have an upstream request with an address that, if accepted, would hit in our cache at the same time as a downstream response is coming back and needs to be stored in the response FIFO.  Demonstrate that the upstream request is back pressured and not accepted until the downstream response is stored in the FIFO.
+Please create a test case where we have an upstream request with an address that, if accepted, would hit in our cache at the same time as a downstream response is coming back and needs to be stored in the response FIFO. Demonstrate that the upstream request is back pressured and not accepted until the downstream response is stored in the FIFO.
 
-In this case, you see that at cycle 5, a downstream response `(id,data)=(1,5)` lands in the cache.  Then at cycle 110, a data response `(id,data)=(2,7)` is arriving along with an upstream request `(id,address)=(a,a)`.  Since address `a` would be a hit, we can see the upstream request ready is dropped to block this request.
+In this case, you see that at cycle 5, a downstream response `(id,data)=(1,5)` lands in the cache. Then at cycle 110, a data response `(id,data)=(2,7)` is arriving along with an upstream request `(id,address)=(a,a)`.  Since address `a` would be a hit, we can see the upstream request ready is dropped to block this request.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/ai-accelerated-agile-design/arbitrate_response_FIFO.png)
@@ -219,11 +219,11 @@ Create a test-case where the pendingRequestCam fills up and back-pressures the u
 
 In this case there was no way to create a failing case and the LLM reported a struggle in finding any convincing case that back-pressure could occur.
 
-It was at this point that we realized we had not built a CAM with back-pressure yet, we only had a fully associative cache that would simply keep pushing out older ids as we did more miss fills.  We need a CAM with back-pressure! When we insisted this test pass, the LLM inserted occupancy tracking in the component around the CAM. But this was starting to look fragile, as entries in the CAM were allowed to be evicted as they aged instead of by intent and this would require more careful testing with ordering to make sure no live id was accidentally evicted.  It would be better to make the CAM component smarter and handle its own back-pressure.
+It was at this point that we realized we had not built a CAM with back-pressure yet, we only had a fully associative cache that would simply keep pushing out older ids as we did more miss fills. We need a CAM with back-pressure! When we insisted this test pass, the LLM inserted occupancy tracking in the component around the CAM. But this was starting to look fragile, as entries in the CAM were allowed to be evicted as they aged instead of by intent and this would require more careful testing with ordering to make sure no live id was accidentally evicted. It would be better to make the CAM component smarter and handle its own back-pressure.
 
 ## CAM with Back-pressure
 
-In realizing we needed a CAM with back-pressure, we used AI to drive this feature into the existing component.  We broke this up into two sub-features: first, we wanted to support the case that if the CAM were full and a tag-match was happening at the same time as a fill, it would not block the fill (in this case our address miss).  One way to accomplish this is to perform a read and invalidate of the entry.  Then the second sub-feature was to keep track of the count of valid entries.  But to do both of these required fairly invasive changes to the logic around the tag `RegisterFile` inside the CAM.
+In realizing we needed a CAM with back-pressure, we used AI to drive this feature into the existing component. We broke this up into two sub-features: first, we wanted to support the case that if the CAM were full and a tag-match was happening at the same time as a fill, it would not block the fill (in this case our address miss). One way to accomplish this is to perform a read and invalidate of the entry. Then the second sub-feature was to keep track of the count of valid entries. But to do both of these required fairly invasive changes to the logic around the tag `RegisterFile` inside the CAM.
 
 ### Read with Invalidate
 
@@ -244,10 +244,10 @@ Create logic to do readWithInvalidate: make sure a cache tag match checks that t
 
 ### Occupancy Tracking
 
-We had two examples of occupancy tracking at our fingertips: first was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component.  We chose to drive with the latter because it reused things like our `Count` component and works with multi-ported access.
+We had two examples of occupancy tracking at our fingertips: first was the tracking that AI had inserted into our component, but the second was the tracking we did for our `Fifo` component. We chose to drive with the latter because it reused things like our `Count` component and works with multi-ported access.
 
 >
-Now add optional occupancy logic to our FullyAssociativeCache, using a similar API as the Fifo for full/empty.  Use a key test that a fill simultaneously with a readWithInvalidate on a full cache should be possible, just like a read and write on a full Fifo is possible.
+Now add optional occupancy logic to our FullyAssociativeCache, using a similar API as the Fifo for full/empty. Use a key test that a fill simultaneously with a readWithInvalidate on a full cache should be possible, just like a read and write on a full Fifo is possible.
 
 ## Integration of New CAM
 
@@ -267,7 +267,7 @@ Create a test-case where the pendingRequestCam fills up and backpressures the up
 >
 While the CAM is full, we should try an address request miss, then an address request hit, then an address request miss, but with a simultaneous downstream data response that clears an entry in the CAM.
 
-Here is the resulting test output of our `CachedReqeuestResponseChannel` with the new CAM.  At cycle 7, we see a sequence of upstream address requests `(id,address)=[(2,b),(3,c),(4,d),(5,e0)]` which miss the CAM and are sent downstream, with the CAM getting full at cycle 14. At cycle 15, we see the request `(id,address)=(10,8)` which would be a miss, not be accepted (`request ready` is low) due to back-pressure from the CAM.  Then at cycle 16, the hit `(11,a)` request is accepted. At cycle 18, the request `(12,9)` which is a miss, is rejected, but when a downstream response `(2,7)` comes in cycle 19, the `(12,9)` request is accepted with the ready and valid on the upstream request going high, indicating our CAM is able to process a miss fill and a read invalidate simultaneously and stay full.
+Here is the resulting test output of our `CachedReqeuestResponseChannel` with the new CAM.  At cycle 7, we see a sequence of upstream address requests `(id,address)=[(2,b),(3,c),(4,d),(5,e0)]` which miss the CAM and are sent downstream, with the CAM getting full at cycle 14. At cycle 15, we see the request `(id,address)=(10,8)` which would be a miss, not be accepted (`request ready` is low) due to back-pressure from the CAM. Then at cycle 16, the hit `(11,a)` request is accepted. At cycle 18, the request `(12,9)` which is a miss, is rejected, but when a downstream response `(2,7)` comes in cycle 19, the `(12,9)` request is accepted with the ready and valid on the upstream request going high, indicating our CAM is able to process a miss fill and a read invalidate simultaneously and stay full.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![plru]({{ site.baseurl }}/assets/images/ai-accelerated-agile-design/backpressure_CAM.png)
