@@ -20,6 +20,7 @@ The main ROHD ecosystem includes:
 | [rohd-vf](https://github.com/intel/rohd-vf)                   | The ROHD Verification Framework (ROHD-VF), like UVM but for ROHD                 |
 | [rohd-cosim](https://github.com/intel/rohd-cosim)             | ROHD Co-simulation (ROHD Cosim) for interacting with other simulators            |
 | [rohd-bridge](https://github.com/intel/rohd-bridge)           | ROHD Bridge for generating connectivity and hierarchy for larger designs         |
+| [rohd-schematic-viewer](https://github.com/intel/rohd-schematic-viewer) | ROHD Schematic Viewer, an interactive viewer for hardware connectivity and hierarchy |
 | [rohd-wave-viewer](https://github.com/intel/rohd-wave-viewer) | ROHD Wave Viewer, a flexible waveform viewer                                     |
 
 Generally, this website repository does *not* directly contain documentation covering the entire ecosystem.  Rather, it hosts general website infrastructure and references documentation content from the other repositories.  This repo can host some additional documentation that isn't directly related to the APIs of individual projects (e.g. meeting minutes).
