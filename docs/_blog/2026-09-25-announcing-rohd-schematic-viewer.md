@@ -68,4 +68,6 @@ The viewer reads the widely supported [**Yosys JSON netlist format**](https://yo
 
 Because it's hosted, there's nothing to install to get started -- just open the [ROHD Schematic Viewer](https://intel.github.io/rohd-schematic-viewer/) and load a Yosys JSON file to traverse its schematic. For editor-integrated source navigation and cross-probing, use the VS Code extension with an appropriately enhanced netlist; applications embedding the viewer can also supply their own integration services. If you'd rather work from VS Code or want a native Linux build, the project's [README](https://github.com/intel/rohd-schematic-viewer) covers the developer quick start, VS Code extension packaging, and keyboard shortcuts in more detail.
 
+The schematic viewer is also integrated into our [ROHD-HCL configurator](https://intel.github.io/rohd-hcl/confapp/), which provides plenty of examples of generated component schematics to explore alongside their source code.
+
 This is an early release, and the schematic viewer will keep growing alongside the rest of the ROHD debug tooling. If you run into rough edges or have feature requests, we'd love to hear from you on the [ROHD Discord server](https://discord.com/invite/jubxF84yGw) or through issues on the repository.

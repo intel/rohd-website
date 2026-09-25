@@ -140,6 +140,22 @@ curl -D - -o /dev/null \
 A working response is `206 Partial Content` with a `Content-Range` header and
 `Content-Type: video/mp4`.
 
+The local workaround is still required with WEBrick 1.9.2. A matching
+`If-Range` ETag must return `206` with the requested bytes; a stale ETag must
+return `200` with the full file. The upstream fix is tracked in
+[ruby/webrick#173](https://github.com/ruby/webrick/pull/173).
+
+Run the regression checks from `docs/` (also run by the site's CI):
+
+```bash
+bundle exec ruby tool/test_webrick_range_fix.rb
+```
+
+After the upstream fix is released, run the same command with
+`--without-workaround` to check whether the patch can be removed. That mode
+is expected to fail on WEBrick 1.9.2. The checks use a temporary local file
+and a loopback-only server on an automatically allocated port.
+
 The production workflow intentionally does not use `--future`, so scheduled
 posts are not published before their filename date. Static video assets may
 be deployed before the post that references them.
