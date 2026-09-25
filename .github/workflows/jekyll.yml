@@ -42,6 +42,9 @@ jobs:
           working-directory: docs
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
+      - name: Test local preview range requests
+        working-directory: docs
+        run: bundle exec ruby tool/test_webrick_range_fix.rb
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
