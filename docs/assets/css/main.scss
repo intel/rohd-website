@@ -16,6 +16,36 @@ search: false
   font-size: 1rem;
 }
 
+.debugger-launch {
+  > h4 {
+    margin-bottom: 0.25em !important; // Override the theme's notice heading margin.
+  }
+
+  > h4 + ul {
+    margin-top: 0;
+  }
+}
+
+.debugger-connect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+
+  > .btn {
+    max-width: 100%;
+    white-space: normal;
+    margin: 0;
+  }
+
+  > .debugger-connect__definition {
+    flex: 0 1 auto;
+    max-width: 100%;
+    margin: 0 0 0 auto !important; // Override the theme's notice margins.
+    text-align: right;
+  }
+}
+
 ul li, ol li {
   margin-bottom: 0.1em;
 }

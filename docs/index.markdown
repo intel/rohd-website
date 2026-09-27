@@ -145,6 +145,43 @@ feature_row7:
         <a class="github-button" href="https://github.com/intel/rohd-wave-viewer" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-wave-viewer on GitHub">Star Count</a>
       </p>
 
+feature_row8:
+  - image_path: assets/images/debugger-visualization.svg
+    alt: "Floating source, schematic, and waveform panes linked by cross-probe beams above play and pause controls"
+    title: "ROHD Debugger"
+    excerpt: >
+      <p>
+        Debug a live ROHD simulation with linked schematic and waveform views using ROHD's Devtools-based Debugger. Pause and resume execution, inspect signal values at a selected time, and cross-probe signals to connect hardware structure with simulation behavior.
+      </p>
+      <p>Pause your ROHD debug session at a breakpoint in VS Code, then choose one of two ways to connect:</p>
+      <div class="notice--primary debugger-launch">
+        <h4><i class="fas fa-fw fa-laptop-code" aria-hidden="true"></i> VS Code + DevTools</h4>
+        <ul>
+          <li>Open the Command Palette and run <strong>Open DevTools in Browser</strong>.</li>
+          <li>Select the <strong>ROHD</strong> tab to use the debugger inside DevTools, without manually copying a DTD address.</li>
+        </ul>
+      </div>
+      <div class="notice--info debugger-launch">
+        <h4><i class="fas fa-fw fa-cloud" aria-hidden="true"></i> Browser + DTD in VS Code</h4>
+        <ul>
+          <li>Open the Command Palette and run <strong>Dart: Copy DTD URI to Clipboard</strong>.</li>
+          <li>Open the standalone debugger using the button below.</li>
+          <li>Paste the copied address into its DTD connection field.</li>
+        </ul>
+      </div>
+      <p style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <a href='https://github.com/intel/rohd/tree/main/rohd_devtools_extension' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
+          <i class='fab fa-fw fa-github'></i>View on GitHub
+        </a>
+        <a class="github-button" href="https://github.com/intel/rohd" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd on GitHub">Star Count</a>
+      </p>
+      <div class="debugger-connect">
+        <a href="https://intel.github.io/rohd-debugger/" class="btn btn--primary"><i class="fas fa-cloud" aria-hidden="true"></i> Connect to DTD via Browser</a>
+        <aside class="notice--info debugger-connect__definition" aria-label="DTD definition">
+          <p><strong>DTD</strong> means <strong>Dart Tooling Daemon</strong>.</p>
+        </aside>
+      </div>
+
 ---
 
 {% include feature_row %}
@@ -160,3 +197,5 @@ feature_row7:
 {% include feature_row id="feature_row6" type="left" %}
 
 {% include feature_row id="feature_row7" type="right" %}
+
+{% include feature_row id="feature_row8" type="left" %}
