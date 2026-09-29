@@ -56,6 +56,15 @@ The viewer is also available as a **VS Code extension**. ROHD's `NetlistService`
 
 The standalone hosted browser application is intentionally limited to schematic traversal because it has no host service for opening source locations or exchanging signal selections. That is a limitation of the standalone site, not of the Flutter web widget: an application embedding the viewer can provide those services. Use the VS Code extension for the supported editor-integrated workflow.
 
+## Also a Flutter Widget
+
+The schematic viewer is also integrated into our [ROHD-HCL configurator](https://intel.github.io/rohd-hcl/confapp/), which provides plenty of examples of generated component schematics to explore alongside their source code and synthesized SystemVerilog.
+
+{:refdef: style="text-align: center;"}
+<!-- markdownlint-disable-next-line MD034 -->
+![confschem]({{ site.baseurl }}/assets/images/announcing-rohd-schematic-viewer/confapp-schematic.png){:width="500px"}
+{: refdef}
+
 ## One Signal, Three Perspectives
 
 The useful question during debug is rarely just "what is this signal called?" It is "where does this generated RTL connection go, what did it do over time, and which ROHD code created it?" In VS Code, with both viewer extensions open, send a selected schematic net to the Wave Viewer and it finds the matching hierarchy path and adds its recorded waveform. Send a waveform signal the other way to locate the associated net in the rendered RTL. When an internal net was not recorded, the schematic viewer can send a connected module port instead, providing a useful driving waveform rather than ending the investigation.
@@ -68,6 +77,5 @@ The viewer reads the widely supported [**Yosys JSON netlist format**](https://yo
 
 Because it's hosted, there's nothing to install to get started -- just open the [ROHD Schematic Viewer](https://intel.github.io/rohd-schematic-viewer/) and load a Yosys JSON file to traverse its schematic. For editor-integrated source navigation and cross-probing, use the VS Code extension with an appropriately enhanced netlist; applications embedding the viewer can also supply their own integration services. If you'd rather work from VS Code or want a native Linux build, the project's [README](https://github.com/intel/rohd-schematic-viewer) covers the developer quick start, VS Code extension packaging, and keyboard shortcuts in more detail.
 
-The schematic viewer is also integrated into our [ROHD-HCL configurator](https://intel.github.io/rohd-hcl/confapp/), which provides plenty of examples of generated component schematics to explore alongside their source code.
 
 This is an early release, and the schematic viewer will keep growing alongside the rest of the ROHD debug tooling. If you run into rough edges or have feature requests, we'd love to hear from you on the [ROHD Discord server](https://discord.com/invite/jubxF84yGw) or through issues on the repository.
