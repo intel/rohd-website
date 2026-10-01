@@ -24,6 +24,9 @@ lunr:
 plugins:
   - jekyll-include-cache
 
+sass:
+  quiet_deps: true
+
 include:
   - _pages
 
