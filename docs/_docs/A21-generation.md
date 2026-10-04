@@ -28,6 +28,42 @@ void main() async {
 
 The `generateSynth` function will return a `String` with the SystemVerilog `module` definitions for the top-level it is called on, as well as any sub-modules (recursively).  You can dump the entire contents to a file and use it anywhere you would any other SystemVerilog.
 
+## Generating a netlist
+
+Generate a Yosys-compatible JSON netlist from a built top-level module with
+`NetlistSynthesizer` and `SynthBuilder`. `generateCombinedJson` emits one
+netlist document for the complete synthesized hierarchy. Replace `MyModule`
+with your own top-level module:
+
+```dart
+import 'dart:io';
+
+import 'package:rohd/rohd.dart';
+
+void main() async {
+  final myModule = MyModule();
+  await myModule.build();
+
+  final synthesizer = NetlistSynthesizer();
+  final builder = SynthBuilder(myModule, synthesizer);
+  final netlistJson = synthesizer.generateCombinedJson(builder, myModule);
+  print(netlistJson);
+
+  final outputFile = File('build/my_hardware.rohd.json');
+  await outputFile.parent.create(recursive: true);
+  await outputFile.writeAsString(netlistJson);
+}
+```
+
+`NetlistSynthesizerConfiguration` controls optional netlist generation
+behavior, such as slim output for hierarchy loading. The same `SynthBuilder`
+also provides individual per-module synthesis results and generated file
+contents.
+
+The JSON contains a `creator`, format `version`, and a `modules` map containing
+the complete synthesized hierarchy. Each module entry contains `attributes`,
+`ports`, `cells`, and `netnames`.
+
 ## Controlling port types
 
 Generated ports default to `input logic`, `output logic`, and `inout wire`, preserving the traditional ROHD declarations. Use a `SystemVerilogSynthesizerConfiguration` to independently control whether object types, such as `wire` and `var`, and data types, such as `logic`, are explicit for each port direction:
@@ -74,6 +110,10 @@ Internal signals, unlike ports, don't need to always have the same exact name as
 - If you do name a signal, by default it will be characterized as `renameable`.  This means it will try to keep that name in generated output, but may rename it for uniquification purposes.
 - If you want to make sure an internal signal maintains exactly the name you want, you can mark it explicitly with `reserved`.
 - You can downgrade a named signal as well to `mergeable` or even `unnamed`, if you care less about its name in generated outputs and prefer that others will take over.
+
+Connected, equivalent whole signals with compatible types may share one generated declaration when all their `reserved` or `renameable` names match exactly in the generated module's namespace, before uniquification. For example, three connected signals named `data`, with any combination of these two naming modes, may generate just one `data` signal. This also applies when an internal signal connects to a port named `data`; the port name and module interface remain unchanged.
+
+These modes preserve a generated name, not a separate declaration for every original signal. Structure-qualified names are compared, so matching leaf names alone are insufficient. Different preserved names remain separate, and matching names never establish connectivity: unrelated `renameable` signals are still uniquified, while unrelated `reserved` collisions still throw an exception. Partial assignments and incompatible array shapes are not eligible for this same-name merge.
 
 ### Unpreferred names
 
