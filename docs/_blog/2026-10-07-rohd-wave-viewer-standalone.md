@@ -1,7 +1,7 @@
 ---
 title: "ROHD Wave Viewer: Try It in Your Browser"
 permalink: /blog/rohd-wave-viewer-standalone/
-last_modified_at: 2026-10-06
+last_modified_at: 2026-10-07
 author: "Desmond A. Kirkpatrick"
 ---
 
