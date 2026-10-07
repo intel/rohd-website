@@ -50,4 +50,4 @@ The browser app is useful for a completed trace, but the same viewer can become 
 
 There's nothing to set up -- open the [ROHD Wave Viewer](https://intel.github.io/rohd-wave-viewer/) and load a waveform file. If you want the native binary, the VS Code extension, or you're interested in contributing a new file-format parser, the project's [README](https://github.com/intel/rohd-wave-viewer) has the developer quick start.
 
-As always, the [ROHD Discord server](https://discord.com/invite/jubxF84yGw) is the best place to ask questions, report issues, or tell us what to build next.
+As always, the [ROHD Discord server](https://discord.com/invite/jubxF84yGw) is the best place to ask questions or tell us what to build next. To report a problem, please [file an issue on GitHub](https://github.com/intel/rohd-wave-viewer/issues).
