@@ -128,7 +128,7 @@ feature_row7:
   - image_path: assets/images/waveform-visualization.svg
     alt: "Angled digital waveforms drawn as glowing pipes above a timing grid"
     title: "ROHD Wave Viewer"
-    url: "https://intel.github.io/rohd-wave-viewer/"
+    url: "https://intel.github.io/rohd-wave-viewer/?waveFormFile=assets%2Fwaveforms%2Ffilter_bank.fst&signalList=FilterBank%2Fclk&signalList=FilterBank%2Freset&signalList=FilterBank%2Fsample1&signalList=FilterBank%2Fch0%2FdataOut&signalList=FilterBank%2Fstate&signalList=FilterBank%2FvalidIn&signalList=FilterBank%2FsampleIn&signalList=FilterBank%2FdataOut&signalList=FilterBank%2FchannelOut&signalList=FilterBank%2Fcontroller%2FloadingPhase&signalList=FilterBank%2Fcontroller%2FdoneFlag"
     btn_label: "<i class='fas fa-cloud'></i> Try it in-browser"
     btn_class: "btn--primary"
     excerpt: >
