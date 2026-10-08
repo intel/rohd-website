@@ -48,6 +48,8 @@ The browser app is useful for a completed trace, but the same viewer can become 
 
 ## Try It Today
 
-There's nothing to set up -- open the [ROHD Wave Viewer](https://intel.github.io/rohd-wave-viewer/) and load a waveform file. If you want the native binary, the VS Code extension, or you're interested in contributing a new file-format parser, the project's [README](https://github.com/intel/rohd-wave-viewer) has the developer quick start.
+There's nothing to set up -- open the [ROHD Wave Viewer](<https://intel.github.io/rohd-wave-viewer/?waveFormFile=assets%2Fwaveforms%2Ffilter_bank.fst&signalList=FilterBank%2Fclk&signalList=FilterBank%2Freset&signalList=FilterBank%2Fsample1&signalList=FilterBank%2Fch0%2FdataOut&signalList=FilterBank%2Fstate&signalList=FilterBank%2FvalidIn&signalList=FilterBank%2FsampleIn&signalList=FilterBank%2FdataOut&signalList=FilterBank%2FchannelOut&signalList=FilterBank%2Fcontroller%2FloadingPhase&signalList=FilterBank%2Fcontroller%2FdoneFlag>)
+
+and load a waveform file. If you want the native binary, the VS Code extension, or you're interested in contributing a new file-format parser, the project's [README](https://github.com/intel/rohd-wave-viewer) has the developer quick start.
 
 As always, the [ROHD Discord server](https://discord.com/invite/jubxF84yGw) is the best place to ask questions or tell us what to build next. To report a problem, please [file an issue on GitHub](https://github.com/intel/rohd-wave-viewer/issues).
