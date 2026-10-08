@@ -124,6 +124,27 @@ feature_row6:
         <a class="github-button" href="https://github.com/intel/rohd-schematic-viewer" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-schematic-viewer on GitHub">Star Count</a>
       </p>
 
+feature_row7:
+  - image_path: assets/images/waveform-visualization.svg
+    alt: "Angled digital waveforms drawn as glowing pipes above a timing grid"
+    title: "ROHD Wave Viewer"
+    url: "https://intel.github.io/rohd-wave-viewer/?waveFormFile=assets%2Fwaveforms%2Ffilter_bank.fst&signalList=FilterBank%2Fclk&signalList=FilterBank%2Freset&signalList=FilterBank%2Fsample1&signalList=FilterBank%2Fch0%2FdataOut&signalList=FilterBank%2Fstate&signalList=FilterBank%2FvalidIn&signalList=FilterBank%2FsampleIn&signalList=FilterBank%2FdataOut&signalList=FilterBank%2FchannelOut&signalList=FilterBank%2Fcontroller%2FloadingPhase&signalList=FilterBank%2Fcontroller%2FdoneFlag"
+    btn_label: "<i class='fas fa-cloud'></i> Try it in-browser"
+    btn_class: "btn--primary"
+    excerpt: >
+      <p>
+        Inspect simulation waveforms with an interactive, open-source viewer. Browse signal hierarchy, organize traces, and use markers and edge navigation to investigate timing.
+      </p>
+      <p>
+        Open VCD, FST, or GHW files locally in your browser without uploading them. The same Flutter-based viewer also runs on the desktop and integrates with VS Code and ROHD DevTools for live simulation debugging.
+      </p>
+      <p style="display: flex; align-items: center; justify-content: flex-end; gap: 15px; flex-wrap: wrap;">
+        <a href='https://github.com/intel/rohd-wave-viewer' style="display: inline-flex; align-items: center; text-decoration: none; margin-top: -2px;">
+          <i class='fab fa-fw fa-github'></i>View on GitHub
+        </a>
+        <a class="github-button" href="https://github.com/intel/rohd-wave-viewer" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd-wave-viewer on GitHub">Star Count</a>
+      </p>
+
 ---
 
 {% include feature_row %}
@@ -137,3 +158,5 @@ feature_row6:
 {% include feature_row id="feature_row5" type="right" %}
 
 {% include feature_row id="feature_row6" type="left" %}
+
+{% include feature_row id="feature_row7" type="right" %}
