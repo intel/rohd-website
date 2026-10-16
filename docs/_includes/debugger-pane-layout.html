@@ -1,0 +1,17 @@
+{% assign images = include.images | split: "|" %}
+{% assign alts = include.alts | split: "|" %}
+{% assign captions = include.captions | split: "|" %}
+<div class="debugger-pane-layout{% if include.variant %} debugger-pane-layout--{{ include.variant }}{% endif %}">
+  <figure class="debugger-pane-layout__tree">
+    <img src="{{ site.baseurl }}/assets/images/rohd-live-debugger/{{ include.tree_image }}" alt="{{ include.tree_alt }}">
+    <figcaption>{{ include.tree_caption }}</figcaption>
+  </figure>
+  <div class="debugger-pane-layout__panes">
+    {% for image in images %}
+      <figure>
+        <img src="{{ site.baseurl }}/assets/images/rohd-live-debugger/{{ image }}" alt="{{ alts[forloop.index0] }}">
+        <figcaption>{{ captions[forloop.index0] }}</figcaption>
+      </figure>
+    {% endfor %}
+  </div>
+</div>
