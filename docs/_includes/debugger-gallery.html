@@ -1,0 +1,11 @@
+{% assign images = include.images | split: "|" %}
+{% assign alts = include.alts | split: "|" %}
+{% assign captions = include.captions | split: "|" %}
+<div class="debugger-gallery debugger-gallery--{{ include.columns }}{% if include.variant %} debugger-gallery--{{ include.variant }}{% endif %}">
+  {% for image in images %}
+    <figure>
+      <img src="{{ site.baseurl }}/assets/images/rohd-live-debugger/{{ image }}" alt="{{ alts[forloop.index0] }}">
+      <figcaption>{{ captions[forloop.index0] }}</figcaption>
+    </figure>
+  {% endfor %}
+</div>

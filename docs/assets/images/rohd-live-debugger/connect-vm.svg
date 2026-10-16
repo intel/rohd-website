@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title">
+  <title id="title">Connect to a virtual machine</title>
+  <g fill="none" stroke="#267cb9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M9.25 14.75 7 17a4 4 0 0 1-5.66-5.66l4.25-4.25a4 4 0 0 1 5.66 0"/>
+    <path d="m14.75 9.25 2.25-2.25a4 4 0 0 1 5.66 5.66l-4.25 4.25a4 4 0 0 1-5.66 0"/>
+    <path d="m8.5 15.5 7-7"/>
+  </g>
+</svg>

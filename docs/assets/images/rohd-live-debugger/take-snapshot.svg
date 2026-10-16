@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title">
+  <title id="title">Take snapshot</title>
+  <rect x="2" y="2" width="20" height="20" rx="4" fill="#267cb9"/>
+  <path d="M7 9h2l1-1.5h4L15 9h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1Zm5 1.5A3 3 0 1 0 12 16a3 3 0 0 0 0-5.5Zm0 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="#fff"/>
+</svg>

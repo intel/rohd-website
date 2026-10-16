@@ -46,6 +46,128 @@ search: false
   }
 }
 
+.debugger-narrow-sidebar .sidebar {
+  @include breakpoint($large) {
+    width: 9rem;
+  }
+}
+
+.debugger-gallery,
+.debugger-pane-layout {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+
+  figure {
+    margin: 0;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    border: 1px solid #d8d8d8;
+  }
+
+  figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.85em;
+    text-align: center;
+  }
+}
+
+.debugger-gallery--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.debugger-gallery--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.debugger-gallery--vertical {
+  grid-template-columns: 1fr;
+}
+
+.debugger-gallery--startup {
+  justify-items: center;
+
+  > figure {
+    width: 70%;
+  }
+}
+
+.debugger-shell-send {
+  display: block;
+  width: 70%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.debugger-main-display {
+  display: block;
+  width: 70%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.debugger-inline-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0 0.15em;
+  vertical-align: -0.125em;
+}
+
+.debugger-pane-layout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+
+  &__tree img {
+    aspect-ratio: 1 / 2;
+    object-fit: cover;
+    object-position: left center;
+  }
+
+  &--snapshot &__tree img {
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
+
+  &--module-tree &__tree img {
+    aspect-ratio: 1 / 1;
+  }
+
+  &__panes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .debugger-gallery--two,
+  .debugger-gallery--three,
+  .debugger-pane-layout,
+  .debugger-pane-layout__panes {
+    grid-template-columns: 1fr;
+  }
+
+  .debugger-pane-layout__tree img {
+    aspect-ratio: auto;
+  }
+
+  .debugger-gallery--startup > figure {
+    width: 100%;
+  }
+
+  .debugger-shell-send {
+    width: 100%;
+  }
+
+  .debugger-main-display {
+    width: 100%;
+  }
+}
+
 ul li, ol li {
   margin-bottom: 0.1em;
 }
