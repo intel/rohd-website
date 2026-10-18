@@ -1,11 +1,14 @@
 ---
 title: "Generating Outputs"
 permalink: /docs/generation/
-last_modified_at: 2026-08-19
+last_modified_at: 2026-10-12
 toc: true
 ---
 
-Hardware in ROHD is convertible to an output format via `Synthesizer`s, the most popular of which is SystemVerilog. Hardware in ROHD can be converted to logically equivalent, human-readable SystemVerilog with structure, hierarchy, ports, and names maintained.
+Hardware in ROHD is convertible to an output format via `Synthesizer`s. The
+most popular output format is SystemVerilog, with SystemC also available.
+Generated output is human-readable and maintains structure, hierarchy, ports,
+and names where the target representation supports the source semantics.
 
 The simplest way to generate SystemVerilog text is with
 `dumpSystemVerilog` on `Module`:
@@ -87,6 +90,49 @@ The JSON contains a `creator`, format `version`, and a `modules` map containing
 the complete synthesized hierarchy. Each module entry contains `attributes`,
 `ports`, `cells`, and `netnames`.
 
+## SystemC generation
+
+ROHD can also generate SystemC (C++ with the SystemC library) from the same
+hardware description. Use `SystemCService` directly for one-shot generation:
+
+```dart
+void main() async {
+    final myModule = MyModule();
+    await myModule.build();
+
+    final generatedSc =
+        SystemCService(myModule, register: false).output;
+
+    // write it to a file
+    File('myHardware.h').writeAsStringSync(generatedSc);
+
+    // Or configure artifact output and write it explicitly:
+    final systemC = SystemCService(
+        myModule,
+        register: false,
+        outputDirectory: 'build',
+        outputBaseName: 'myHardware',
+        multiFile: false);
+    systemC.writeOutputs(); // build/myHardware.sc
+}
+```
+
+The generated SystemC uses `SC_MODULE`, `SC_METHOD`, and `SC_CTHREAD`
+constructs. Combinational logic becomes `SC_METHOD` processes, compatible
+sequential logic (flip-flops and `Sequential` blocks sharing the same clock,
+reset, and reset mode) is consolidated into an `SC_CTHREAD`, and sub-modules
+are instantiated with port bindings.
+
+ROHD's emitted SystemC representation uses two-state `bool`, `sc_uint<N>`, and
+`sc_biguint<N>` types and does not preserve X/Z semantics. If any bit of a
+constant contains X or Z, the entire emitted constant becomes zero. This is a
+limitation of ROHD's emitted two-state representation, not of SystemC
+generally, so logical equivalence is limited to two-state behavior.
+
+`SystemCService` also provides per-module output, file writing, diagnostics,
+and configuration for explicitly permitted unsupported-module stubs. For
+lower-level control, use `SynthBuilder` with `SystemCSynthesizer()` directly.
+
 ## Controlling port types
 
 Generated ports default to `input logic`, `output logic`, and `inout wire`, preserving the traditional ROHD declarations. Use a `SystemVerilogSynthesizerConfiguration` to independently control whether object types, such as `wire` and `var`, and data types, such as `logic`, are explicit for each port direction:
@@ -112,6 +158,20 @@ final systemVerilog = myModule.dumpSystemVerilog(
 
 The same configuration can be passed directly to `SystemVerilogSynthesizer`
 when using `SynthBuilder`.
+
+## Controlling enum generation
+
+[`LogicEnum`](https://intel.github.io/rohd-website/docs/logic-enums/) signals generate SystemVerilog enum typedefs and symbolic values by default. Enum generation can be disabled for compatibility with tools or flows that require packed logic:
+
+```dart
+final generatedSv = myModule.dumpSystemVerilog(
+  configuration: const SystemVerilogSynthesizerConfiguration(
+    generateEnums: false,
+  ),
+);
+```
+
+With enum generation disabled, the same design is emitted using ordinary packed logic and numeric values.
 
 ## Controlling naming
 
@@ -248,7 +308,7 @@ final waveform = WaveformService(
   outputDirectory: 'build/waves',
   outputBaseName: 'interesting-signals',
   writeToFile: true,
-  timescale: '1ns',
+  timescale: WaveformTimeScale.oneNanosecond,
   startTime: 100,
   stopTime: 1000,
   signalFilter: (signal) => signal.name.startsWith('debug_'),
@@ -256,3 +316,9 @@ final waveform = WaveformService(
 
 final vcdArtifact = waveform.artifacts.single;
 ```
+
+`timescale` is the physical duration represented by one unit of ROHD
+simulation time. For example, `WaveformTimeScale.oneNanosecond` writes an
+event at `Simulator.time == 100` at timestamp `100` with a `1ns` timescale;
+it does not rescale timestamps or change simulator scheduling. The same
+validated scale is used for VCD and FST output.
