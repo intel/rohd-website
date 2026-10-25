@@ -1,0 +1,109 @@
+@TestOn('vm')
+library;
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:__PACKAGE_NAME__/__PACKAGE_NAME__.dart';
+import 'package:rohd/rohd.dart';
+import 'package:test/test.dart';
+
+void main() {
+  tearDown(() async {
+    await Simulator.reset();
+  });
+
+  // Drives typed ports and verifies the explicit bare-Logic array declaration.
+  test(
+    '__MODULE_NAME__Typed conditionally processes typed ports',
+    () async {
+      final structureIn = __MODULE_NAME__Packet(name: 'structureIn');
+      final arraySource = Logic(name: 'arraySource', width: 8);
+      final invert = Logic(name: 'invert');
+      final control = __MODULE_NAME__Interface();
+      final dut = __MODULE_NAME__Typed(
+        structureIn,
+        arraySource,
+        invert,
+        control,
+      );
+      await dut.build();
+
+      const waveformPath = 'tmp_test/__MODULE_FILE___typed.vcd';
+      WaveDumper(dut, outputPath: waveformPath);
+      final clk = SimpleClockGenerator(10).clk;
+
+      Simulator.setMaxSimTime(30);
+      unawaited(Simulator.run());
+      structureIn.flag.inject(0);
+      structureIn.nibble.inject(0x3);
+      arraySource.inject(0xa3);
+      invert.inject(1);
+      control.signalIn.inject(0);
+      await clk.nextNegedge;
+
+      expect(
+        dut.structureOut.flag.value.toInt(),
+        1,
+        reason: 'The typed structure flag must invert while invert is high.',
+      );
+      expect(
+        dut.structureOut.nibble.value.toInt(),
+        0xc,
+        reason: 'The typed structure fields must invert while invert is high.',
+      );
+      expect(
+        control.signalOut.value.toInt(),
+        1,
+        reason: 'The interface output must invert while invert is high.',
+      );
+      expect(
+        dut.arrayOut.dimensions,
+        equals([2]),
+        reason: 'The explicit array dimensions must be preserved.',
+      );
+      expect(
+        dut.arrayOut.elementWidth,
+        4,
+        reason: 'The explicit array leaf width must be preserved.',
+      );
+      expect(
+        dut.arrayOut.numUnpackedDimensions,
+        1,
+        reason: 'The explicit array unpacked layout must be preserved.',
+      );
+      expect(
+        dut.generateSynth(),
+        allOf(
+          contains('input logic [3:0] arrayIn [1:0]'),
+          contains('output logic [3:0] arrayOut [1:0]'),
+        ),
+        reason: 'The synthesized port declarations must preserve the array shape.',
+      );
+
+      Simulator.registerAction(Simulator.time + 1, () {
+        invert.put(0);
+        control.signalIn.put(1);
+      });
+      await clk.nextPosedge;
+      await Simulator.endSimulation();
+
+      expect(
+        dut.structureOut.flag.value.toInt(),
+        0,
+        reason: 'The structure must pass through after invert deasserts.',
+      );
+      expect(
+        control.signalOut.value.toInt(),
+        1,
+        reason: 'The interface must pass through after invert deasserts.',
+      );
+      expect(dut.subModules, hasLength(1));
+      expect(
+        File(waveformPath).readAsStringSync(),
+        contains(r'$enddefinitions'),
+        reason: 'The scheduled simulation must write a complete VCD header.',
+      );
+    },
+  );
+}
