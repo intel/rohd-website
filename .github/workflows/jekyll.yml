@@ -74,8 +74,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
+      - name: Install Dart SDK
+        shell: pwsh
+        run: |
+          choco install dart-sdk --yes --no-progress
+          if ($LASTEXITCODE -ne 0) {
+            throw 'choco install dart-sdk failed.'
+          }
+          dart --version
 
       - name: Run launcher regression
         shell: pwsh

@@ -168,8 +168,16 @@ If you manage Dart through another supported system, install Dart >=3.6.0 and
 }
 
 function Get-DartVersion {
-  $outputLines = @(& dart --version 2>&1 | ForEach-Object { $_.ToString() })
-  if ($LASTEXITCODE -ne 0) {
+  # Native stderr must not become a terminating error under -ErrorActionPreference Stop.
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try {
+    $outputLines = @(& dart --version 2>&1 | ForEach-Object { $_.ToString() })
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+  if ($exitCode -ne 0) {
     return $null
   }
   $output = [string]::Join([Environment]::NewLine, $outputLines)
