@@ -81,6 +81,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw 'choco install dart-sdk failed.'
           }
+          $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
+            [Environment]::GetEnvironmentVariable('Path', 'User')
+          $dart = Get-Command dart -ErrorAction Stop
+          Add-Content -LiteralPath $env:GITHUB_PATH -Value (Split-Path -Parent $dart.Source)
           dart --version
 
       - name: Run launcher regression
