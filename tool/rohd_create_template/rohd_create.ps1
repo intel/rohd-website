@@ -168,10 +168,11 @@ If you manage Dart through another supported system, install Dart >=3.6.0 and
 }
 
 function Get-DartVersion {
-  $output = (& dart --version 2>&1 | Out-String)
+  $outputLines = @(& dart --version 2>&1 | ForEach-Object { $_.ToString() })
   if ($LASTEXITCODE -ne 0) {
     return $null
   }
+  $output = [string]::Join([Environment]::NewLine, $outputLines)
   if ($output -match 'version:\s*([0-9]+\.[0-9]+\.[0-9]+)') {
     return $Matches[1]
   }

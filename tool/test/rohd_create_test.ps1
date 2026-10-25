@@ -181,7 +181,7 @@ exit /b 0
   }
   if ((($incompatibleOutput | Out-String) -notmatch 'Dart 3.5.0 is incompatible') -or
       (($incompatibleOutput | Out-String) -notmatch 'requires Dart >=3.6.0 and <4.0.0')) {
-    throw 'PowerShell bootstrapper did not report the required Dart range.'
+    throw "PowerShell bootstrapper did not report the required Dart range:`n$($incompatibleOutput | Out-String)"
   }
 
   try {
