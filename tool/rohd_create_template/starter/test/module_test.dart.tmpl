@@ -1,0 +1,82 @@
+@TestOn('vm')
+library;
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:__PACKAGE_NAME__/__PACKAGE_NAME__.dart';
+import 'package:rohd/rohd.dart';
+import 'package:test/test.dart';
+
+void main() {
+  tearDown(() async {
+    await Simulator.reset();
+  });
+
+  // Drives the required input while no optional inversion port is present.
+  test('__MODULE_NAME__ passes through without an invert input', () async {
+    final input = Logic(name: 'input');
+    final dut = __MODULE_NAME__(input);
+    await dut.build();
+    final clk = SimpleClockGenerator(10).clk;
+
+    Simulator.setMaxSimTime(20);
+    unawaited(Simulator.run());
+    input.inject(1);
+    await clk.nextNegedge;
+
+    expect(
+      dut.result.value.toInt(),
+      1,
+      reason: 'The result must pass through when tryInput finds no invert port.',
+    );
+    expect(
+      dut.tryInput('invert'),
+      isNull,
+      reason: 'The optional inversion port must not exist when omitted.',
+    );
+    await Simulator.endSimulation();
+  });
+
+  // Drives both ports and changes the optional control during simulation.
+  test('__MODULE_NAME__ conditionally inverts with an invert input', () async {
+    final input = Logic(name: 'input');
+    final invert = Logic(name: 'invert');
+    final dut = __MODULE_NAME__(input, invert: invert);
+    await dut.build();
+    const waveformPath = 'tmp_test/__MODULE_FILE___conditional.vcd';
+    WaveDumper(dut, outputPath: waveformPath);
+    final clk = SimpleClockGenerator(10).clk;
+
+    Simulator.setMaxSimTime(30);
+    unawaited(Simulator.run());
+    input.inject(0);
+    invert.inject(1);
+    await clk.nextNegedge;
+
+    expect(
+      dut.result.value.toInt(),
+      1,
+      reason: 'The result must invert while the optional control is asserted.',
+    );
+    expect(
+      dut.tryInput('invert'),
+      isNotNull,
+      reason: 'The optional inversion port must be registered when supplied.',
+    );
+
+    Simulator.registerAction(Simulator.time + 1, () => invert.put(0));
+    await clk.nextPosedge;
+    expect(
+      dut.result.value.toInt(),
+      0,
+      reason: 'The result must pass through after the control deasserts.',
+    );
+    await Simulator.endSimulation();
+    expect(
+      File(waveformPath).readAsStringSync(),
+      contains(r'$enddefinitions'),
+      reason: 'The scheduled simulation must write a complete VCD header.',
+    );
+  });
+}

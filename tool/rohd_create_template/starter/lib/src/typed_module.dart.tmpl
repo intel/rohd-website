@@ -1,0 +1,187 @@
+import 'package:rohd/rohd.dart';
+
+/// A typed two-field value used by the starter module ports.
+class __MODULE_NAME__Packet extends LogicStructure {
+  /// The single-bit packet field.
+  Logic get flag => elements[0];
+
+  /// The four-bit packet field.
+  Logic get nibble => elements[1];
+
+  /// Creates a packet with independently addressable fields.
+  __MODULE_NAME__Packet({String? name})
+    : super([
+        Logic(name: 'flag'),
+        Logic(name: 'nibble', width: 4),
+      ], name: name ?? '__MODULE_FILE___packet');
+
+  @override
+  __MODULE_NAME__Packet clone({String? name}) =>
+      __MODULE_NAME__Packet(name: name ?? this.name);
+}
+
+/// Tags the input and output ports of [__MODULE_NAME__Interface].
+enum __MODULE_NAME__InterfacePort {
+  /// Tags signals driven into a module.
+  toModule,
+
+  /// Tags signals driven from a module.
+  fromModule,
+}
+
+/// A minimal interface port that the starter module inverts.
+class __MODULE_NAME__Interface extends Interface<__MODULE_NAME__InterfacePort> {
+  /// Signal driven into the module.
+  Logic get signalIn => port('signalIn');
+
+  /// Inverted signal driven from the module.
+  Logic get signalOut => port('signalOut');
+
+  /// Creates the interface ports and their directions.
+  __MODULE_NAME__Interface() {
+    setPorts([Logic.port('signalIn')], [__MODULE_NAME__InterfacePort.toModule]);
+    setPorts(
+      [Logic.port('signalOut')],
+      [__MODULE_NAME__InterfacePort.fromModule],
+    );
+  }
+
+  @override
+  __MODULE_NAME__Interface clone() => __MODULE_NAME__Interface();
+}
+
+/// A complex parent shell with typed, array, and interface child ports.
+class __MODULE_NAME__Typed extends Module {
+  /// The inverted typed structure output.
+  __MODULE_NAME__Packet get structureOut =>
+      output('structureOut') as __MODULE_NAME__Packet;
+
+  /// The inverted array output.
+  LogicArray get arrayOut => output('arrayOut') as LogicArray;
+
+  /// Creates a shell that delegates each port kind to a child inverter.
+  __MODULE_NAME__Typed(
+    __MODULE_NAME__Packet structureIn,
+    Logic arraySource,
+    Logic invert,
+    __MODULE_NAME__Interface control, {
+    super.name = '__MODULE_FILE___typed',
+  }) : super(definitionName: '__MODULE_NAME__Typed') {
+    structureIn = addTypedInput('structureIn', structureIn);
+    final arrayIn = addInputArray(
+      'arrayIn',
+      arraySource,
+      dimensions: const [2],
+      elementWidth: 4,
+      numUnpackedDimensions: 1,
+    );
+    invert = addInput('invert', invert);
+    control = addInterfacePorts(
+      control,
+      inputTags: {__MODULE_NAME__InterfacePort.toModule},
+      outputTags: {__MODULE_NAME__InterfacePort.fromModule},
+      uniquify: (original) => 'control_$original',
+    );
+
+    final child = ___MODULE_NAME__TypedPortInverter(
+      structureIn,
+      arrayIn,
+      invert,
+      control,
+    );
+    final structureOut = addTypedOutput(
+      'structureOut',
+      child.structureOut.clone,
+    );
+    structureOut <= child.structureOut;
+    final arrayOut = addOutputArray(
+      'arrayOut',
+      dimensions: const [2],
+      elementWidth: 4,
+      numUnpackedDimensions: 1,
+    );
+    for (var index = 0; index < arrayOut.elements.length; index++) {
+      arrayOut.elements[index] <= child.arrayOut.elements[index];
+    }
+  }
+}
+
+/// Owns child ports and conditionally inverts every leaf signal.
+class ___MODULE_NAME__TypedPortInverter extends Module {
+  /// The inverted typed structure output.
+  __MODULE_NAME__Packet get structureOut =>
+      output('structureOut') as __MODULE_NAME__Packet;
+
+  /// The inverted array output.
+  LogicArray get arrayOut => output('arrayOut') as LogicArray;
+
+  /// Creates a port-owning conditional inverter for the parent shell.
+  ___MODULE_NAME__TypedPortInverter(
+    __MODULE_NAME__Packet structureIn,
+    LogicArray arrayIn,
+    Logic invert,
+    __MODULE_NAME__Interface control,
+  ) : super(definitionName: '__MODULE_NAME__TypedPortInverter') {
+    structureIn = addTypedInput('structureIn', structureIn);
+    invert = addInput('invert', invert);
+    final structureOut = addTypedOutput('structureOut', structureIn.clone);
+    final structureFlagResult = Logic(name: 'structureFlagResult');
+    final structureNibbleResult = Logic(
+      name: 'structureNibbleResult',
+      width: 4,
+    );
+    structureOut.flag <= structureFlagResult;
+    structureOut.nibble <= structureNibbleResult;
+
+    arrayIn = addInputArray(
+      'arrayIn',
+      arrayIn,
+      dimensions: const [2],
+      elementWidth: 4,
+      numUnpackedDimensions: 1,
+    );
+    final arrayResult = LogicArray(
+      const [2],
+      4,
+      name: 'arrayResult',
+      numUnpackedDimensions: 1,
+    );
+    final arrayOut = addOutputArray(
+      'arrayOut',
+      dimensions: const [2],
+      elementWidth: 4,
+      numUnpackedDimensions: 1,
+    );
+    for (var index = 0; index < arrayOut.elements.length; index++) {
+      arrayOut.elements[index] <= arrayResult.elements[index];
+    }
+
+    final internalControl = addInterfacePorts(
+      control,
+      inputTags: {__MODULE_NAME__InterfacePort.toModule},
+      outputTags: {__MODULE_NAME__InterfacePort.fromModule},
+      uniquify: (original) => 'control_$original',
+    );
+    final controlResult = Logic(name: 'controlResult');
+    internalControl.signalOut <= controlResult;
+    Combinational([
+      If(
+        invert,
+        then: [
+          structureFlagResult < ~structureIn.flag,
+          structureNibbleResult < ~structureIn.nibble,
+          for (var index = 0; index < arrayIn.elements.length; index++)
+            arrayResult.elements[index] < ~arrayIn.elements[index],
+          controlResult < ~internalControl.signalIn,
+        ],
+        orElse: [
+          structureFlagResult < structureIn.flag,
+          structureNibbleResult < structureIn.nibble,
+          for (var index = 0; index < arrayIn.elements.length; index++)
+            arrayResult.elements[index] < arrayIn.elements[index],
+          controlResult < internalControl.signalIn,
+        ],
+      ),
+    ]);
+  }
+}

@@ -29,8 +29,87 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  launcher-linux:
+    name: Test Linux ROHD Create Launcher
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Run launcher regression
+        run: bash tool/test/rohd_create_test.sh
+
+      - name: Test launcher bundles
+        run: bash tool/test/build_rohd_create_bundles_test.sh
+
+      - name: Test generated starter package
+        run: |
+          set -euo pipefail
+          bundle_dir="$RUNNER_TEMP/rohd-create-bundles"
+          launcher_dir="$RUNNER_TEMP/rohd-create-launcher"
+          target="$RUNNER_TEMP/my-first-module"
+          python3 tool/build_rohd_create_bundles.py "$bundle_dir"
+          unzip -q "$bundle_dir/rohd_create_linux.zip" -d "$launcher_dir"
+          bash "$launcher_dir/rohd_create/rohd_create.sh" "$target" \
+            --package-name my_first_module \
+            --module-name MyFirstModule
+          (
+            cd "$target"
+            dart test
+          )
+
+  launcher-windows:
+    name: Test Windows ROHD Create Launcher
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dart SDK
+        shell: pwsh
+        run: |
+          choco install dart-sdk --yes --no-progress
+          if ($LASTEXITCODE -ne 0) {
+            throw 'choco install dart-sdk failed.'
+          }
+          $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
+            [Environment]::GetEnvironmentVariable('Path', 'User')
+          $dart = Get-Command dart -ErrorAction Stop
+          Add-Content -LiteralPath $env:GITHUB_PATH -Value (Split-Path -Parent $dart.Source)
+          dart --version
+
+      - name: Run launcher regression
+        shell: pwsh
+        run: ./tool/test/rohd_create_test.ps1
+
+      - name: Test generated starter package
+        shell: pwsh
+        run: |
+          $bundleDirectory = Join-Path $env:RUNNER_TEMP 'rohd-create-bundles'
+          $launcherDirectory = Join-Path $env:RUNNER_TEMP 'rohd-create-launcher'
+          $target = Join-Path $env:RUNNER_TEMP 'my-first-module'
+          python tool/build_rohd_create_bundles.py $bundleDirectory
+          Expand-Archive `
+            -LiteralPath (Join-Path $bundleDirectory 'rohd_create_windows.zip') `
+            -DestinationPath $launcherDirectory
+          & (Join-Path $launcherDirectory 'rohd_create/rohd_create.ps1') $target `
+            -PackageName my_first_module `
+            -ModuleName MyFirstModule
+          Set-Location $target
+          dart test
+
   # Build job
   build:
+    needs: [launcher-linux, launcher-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,6 +127,8 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Build launcher download bundles
+        run: python3 tool/build_rohd_create_bundles.py
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: |

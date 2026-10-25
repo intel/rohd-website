@@ -1,0 +1,55 @@
+# __PACKAGE_NAME__
+
+A standalone ROHD development package using published ROHD, ROHD-HCL, and
+ROHD-VF packages from pub.dev.
+
+The starter includes two examples:
+
+- `__MODULE_NAME__` is a small `Logic` input/output module. Its optional
+  `invert` input demonstrates conditional `mux` logic and safe optional-port
+  lookup with `tryInput`.
+- `__MODULE_NAME__Typed` is the complex example. It demonstrates a
+  `LogicStructure`, explicit-shape `LogicArray`, and `Interface` crossing a
+  parent/child boundary using the public `rohd` API.
+
+The generated source intentionally has no copyright or license header. Add the
+ownership and licensing terms appropriate for your project before publishing it.
+
+The default imports are:
+
+```dart
+import 'package:rohd/rohd.dart';
+import 'package:rohd_hcl/rohd_hcl.dart';
+import 'package:rohd_vf/rohd_vf.dart';
+```
+
+The generated `pubspec.yaml` uses hosted constraints by default. Re-run the
+bootstrapper with `--rohd-path`, `--hcl-path`, or `--vf-path` (or their
+PowerShell equivalents) to add local source overrides while developing against
+unpublished framework changes.
+
+The generated tests cover the simple conditional behavior and the complex
+hierarchy, including SystemVerilog generation. Running `dart test` leaves
+inspectable VCD waveforms in `tmp_test/`: `__MODULE_FILE___conditional.vcd`
+for the simple optional-input example and `__MODULE_FILE___typed.vcd` for the
+complex typed example. The directory is ignored by Git.
+
+The starter follows ROHD boundary ownership rules: each constructor signal is
+rebound through the matching port API, public outputs are real module ports,
+and `LogicArray` ports use typed registration to preserve their complete shape.
+Array outputs are driven element-by-element. The test uses `inject` for
+external stimulus and reserves `put` for scheduled simulation actions.
+
+The typed example accepts a bare packed `Logic` array source and uses
+`addInputArray` and `addOutputArray` with explicit dimensions, leaf width, and
+unpacked-layout metadata. A future starter revision can add a
+`TypedLogicArray` example when that API is available in the hosted ROHD release.
+
+See the [ROHD component guide](https://github.com/intel/rohd/blob/main/doc/Component.md)
+for component construction and optional ROHD-HCL integration guidance. The
+[ROHD hardware skill](https://github.com/intel/rohd/blob/main/.github/skills/rohd-hardware/SKILL.md)
+provides additional agent guidance.
+
+```sh
+dart test
+```
