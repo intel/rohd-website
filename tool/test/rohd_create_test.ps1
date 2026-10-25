@@ -155,7 +155,7 @@ exit /b 0
 @echo off
 if not "%DART_CALL_LOG%"=="" echo %~1>>"%DART_CALL_LOG%"
 if /I "%1"=="--version" (
-  echo Dart SDK version: %FAKE_DART_VERSION% (stable) on "Windows" 1>&2
+  echo Dart SDK version: %FAKE_DART_VERSION% ^(stable^) on "Windows" 1>&2
   exit /b 0
 )
 if /I "%1"=="format" exit /b 0
