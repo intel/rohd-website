@@ -20,6 +20,12 @@ ul li, ol li {
   margin-bottom: 0.1em;
 }
 
+@media (min-width: $large) {
+  .narrow-sidebar .sidebar {
+    width: 9rem;
+  }
+}
+
 // This changes the code box
 .highlight {
   margin: 0;
