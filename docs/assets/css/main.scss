@@ -16,6 +16,10 @@ search: false
   font-size: 1rem;
 }
 
+.rohd-tools-title {
+  color: #0056a6;
+}
+
 ul li, ol li {
   margin-bottom: 0.1em;
 }
@@ -33,4 +37,9 @@ ul li, ol li {
   font-family: $monospace;
   font-size: 0.6rem;
   line-height: 1.8;
+}
+
+.compact-artifact-code .highlight {
+  font-size: 0.55rem;
+  line-height: 1.4;
 }
