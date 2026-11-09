@@ -49,20 +49,7 @@ jobs:
         run: bash tool/test/build_rohd_create_bundles_test.sh
 
       - name: Test generated starter package
-        run: |
-          set -euo pipefail
-          bundle_dir="$RUNNER_TEMP/rohd-create-bundles"
-          launcher_dir="$RUNNER_TEMP/rohd-create-launcher"
-          target="$RUNNER_TEMP/my-first-module"
-          python3 tool/build_rohd_create_bundles.py "$bundle_dir"
-          unzip -q "$bundle_dir/rohd_create_linux.zip" -d "$launcher_dir"
-          bash "$launcher_dir/rohd_create/rohd_create.sh" "$target" \
-            --package-name my_first_module \
-            --module-name MyFirstModule
-          (
-            cd "$target"
-            dart test
-          )
+        run: bash tool/test/rohd_create_integration_test.sh
 
   launcher-windows:
     name: Test Windows ROHD Create Launcher
@@ -93,19 +80,7 @@ jobs:
 
       - name: Test generated starter package
         shell: pwsh
-        run: |
-          $bundleDirectory = Join-Path $env:RUNNER_TEMP 'rohd-create-bundles'
-          $launcherDirectory = Join-Path $env:RUNNER_TEMP 'rohd-create-launcher'
-          $target = Join-Path $env:RUNNER_TEMP 'my-first-module'
-          python tool/build_rohd_create_bundles.py $bundleDirectory
-          Expand-Archive `
-            -LiteralPath (Join-Path $bundleDirectory 'rohd_create_windows.zip') `
-            -DestinationPath $launcherDirectory
-          & (Join-Path $launcherDirectory 'rohd_create/rohd_create.ps1') $target `
-            -PackageName my_first_module `
-            -ModuleName MyFirstModule
-          Set-Location $target
-          dart test
+        run: ./tool/test/rohd_create_integration_test.ps1
 
   # Build job
   build:
