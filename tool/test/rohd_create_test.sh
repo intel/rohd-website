@@ -156,9 +156,9 @@ readonly GITIGNORE="$DESTINATION/.gitignore"
 readonly README="$DESTINATION/README.md"
 
 grep -F 'name: starter_ports' "$PUBSPEC" > /dev/null
-grep -F 'rohd: ^0.6.11' "$PUBSPEC" > /dev/null
-grep -F 'rohd_hcl: ^0.2.1' "$PUBSPEC" > /dev/null
-grep -F 'rohd_vf: ^0.6.0' "$PUBSPEC" > /dev/null
+grep -F 'rohd: ^0.7.0' "$PUBSPEC" > /dev/null
+grep -F 'rohd_hcl: ^0.3.1' "$PUBSPEC" > /dev/null
+grep -F 'rohd_vf: ^0.7.0' "$PUBSPEC" > /dev/null
 if grep -F 'dependency_overrides:' "$PUBSPEC" > /dev/null; then
   echo 'Hosted bootstrapper unexpectedly emitted local dependency overrides.' >&2
   exit 1
@@ -176,7 +176,7 @@ grep -F 'When the optional `invert` input is absent' "$MODULE" > /dev/null
 grep -F 'StarterPorts passes through without an invert input' "$TEST" > /dev/null
 grep -F 'StarterPorts conditionally inverts with an invert input' "$TEST" > /dev/null
 grep -F "dut.tryInput('invert')" "$TEST" > /dev/null
-grep -F "WaveDumper(dut, outputPath: waveformPath);" "$TEST" > /dev/null
+grep -F "dut.dumpWaves(outputPath: waveformPath);" "$TEST" > /dev/null
 grep -F "const waveformPath = 'tmp_test/starter_ports_conditional.vcd';" \
   "$TEST" > /dev/null
 grep -Fx 'tmp_test/' "$GITIGNORE" > /dev/null
@@ -198,7 +198,7 @@ grep -F 'arrayOut.elements[index] <= child.arrayOut.elements[index];' \
 grep -F 'StarterPortsTyped conditionally processes typed ports' \
   "$TYPED_TEST" > /dev/null
 grep -F 'input logic [3:0] arrayIn [1:0]' "$TYPED_TEST" > /dev/null
-grep -F "WaveDumper(dut, outputPath: waveformPath);" "$TYPED_TEST" > /dev/null
+grep -F "dut.dumpWaves(outputPath: waveformPath);" "$TYPED_TEST" > /dev/null
 grep -F "const waveformPath = 'tmp_test/starter_ports_typed.vcd';" \
   "$TYPED_TEST" > /dev/null
 grep -F 'ROHD hardware skill' "$README" > /dev/null
@@ -214,7 +214,7 @@ if [[ "$skill_link_count" -ne 1 ]]; then
   echo 'Generated README must contain exactly one ROHD skill link.' >&2
   exit 1
 fi
-grep -F "dut.generateSynth()" "$TYPED_TEST" > /dev/null
+grep -F "dut.dumpSystemVerilog()" "$TYPED_TEST" > /dev/null
 grep -F "unawaited(Simulator.run());" "$TYPED_TEST" > /dev/null
 grep -F "await clk.nextNegedge;" "$TYPED_TEST" > /dev/null
 grep -F 'structureIn.flag.inject(0);' "$TYPED_TEST" > /dev/null
@@ -237,7 +237,9 @@ PATH="$BIN_DIRECTORY:/usr/bin:/bin" /bin/bash "$GENERATOR" "$OVERRIDE_DESTINATIO
   --vf-path "$VF" \
   --skip-pub-get > "$FIXTURE/override.out"
 
+grep -F 'rohd: ^0.6.11' "$OVERRIDE_DESTINATION/pubspec.yaml" > /dev/null
 grep -F 'rohd_hcl: ^0.3.0' "$OVERRIDE_DESTINATION/pubspec.yaml" > /dev/null
+grep -F 'rohd_vf: ^0.6.0' "$OVERRIDE_DESTINATION/pubspec.yaml" > /dev/null
 grep -F 'dependency_overrides:' "$OVERRIDE_DESTINATION/pubspec.yaml" > /dev/null
 grep -F "path: '$(realpath --relative-to="$OVERRIDE_DESTINATION" "$ROHD")'" \
   "$OVERRIDE_DESTINATION/pubspec.yaml" > /dev/null

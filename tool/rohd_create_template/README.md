@@ -2,6 +2,9 @@
 
 This directory is the source for the downloadable ROHD Create bundles.
 
+The default hosted constraints are ROHD `^0.7.0`, ROHD-HCL `^0.3.1`, and
+ROHD-VF `^0.7.0`. Local source overrides use the checkout's package version.
+
 - `starter/` is the editable source of the generated Dart package.
 - `rohd_create.sh` and `rohd_create.ps1` validate the host system, extract
   `starter.tar.gz`, substitute package/module/version placeholders, and run

@@ -30,7 +30,7 @@ void main() {
       await dut.build();
 
       const waveformPath = 'tmp_test/__MODULE_FILE___typed.vcd';
-      WaveDumper(dut, outputPath: waveformPath);
+      dut.dumpWaves(outputPath: waveformPath);
       final clk = SimpleClockGenerator(10).clk;
 
       Simulator.setMaxSimTime(30);
@@ -73,7 +73,7 @@ void main() {
         reason: 'The explicit array unpacked layout must be preserved.',
       );
       expect(
-        dut.generateSynth(),
+        dut.dumpSystemVerilog(),
         allOf(
           contains('input logic [3:0] arrayIn [1:0]'),
           contains('output logic [3:0] arrayOut [1:0]'),

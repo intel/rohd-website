@@ -12,9 +12,9 @@ set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly STARTER_ARCHIVE="$SCRIPT_DIR/starter.tar.gz"
-readonly DEFAULT_ROHD_VERSION='0.6.11'
-readonly DEFAULT_HCL_VERSION='0.2.1'
-readonly DEFAULT_VF_VERSION='0.6.0'
+readonly DEFAULT_ROHD_VERSION='0.7.0'
+readonly DEFAULT_HCL_VERSION='0.3.1'
+readonly DEFAULT_VF_VERSION='0.7.0'
 readonly DART_MINIMUM_MAJOR=3
 readonly DART_MINIMUM_MINOR=6
 

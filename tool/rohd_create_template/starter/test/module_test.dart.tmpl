@@ -45,7 +45,7 @@ void main() {
     final dut = __MODULE_NAME__(input, invert: invert);
     await dut.build();
     const waveformPath = 'tmp_test/__MODULE_FILE___conditional.vcd';
-    WaveDumper(dut, outputPath: waveformPath);
+    dut.dumpWaves(outputPath: waveformPath);
     final clk = SimpleClockGenerator(10).clk;
 
     Simulator.setMaxSimTime(30);
