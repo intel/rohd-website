@@ -32,7 +32,9 @@ The generated tests cover the simple conditional behavior and the complex
 hierarchy, including SystemVerilog generation. Running `dart test` leaves
 inspectable VCD waveforms in `tmp_test/`: `__MODULE_FILE___conditional.vcd`
 for the simple optional-input example and `__MODULE_FILE___typed.vcd` for the
-complex typed example. The directory is ignored by Git.
+complex typed example. The tests use `dumpWaves` to record waveforms and
+`dumpSystemVerilog` to inspect generated SystemVerilog. The directory is ignored
+by Git.
 
 The starter follows ROHD boundary ownership rules: each constructor signal is
 rebound through the matching port API, public outputs are real module ports,
@@ -42,8 +44,7 @@ external stimulus and reserves `put` for scheduled simulation actions.
 
 The typed example accepts a bare packed `Logic` array source and uses
 `addInputArray` and `addOutputArray` with explicit dimensions, leaf width, and
-unpacked-layout metadata. A future starter revision can add a
-`TypedLogicArray` example when that API is available in the hosted ROHD release.
+unpacked-layout metadata.
 
 See the [ROHD component guide](https://github.com/intel/rohd/blob/main/doc/Component.md)
 for component construction and optional ROHD-HCL integration guidance. The

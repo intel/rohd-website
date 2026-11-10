@@ -236,9 +236,9 @@ exit /b 0
   $readme = Join-Path $destination 'README.md'
 
   Assert-Contains $pubspec 'name: starter_ports'
-  Assert-Contains $pubspec 'rohd: ^0.6.11'
-  Assert-Contains $pubspec 'rohd_hcl: ^0.2.1'
-  Assert-Contains $pubspec 'rohd_vf: ^0.6.0'
+  Assert-Contains $pubspec 'rohd: ^0.7.0'
+  Assert-Contains $pubspec 'rohd_hcl: ^0.3.1'
+  Assert-Contains $pubspec 'rohd_vf: ^0.7.0'
   Assert-NotContains $pubspec 'dependency_overrides:'
   if (Test-Path -LiteralPath (Join-Path $destination '.rohd-development')) {
     throw 'Hosted PowerShell bootstrapper unexpectedly created a clone workspace.'
@@ -251,7 +251,7 @@ exit /b 0
   Assert-Contains $test 'StarterPorts passes through without an invert input'
   Assert-Contains $test 'StarterPorts conditionally inverts with an invert input'
   Assert-Contains $test "dut.tryInput('invert')"
-  Assert-Contains $test 'WaveDumper(dut, outputPath: waveformPath);'
+  Assert-Contains $test 'dut.dumpWaves(outputPath: waveformPath);'
   Assert-Contains $test "const waveformPath = 'tmp_test/starter_ports_conditional.vcd';"
   Assert-Contains (Join-Path $destination '.gitignore') 'tmp_test/'
   Assert-Contains $typedModule 'class StarterPortsTyped extends Module'
@@ -268,7 +268,7 @@ exit /b 0
   Assert-Contains $typedModule 'arrayOut.elements[index] <= child.arrayOut.elements[index];'
   Assert-Contains $typedTest 'StarterPortsTyped conditionally processes typed ports'
   Assert-Contains $typedTest 'input logic [3:0] arrayIn [1:0]'
-  Assert-Contains $typedTest 'WaveDumper(dut, outputPath: waveformPath);'
+  Assert-Contains $typedTest 'dut.dumpWaves(outputPath: waveformPath);'
   Assert-Contains $typedTest "const waveformPath = 'tmp_test/starter_ports_typed.vcd';"
   Assert-Contains $readme 'ROHD hardware skill'
   $skillLinkCount = [regex]::Matches(
@@ -278,7 +278,7 @@ exit /b 0
   if ($skillLinkCount -ne 1) {
     throw 'Generated README must contain exactly one ROHD skill link.'
   }
-  Assert-Contains $typedTest 'dut.generateSynth()'
+  Assert-Contains $typedTest 'dut.dumpSystemVerilog()'
   Assert-Contains $typedTest 'unawaited(Simulator.run());'
   Assert-Contains $typedTest 'await clk.nextNegedge;'
   Assert-Contains $typedTest 'structureIn.flag.inject(0);'
@@ -312,7 +312,9 @@ exit /b 0
   }
 
   $overridePubspec = Join-Path $overrideDestination 'pubspec.yaml'
+  Assert-Contains $overridePubspec 'rohd: ^0.6.11'
   Assert-Contains $overridePubspec 'rohd_hcl: ^0.3.0'
+  Assert-Contains $overridePubspec 'rohd_vf: ^0.6.0'
   Assert-Contains $overridePubspec 'dependency_overrides:'
   Assert-Contains $overridePubspec "path: '../rohd'"
   Assert-Contains $overridePubspec "path: '../rohd-hcl'"
