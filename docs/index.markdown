@@ -189,7 +189,7 @@ feature_row8:
         <a class="github-button" href="https://github.com/intel/rohd" data-color-scheme="light" data-size="large" data-show-count="true" aria-label="Star intel/rohd on GitHub">Star Count</a>
       </p>
       <div class="debugger-connect">
-        <a href="https://intel.github.io/rohd-debugger/" class="btn btn--primary"><i class="fas fa-cloud" aria-hidden="true"></i> Connect to DTD via Browser</a>
+        <a href="https://intel.github.io/rohd/rohd-live-debugger/" class="btn btn--primary"><i class="fas fa-cloud" aria-hidden="true"></i> Connect to DTD via Browser</a>
         <aside class="notice--info debugger-connect__definition" aria-label="DTD definition">
           <p><strong>DTD</strong> means <strong>Dart Tooling Daemon</strong>.</p>
         </aside>

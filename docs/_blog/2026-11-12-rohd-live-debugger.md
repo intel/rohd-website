@@ -1,7 +1,7 @@
 ---
 title: "The ROHD Live Debugger: An Integrated, Interactive View of Your ROHD Design and Simulation"
 permalink: /blog/rohd-live-debugger/
-last_modified_at: 2026-10-16
+last_modified_at: 2026-11-12
 author: "Desmond A. Kirkpatrick"
 classes:
   - wide
@@ -21,23 +21,11 @@ In early 2024 we [introduced the ROHD DevTools extension]({{ site.baseurl }}/blo
   - Zoom to a schematic signal by sending a waveform selection
   - Send a signal to both panes from a details pane or an integrated shell
 
-## Scale to Large Designs using Occurrence Handles
-
-One way to think of the **ROHD Live Debugger** is as remote attached browser portal to a large design living inside a ROHD simulator controlled by VS Code. It has a core infrastructure intended to deal with debugging detailed signals within a very large and deep hierarchical scope.
-
-The debugger communicates with the remote ROHD session through **occurrence handles**: compact, portable references to signals and cells rather than cumbersome hierarchical strings. A handle carries a signal's canonical path, leaf name, width, and stable address as a single lightweight reference. This keeps waveform and design-connectivity transfers efficient as designs grow, without repeatedly serializing and resolving large hierarchy paths.
-
 Below is a walkthrough of a typical debug session using a simple pipelined floating-point adder design as an example.
 
-## Start a Debug Session
+To try it out, open the [ROHD Live Debugger web app](https://intel.github.io/rohd/rohd-live-debugger/) and choose **Continue without Connection (Demo examples)** to explore its built-in examples.
 
-The **ROHD Live Debugger** attaches to a Dart™ Virtual Machine (VM) in running your ROHD simulation in VS Code by connecting to the Dart Tooling Daemon (DTD). It does this either automatically when opened from Flutter DevTools, or standalone by discovering running VMs through a DTD URI or pasting a VM service URI directly. Here we show how you can invoke the debugger and choose the VM containing the design to which you want to attach.
-
-In the VS Code image below, you can see four simulation sessions running, with our floating-point adder ROHD code in the main pane.  In the lower right-hand corner you can see the VM sessions and, importantly, the Dart Tooling Daemon (DTD) URI address you will use to connect.
-
-{% include debugger-gallery.html columns="vertical" variant="startup" images="VSCode4.png|DTD.png" alts="VS Code debug session with ROHD Live Debugger available through DevTools|Dart Tooling Daemon connection view for choosing a debug session" captions="Start from a VS Code debug session.|Pick your session to debug by connecting to the Dart Tooling Daemon (DTD)." %}
-
-### The ROHD Live Debugger Main Display
+## The ROHD Live Debugger Main Display
 
 The main display combines five linked panes. On the left, the **Module Tree** controls the hierarchy level being inspected, while the **Shell** provides an advanced command interface. The three display panes present the selected module from complementary perspectives:
 
@@ -75,24 +63,67 @@ The Details, Waveform, and Schematic panes share signal selections through **Sen
 
 ## Cross-Probe to RTL in VS Code
 
-Use the **Go to Design** menu to open the selected signal or block in its design source. Depending on the available source mapping, you can navigate directly to the ROHD ![ROHD source icon]({{ site.baseurl }}/assets/images/rohd-live-debugger/rohd-source-icon.png){: .debugger-inline-icon} or SystemVerilog® ![SystemVerilog source icon]({{ site.baseurl }}/assets/images/rohd-live-debugger/systemverilog-source-icon.png){: .debugger-inline-icon} representation in VS Code. We choose important locations, such as where a signal is named in ROHD, or where it is assigned in SystemVerilog®. There can be multiple locations to choose, such as the call stack in the ROHD generation code, or multiple assignments or the declaration in SystemVerilog®, for example. Other RTL formats are also available, such as SystemC®.
+Use the **Go to Design** menu (right-click a signal) to open the selected signal or block in its design source. Depending on the available source mapping, you can navigate directly to the ROHD ![ROHD source icon]({{ site.baseurl }}/assets/images/rohd-live-debugger/rohd-source-icon.png){: .debugger-inline-icon} or SystemVerilog® ![SystemVerilog source icon]({{ site.baseurl }}/assets/images/rohd-live-debugger/systemverilog-source-icon.png){: .debugger-inline-icon} representation in VS Code. We choose important locations, such as where a signal is named in ROHD, or where it is assigned in SystemVerilog®. There can be multiple locations to choose, such as the call stack in the ROHD generation code, or multiple assignments or the declaration in SystemVerilog®, for example. Other RTL formats are also available, such as SystemC®.
 
-{% include debugger-gallery.html columns="two" images="SchematicGoToRohd.png|ROHDProbeRcv.png" alts="Selecting a signal in the Schematic pane to view its ROHD source|Selected signal opened in ROHD source in VS Code" captions="Select a signal to view in ROHD.|Open the selected signal in ROHD source in VS Code." %}
+{% include debugger-gallery.html columns="two" images="SchematicGoToRohd.png|ROHDProbeRcv.png" alts="Selecting a signal in the Schematic pane to view its ROHD source|Selected signal opened in ROHD source in VS Code" captions="Select a signal to view in ROHD.|Opens the selected signal in ROHD source in VS Code." %}
 
-{% include debugger-gallery.html columns="two" images="SVProbe.png|SVProbeRcv.png" alts="Selecting a signal in the Schematic pane to view its SystemVerilog® output|Selected signal opened in SystemVerilog® output in VS Code" captions="Select a signal to view SystemVerilog® output.|Open the selected signal in SystemVerilog® output in VS Code." %}
+---
+
+{% include debugger-gallery.html columns="two" images="SVProbe.png|SVProbeRcv.png" alts="Selecting a signal in the Schematic pane to view its SystemVerilog® output|Selected signal opened in SystemVerilog® output in VS Code" captions="Select a signal to view SystemVerilog® output.|Opens the selected signal in SystemVerilog® output in VS Code." %}
 
 ## Cross-Probe From the Shell
+
+The ROHD Debug Shell is a command-line pane for exploring a live design. Use `find-cell` and `find-signal` to locate objects, `parent-cell` and `owner-cell` to navigate the hierarchy, and `fanin` and `fanout` to trace connections. Commands can be combined with pipes, and `let` binds results for later use.
 
 The DTD-attached command-line shell offers the same cross-probe operation as the graphical panes. Use `send` to publish a selected signal to the linked Schematic and Waveform panes.
 
 <!-- markdownlint-disable-next-line MD034 -->
 ![Sending a signal from the ROHD Debug Shell to the linked views]({{ site.baseurl }}/assets/images/rohd-live-debugger/ShellSend.png){: .debugger-shell-send}
 
-Beyond cross-probing, the shell is a small, composable front end to the same hierarchy and connectivity API used by people and tools alike: select a signal, bind it with `let`, and pipe it through a graph query. The API's `find-cell`, `find-signal`, `fanin`, and `fanout` operations are also available programmatically, which is useful both for engineers exploring unfamiliar blocks and for AI coding agents tracing fanin and fanout.
+The shell is a composable front end to a hierarchy and connectivity API that is also available programmatically, which is useful both for engineers exploring unfamiliar blocks and for AI coding agents tracing fanin and fanout.
 
 `fanin` and `fanout` take one horizontal net hop by default; adding `transparent` follows an encountered input port into its non-leaf child block, repeating until it reaches ports on leaf blocks -- so a query can cross module boundaries without pretending arbitrary logic is a pass-through. Broader hierarchy and connectivity commands include `find-cell`, `find-signal`, `find-cells <regex>`, `find-signals <regex>`, `owner-cell`, and `parent-cell`.
 
 The shell resolves signal paths in the process that owns the live occurrence handles and publishes only canonical paths to an available cross-probe participant (DevTools' local service when attached that way, or the VS Code extension's signal bus otherwise), so registered viewers receive the same signals regardless of which path led to the shell.
+
+## Scale to Large Designs using Occurrence Handles
+
+One way to think of the **ROHD Live Debugger** is as remote attached browser portal to a large design living inside a ROHD simulator controlled by VS Code. It has a core infrastructure intended to deal with debugging detailed signals within a very large and deep hierarchical scope.
+
+The debugger communicates with the remote ROHD session through **occurrence handles**: compact, portable references to signals and cells rather than cumbersome hierarchical strings. A handle carries a signal's canonical path, leaf name, width, and stable address as a single lightweight reference. This keeps waveform and design-connectivity transfers efficient as designs grow, without repeatedly serializing and resolving large hierarchy paths.
+
+## How to Start a Debug Session
+
+Start a ROHD simulation in a VS Code debug session and stop it at a breakpoint.
+
+Without netlist generation, a synthetic design hierarchy will be generated. For advanced capabilities such as cross-probing, see [Generate the Views and Source Artifacts]({{ site.baseurl }}/blog/rohd-design-cockpit-in-vs-code/#generate-the-views-and-source-artifacts) in the ROHD Design Cockpit blog post.
+
+The **ROHD Live Debugger** attaches to the Dart™ Virtual Machine (VM) running that simulation. You can open it in DevTools for the current VS Code debug session, or use it as a standalone application and choose a VM to attach to.
+
+### Open in DevTools
+
+Add the ROHD Live Debugger to your project's `pubspec.yaml` under `dependency_overrides`:
+
+```yaml
+dependency_overrides:
+  rohd_live_debugger: ^0.1.0
+```
+
+If `dependency_overrides` already exists, add `rohd_live_debugger` to that section. Resolve the project's dependencies before starting the debug session.
+
+The simplest way to start is from a running VS Code debug session. Open the Command Palette and run **Dart: Open DevTools in Browser**. In the browser, select the **rohd_live_debugger** DevTools extension and, if prompted, click **Enable**. DevTools then opens the debugger attached to the current VM, without requiring you to copy a connection URI.
+
+{% include debugger-gallery.html columns="vertical" images="DevtoolsBrowser.png|EnableLiveDebugger.png|DevtoolsRunning.png" alts="The Dart: Open DevTools in Browser command in the VS Code Command Palette|The ROHD Live Debugger extension enable prompt in DevTools|The ROHD Live Debugger running inside DevTools with its module tree and details view" captions="1. Open DevTools in the browser.|2. Select the debugger and enable it if prompted.|3. Inspect the current VM in the debugger." %}
+
+### Connect the standalone debugger
+
+The standalone debugger can discover running VMs through the Dart Tooling Daemon (DTD), or connect directly using a VM service URI. Open the [ROHD Live Debugger web app](https://intel.github.io/rohd/rohd-live-debugger/) and use its connection dialog to choose the VM containing the design you want to inspect.
+
+In the VS Code image below, four simulation sessions are running, with our floating-point adder ROHD code in the main pane. The DTD URI is shown in the lower right-hand corner and can be copied (if you have the [ROHD Tools extension](https://marketplace.visualstudio.com/items?itemName=intel-corporation.rohd-tools) installed).
+
+{% include debugger-gallery.html columns="vertical" variant="startup" images="VSCode4.png|DTD.png" alts="VS Code showing multiple debug sessions and a Dart Tooling Daemon URI|Dart Tooling Daemon connection view for choosing a debug session" captions="Copy the DTD URI from VS Code.|Discover running VMs and select the session to debug." %}
+
+Paste the DTD URI (remember that if you have ROHD Tools installed, the DTD address can be copied with a button) into the connection dialog, select **Discover**, choose a VM, and click **Connect**. Alternatively, enter a VM service URI directly and click **Connect**.
 
 ## What's Ahead
 
