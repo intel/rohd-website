@@ -99,6 +99,9 @@ jobs:
       - name: Test local preview range requests
         working-directory: docs
         run: bundle exec ruby tool/test_webrick_range_fix.rb
+      - name: Test Chrome DevTools probe handling
+        working-directory: docs
+        run: bundle exec ruby tool/test_webrick_chrome_devtools_probe.rb
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

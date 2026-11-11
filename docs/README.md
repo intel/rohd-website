@@ -120,7 +120,9 @@ cd docs/
 ```
 
 The script includes future posts, binds to all IPv4 interfaces for remote
-development, and applies a local WEBrick range-request compatibility fix.
+development, and applies a local WEBrick range-request compatibility fix. It
+also suppresses the expected missing-file log for Chrome DevTools' optional
+workspace discovery probe; the probe still receives a 404 when not configured.
 Specify a different port when needed:
 
 ```bash
