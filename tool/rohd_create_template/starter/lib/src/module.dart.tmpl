@@ -1,0 +1,34 @@
+import 'package:rohd/rohd.dart';
+
+/// A simple conditional logic module.
+///
+/// When the optional `invert` input is absent, `result` passes through
+/// `dataIn`. When it is present and asserted, `result` is the inverse of
+/// `dataIn`.
+class __MODULE_NAME__ extends Module {
+  /// The conditionally inverted output.
+  Logic get result => output('result');
+
+  /// Creates a pass-through or conditionally inverting one-bit module.
+  __MODULE_NAME__(Logic dataIn, {Logic? invert, super.name = '__MODULE_FILE__'})
+    : super(
+        definitionName: invert == null
+            ? '__MODULE_NAME__NoInvert'
+            : '__MODULE_NAME__WithInvert',
+      ) {
+    dataIn = addInput('dataIn', dataIn);
+    if (invert != null) {
+      invert = addInput('invert', invert);
+    }
+
+    final result = addOutput('result');
+    final invertPin = tryInput('invert');
+    if (invertPin == null) {
+      result <= dataIn;
+    } else {
+      Combinational([
+        If(invertPin, then: [result < ~dataIn], orElse: [result < dataIn]),
+      ]);
+    }
+  }
+}

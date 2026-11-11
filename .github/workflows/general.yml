@@ -30,4 +30,36 @@ jobs:
         with:
           use-quiet-mode: yes # output is too noisy, see https://github.com/gaurav-nelson/github-action-markdown-link-check/issues/121
           config-file: .github/configs/mlc_config.json
-      
+
+  launcher-linux:
+    name: Test Linux ROHD Create Template
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    runs-on: ${{ github.repository_owner == 'intel' && 'intel-ubuntu-latest' || 'ubuntu-latest' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Test generated starter package
+        run: bash tool/test/rohd_create_integration_test.sh
+
+  launcher-windows:
+    name: Test Windows ROHD Create Template
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Test generated starter package
+        shell: pwsh
+        run: ./tool/test/rohd_create_integration_test.ps1

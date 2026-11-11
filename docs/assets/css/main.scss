@@ -16,6 +16,10 @@ search: false
   font-size: 1rem;
 }
 
+.rohd-tools-title {
+  color: #0056a6;
+}
+
 .debugger-launch {
   > h4 {
     margin-bottom: 0.25em !important; // Override the theme's notice heading margin.
@@ -172,6 +176,12 @@ ul li, ol li {
   margin-bottom: 0.1em;
 }
 
+@media (min-width: $large) {
+  .narrow-sidebar .sidebar {
+    width: 9rem;
+  }
+}
+
 // This changes the code box
 .highlight {
   margin: 0;
@@ -179,4 +189,9 @@ ul li, ol li {
   font-family: $monospace;
   font-size: 0.6rem;
   line-height: 1.8;
+}
+
+.compact-artifact-code .highlight {
+  font-size: 0.55rem;
+  line-height: 1.4;
 }

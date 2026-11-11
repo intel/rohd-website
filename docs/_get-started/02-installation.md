@@ -2,13 +2,57 @@
 title: "Setup & Install"
 permalink: /get-started/setup/
 excerpt: "Instructions for installing the theme for new and existing Jekyll based sites."
-last_modified_at: 2026-01-09
+last_modified_at: 2026-10-25
 toc: true
 ---
 
 ## Getting started
 
 Follow the instruction at [https://dart.dev/get-dart](https://dart.dev/get-dart) to install `dart` in your environment.
+
+### Create a starter package
+
+You do not need to clone the ROHD source repository to create and test a new
+ROHD module. The launchers below download one small platform bundle, create a
+normal Dart package in the directory you choose, and resolve published ROHD
+packages from pub.dev.
+
+<p>
+  <a href="{{ site.baseurl }}/assets/downloads/rohd_create_linux.zip" class="btn btn--primary btn--large" download="rohd_create_linux.zip"><i class="fab fa-linux"></i> Download Linux / WSL bundle</a>
+  <a href="{{ site.baseurl }}/assets/downloads/rohd_create_windows.zip" class="btn btn--info btn--large" download="rohd_create_windows.zip"><i class="fab fa-windows"></i> Download Windows bundle</a>
+</p>
+
+On Linux or WSL, extract the bundle, then create and test a package:
+
+```sh
+unzip rohd_create_linux.zip
+cd rohd_create
+chmod +x rohd_create.sh
+./rohd_create.sh ~/work/my-first-module --module-name MyFirstModule
+cd ~/work/my-first-module
+dart test
+```
+
+On Windows PowerShell:
+
+```powershell
+Expand-Archive .\rohd_create_windows.zip
+Set-Location .\rohd_create
+powershell -ExecutionPolicy Bypass -File .\rohd_create.ps1 `
+  C:\work\my-first-module -ModuleName MyFirstModule
+Set-Location C:\work\my-first-module
+dart test
+```
+
+The Linux/WSL launcher checks for a compatible Dart SDK (>=3.6.0 and <4.0.0)
+and explains how to install or update it if needed. On Windows, the launcher
+first checks whether Chocolatey is available when Dart is missing: it directs
+you to Chocolatey setup if needed, then directs Chocolatey users to
+`choco install dart-sdk`. Neither launcher downloads or requires an ROHD
+checkout. To develop against unpublished ROHD, ROHD-HCL, or ROHD-VF source,
+use their documented local-path override options instead.
+
+### Set up a package manually
 
 Once you have Dart installed, if you don't already have a project, you can create one using `dart create`: <https://dart.dev/tools/dart-tool>
 
