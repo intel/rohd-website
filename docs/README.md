@@ -111,8 +111,7 @@ screenshot as the poster instead of displaying both.
 
 ### Preview and Validate
 
-Jekyll excludes future-dated posts by default. Include `--future` when
-previewing scheduled posts:
+The local preview includes future-dated blog entries:
 
 ```bash
 cd docs/
@@ -158,9 +157,17 @@ After the upstream fix is released, run the same command with
 is expected to fail on WEBrick 1.9.2. The checks use a temporary local file
 and a loopback-only server on an automatically allocated port.
 
-The production workflow intentionally does not use `--future`, so scheduled
-posts are not published before their filename date. Static video assets may
-be deployed before the post that references them.
+Production builds exclude future-dated blog entries from both the index and
+individual pages. The date comes from the filename unless a `date` is set in
+front matter. The local preview includes them via `--future`. Static assets may
+still be deployed before an entry that references them. A new deployment is
+required after the publication date; the workflow does not run on a schedule.
+
+Run the publication regression checks from `docs/`:
+
+```bash
+bundle exec ruby tool/test_scheduled_blog.rb
+```
 
 ### GitHub Pages and Repository Limits
 

@@ -102,6 +102,9 @@ jobs:
       - name: Test Chrome DevTools probe handling
         working-directory: docs
         run: bundle exec ruby tool/test_webrick_chrome_devtools_probe.rb
+      - name: Test scheduled blog publication
+        working-directory: docs
+        run: bundle exec ruby tool/test_scheduled_blog.rb
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
