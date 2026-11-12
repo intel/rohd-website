@@ -127,7 +127,7 @@ Paste the DTD URI (remember that if you have ROHD Tools installed, the DTD addre
 
 ## What's Ahead
 
-The **ROHD Live Debugger** is still evolving. Near-term work includes control of the VS Code debug controls from within our debugger, and potentially reverse cross-probing from VS Code back into our debugger. As with the schematic and wave viewers, the intended architecture is a generic command host where connectivity, waveform, and future providers register their own capabilities as well as separate applications. We expect these applications to be distributed as VS Code extensions as well, including local cross-probing support witin VS Code itself.
+The **ROHD Live Debugger** is still evolving. Near-term work includes control of the VS Code debug controls from within our debugger, and potentially reverse cross-probing from VS Code back into our debugger. As with the schematic and wave viewers, the intended architecture is a generic command host where connectivity, waveform, and future providers register their own capabilities as well as separate applications. We expect these applications to be distributed as VS Code extensions as well, including local cross-probing support within VS Code itself.
 
 ## Get Involved
 
